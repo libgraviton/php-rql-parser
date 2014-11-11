@@ -1,0 +1,22 @@
+{
+    "name": "graviton/php-rql-parser",
+    "version": "0.0.1-dev",
+    "description": "A standalone RQL (Resource Query Language) Parser with flexible usage possibilities",
+    "license": "GPL",
+    "authors": [
+        {
+            "name": "Dario Nuevo",
+            "email": "dario.nuevo@swisscom.com"
+        }
+    ],
+    "autoload": {
+        "psr-0": { "Graviton": "lib/"}
+    },
+    "require-dev": {
+        "phpunit/phpunit": "*"
+    },
+    "require": {
+        "php": "~5.4"
+    },
+    "minimum-stability": "stable"
+}

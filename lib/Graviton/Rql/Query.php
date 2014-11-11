@@ -15,6 +15,17 @@ namespace Graviton\Rql;
  */
 class Query {
 
+    private $query;
+
+    public function __construct($query) {
+        $this->query = $query;
+    }
+
+    public function parse()
+    {
+        $parser = new Parser($this->query);
+        return $parser->parse();
+    }
 
 
 }
