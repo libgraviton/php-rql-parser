@@ -27,5 +27,10 @@ class Query {
         return $parser->parse();
     }
 
+    public function applyToQueriable(QueryInterface $queriable)
+    {
+
+    }
+
 
 }
