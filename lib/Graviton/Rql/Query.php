@@ -26,7 +26,7 @@ class Query
     /**
      * Constructor
      *
-     * @param $query string|array The user RQL query
+     * @param string|array $query The user RQL query
      */
     public function __construct($query)
     {
@@ -36,17 +36,6 @@ class Query
         }
 
         $this->query = $query;
-    }
-
-    /**
-     * Parses an expression with Parser
-     *
-     * @return array the conditions
-     */
-    public function parse()
-    {
-        $parser = new Parser($this->query);
-        return $parser->parse();
     }
 
     /**
@@ -61,13 +50,17 @@ class Query
      * the purpose of http_build_query() but unnecessary for us
      *
      * @param array $params the params
+     *
+     * @return string query string
      */
     private function reconstructQueryFromArray(array $params)
     {
         $ret = array();
         foreach ($params as $name => $val) {
             $thisParam = $name;
-            if (strlen($val) > 0) $thisParam .= '='.$val;
+            if (strlen($val) > 0) {
+                $thisParam .= '=' . $val;
+            }
             $ret[] = $thisParam;
         }
 
@@ -79,6 +72,8 @@ class Query
      * This allows you to implement your own filtering logic (for your data storage use case).
      *
      * @param QueryInterface $queriable A Queriable instance
+     *
+     * @return QueryInterface the interface instance; altered..
      */
     public function applyToQueriable(QueryInterface $queriable)
     {
@@ -86,18 +81,35 @@ class Query
 
         foreach ($conditions as $condition) {
             // set the name (i.e. andEq)
-            $methodName = strtolower($condition['conditionType']).ucfirst($condition['action']);
+            $methodName = strtolower($condition['conditionType']) . ucfirst($condition['action']);
             if (method_exists($queriable, $methodName)) {
-                $queriable->$methodName($condition['actionParams']);
+                call_user_func_array(
+                    array($queriable, $methodName),
+                    explode(',', $condition['actionParams'])
+                );
             } else {
                 // fallback to just action (i.e. sort)
                 $methodName = strtolower($condition['action']);
                 if (method_exists($queriable, $methodName)) {
-                    $queriable->$methodName($condition['actionParams']);
+                    call_user_func_array(
+                        array($queriable, $methodName),
+                        explode(',', $condition['actionParams'])
+                    );
                 }
             }
         }
 
         return $queriable;
+    }
+
+    /**
+     * Parses an expression with Parser
+     *
+     * @return array the conditions
+     */
+    public function parse()
+    {
+        $parser = new Parser($this->query);
+        return $parser->parse();
     }
 }

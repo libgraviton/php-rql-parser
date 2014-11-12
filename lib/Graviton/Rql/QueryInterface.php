@@ -15,12 +15,54 @@ namespace Graviton\Rql;
  * @license  http://opensource.org/licenses/gpl-license.php GNU Public License
  * @link     http://swisscom.com
  */
-interface QueryInterface {
+interface QueryInterface
+{
 
-    public function sort($fieldName, $direction);
+    /**
+     * Apply "equal" condition; AND
+     *
+     * @param string $field Field name
+     * @param mixed  $value Field value
+     *
+     * @return void
+     */
+    public function andEq($field, $value);
 
-    public function andEqual($field, $value);
+    /**
+     * Apply "equal" condition; OR
+     *
+     * @param string $field Field name
+     * @param mixed  $value Field value
+     *
+     * @return void
+     */
+    public function orEq($field, $value);
 
-    public function orEqual($field, $value);
+    /**
+     * Apply "not equal" condition; AND
+     *
+     * @param string $field Field name
+     * @param mixed  $value Field value
+     *
+     * @return void
+     */
+    public function andNe($field, $value);
 
+    /**
+     * Apply "not equal" condition; OR
+     *
+     * @param string $field Field name
+     * @param mixed  $value Field value
+     *
+     * @return void
+     */
+    public function orNe($field, $value);
+
+    /**
+     * @param string      $fieldName Field name
+     * @param string|null $direction Sort direction (asc/desc)
+     *
+     * @return mixed
+     */
+    public function sort($fieldName, $direction = null);
 }

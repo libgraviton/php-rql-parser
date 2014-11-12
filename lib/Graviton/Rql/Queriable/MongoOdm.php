@@ -5,7 +5,6 @@ namespace Graviton\Rql\Queriable;
 use Doctrine\ODM\MongoDB\DocumentRepository;
 use Graviton\Rql\QueryInterface;
 
-// Doctrine\ODM\MongoDB\DocumentRepository
 /**
  * Mongo ODM Queriable.
  * As an example, this is a partial Queriable implementation for applying
@@ -35,41 +34,120 @@ class MongoOdm implements QueryInterface
      */
     private $qb;
 
+    /**
+     * Constructor; instanciate with a valid DocumentRepository instance
+     *
+     * @param DocumentRepository $repository repository
+     */
     public function __construct(DocumentRepository $repository)
     {
         $this->repository = $repository;
 
         // init querybuilder..
-        $this->qb = $this->repository->getDocumentManager()->createQueryBuilder()->find(
-            $repository->getDocumentName()
-        );
+        $this->qb = $this->repository->getDocumentManager()
+                                     ->createQueryBuilder()
+                                     ->find(
+                                         $repository->getDocumentName()
+                                     );
     }
 
+    /**
+     * Returns the result of the query; the array of Documents.
+     * Call this after all query conditions were applied.
+     *
+     * @return array Results
+     * @throws \Doctrine\ODM\MongoDB\MongoDBException
+     */
     public function getDocuments()
     {
-        $this->qb->field('testField')->equals('some text');
 
         $docs = array();
-        foreach ($this->qb->getQuery()->execute() as $doc) {
+        foreach ($this->qb->getQuery()
+                          ->execute() as $doc
+        ) {
             $docs[] = $doc;
         }
 
         return $docs;
     }
 
-    public function andEqual($field, $value)
+    /**
+     * {@inheritdoc}
+     */
+    public function andEq($field, $value)
     {
-        // TODO: Implement andEqual() method.
+        $this->qb->addAnd(
+            $this->qb->expr()
+                     ->field($field)
+                     ->equals($this->roughTypeConvert($value))
+        );
     }
 
-    public function orEqual($field, $value)
+    /**
+     * Some basic conversion for string to bool/null types..
+     *
+     * @param string $value Value
+     *
+     * @return bool|null The converted value
+     */
+    private function roughTypeConvert($value)
     {
-        // TODO: Implement orEqual() method.
+        $ret = $value;
+        if ($value == 'true') {
+            $ret = true;
+        }
+        if ($value == 'false') {
+            $ret = false;
+        }
+        if ($value == 'null') {
+            $ret = null;
+        }
+
+        return $ret;
     }
 
-    public function sort($fieldName, $direction = '')
+    /**
+     * {@inheritdoc}
+     */
+    public function orEq($field, $value)
     {
-        // TODO: Implement orEqual() method.
+        $this->qb->addOr(
+            $this->qb->expr()
+                     ->field($field)
+                     ->equals($this->roughTypeConvert($value))
+        );
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function andNe($field, $value)
+    {
+        $this->qb->field($field)
+                 ->notEqual($this->roughTypeConvert($value));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function orNe($field, $value)
+    {
+        $this->qb->addOr(
+            $this->qb->expr()
+                     ->field($field)
+                     ->notEqual($this->roughTypeConvert($value))
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function sort($fieldName, $direction = null)
+    {
+        if ($direction == null) {
+            $direction = 'asc';
+        }
+
+        $this->qb->sort($fieldName, $direction);
+    }
 }

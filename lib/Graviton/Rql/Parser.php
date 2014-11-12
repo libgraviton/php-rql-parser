@@ -56,7 +56,7 @@ class Parser
     /**
      * Constructor
      *
-     * @param $query The user RQL query
+     * @param string $query The user RQL query
      */
     public function __construct($query)
     {
@@ -82,7 +82,7 @@ class Parser
     private function parseExpression()
     {
         $ret = array();
-        $pattern = '/([\(]?)([&|\|]?)([[:alnum:]|[:blank:]|,]*)\(([[:alnum:]|[:blank:]|,|"]*)\)([\)]?)/';
+        $pattern = '/([\(]?)([&|\|]?)([[:alnum:]|[:blank:]|,]*)\(([[:alnum:]|[:blank:]|[:punct:]|,|"]*)\)([\)]?)/U';
 
         preg_match_all($pattern, $this->query, $matches, PREG_SET_ORDER);
 
@@ -98,6 +98,12 @@ class Parser
             $action = $match[3]; // eq, lt and so on
             $actionParams = $match[4]; // params
             $closingCond = $match[5]; // ")" if set
+
+            // hm, for some reason i couldn't match "|" (pipe) at the beginning of func name, workaround..
+            if (substr($action, 0, 1) == '|') {
+                $action = substr($action, 1);
+                $conditionType = '|';
+            }
 
             // cleanup
             if (strlen($conditionType) < 1) {
