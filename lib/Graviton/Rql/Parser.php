@@ -32,15 +32,16 @@ class Parser
     private $allowedMethods = array(
         '=' => 'eq',
         '==' => 'eq',
+        '!=' => 'ne',
         '>' => 'gt',
         '>=' => 'ge',
         '<' => 'lt',
         '<=' => 'le',
-        '!=' => 'ne',
         'and' => 'and',
         'or' => 'or',
         'sort' => 'sort',
-        'limit' => 'limit'
+        'limit' => 'limit',
+        'select' => 'select'
     );
 
     /**

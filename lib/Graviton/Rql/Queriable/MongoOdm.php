@@ -60,7 +60,6 @@ class MongoOdm implements QueryInterface
      */
     public function getDocuments()
     {
-
         $docs = array();
         foreach ($this->qb->getQuery()
                           ->execute() as $doc
@@ -103,6 +102,15 @@ class MongoOdm implements QueryInterface
             $ret = null;
         }
 
+        // is it maybe a date? -> we only accept W3C format.. (i.e. 2001-12-31T15:00:00Z)
+        // @todo do this better someway.. couldn't check for target field type..
+        if (strpos($value, ':') !== false && strpos($value, '-') !== false) {
+            $dt = \DateTime::createFromFormat(\DateTime::W3C, $value);
+            if (count($dt->getLastErrors()['warnings']) === 0) {
+                $ret = $dt;
+            }
+        }
+
         return $ret;
     }
 
@@ -136,6 +144,90 @@ class MongoOdm implements QueryInterface
             $this->qb->expr()
                      ->field($field)
                      ->notEqual($this->roughTypeConvert($value))
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function andGt($field, $value)
+    {
+        $this->qb->field($field)
+                 ->gt($this->roughTypeConvert($value));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function orGt($field, $value)
+    {
+        $this->qb->addOr(
+            $this->qb->expr()
+                     ->field($field)
+                     ->gt($this->roughTypeConvert($value))
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function andGe($field, $value)
+    {
+        $this->qb->field($field)
+                 ->gte($this->roughTypeConvert($value));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function orGe($field, $value)
+    {
+        $this->qb->addOr(
+            $this->qb->expr()
+                     ->field($field)
+                     ->gte($this->roughTypeConvert($value))
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function andLt($field, $value)
+    {
+        $this->qb->field($field)
+                 ->lt($this->roughTypeConvert($value));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function orLt($field, $value)
+    {
+        $this->qb->addOr(
+            $this->qb->expr()
+                     ->field($field)
+                     ->lt($this->roughTypeConvert($value))
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function andLe($field, $value)
+    {
+        $this->qb->field($field)
+                 ->lte($this->roughTypeConvert($value));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function orLe($field, $value)
+    {
+        $this->qb->addOr(
+            $this->qb->expr()
+                     ->field($field)
+                     ->lte($this->roughTypeConvert($value))
         );
     }
 

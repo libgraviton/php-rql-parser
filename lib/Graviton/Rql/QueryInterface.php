@@ -59,6 +59,86 @@ interface QueryInterface
     public function orNe($field, $value);
 
     /**
+     * Apply "greater then" condition; AND
+     *
+     * @param string $field Field name
+     * @param mixed  $value Field value
+     *
+     * @return void
+     */
+    public function andGt($field, $value);
+
+    /**
+     * Apply "greater then" condition; OR
+     *
+     * @param string $field Field name
+     * @param mixed  $value Field value
+     *
+     * @return void
+     */
+    public function orGt($field, $value);
+
+    /**
+     * Apply "greater equals" condition; AND
+     *
+     * @param string $field Field name
+     * @param mixed  $value Field value
+     *
+     * @return void
+     */
+    public function andGe($field, $value);
+
+    /**
+     * Apply "greater equals" condition; OR
+     *
+     * @param string $field Field name
+     * @param mixed  $value Field value
+     *
+     * @return void
+     */
+    public function orGe($field, $value);
+
+    /**
+     * Apply "less then" condition; AND
+     *
+     * @param string $field Field name
+     * @param mixed  $value Field value
+     *
+     * @return void
+     */
+    public function andLt($field, $value);
+
+    /**
+     * Apply "less then" condition; OR
+     *
+     * @param string $field Field name
+     * @param mixed  $value Field value
+     *
+     * @return void
+     */
+    public function orLt($field, $value);
+
+    /**
+     * Apply "less equals" condition; AND
+     *
+     * @param string $field Field name
+     * @param mixed  $value Field value
+     *
+     * @return void
+     */
+    public function andLe($field, $value);
+
+    /**
+     * Apply "less equals" condition; OR
+     *
+     * @param string $field Field name
+     * @param mixed  $value Field value
+     *
+     * @return void
+     */
+    public function orLe($field, $value);
+
+    /**
      * @param string      $fieldName Field name
      * @param string|null $direction Sort direction (asc/desc)
      *
