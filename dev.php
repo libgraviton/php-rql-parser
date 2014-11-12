@@ -1,7 +1,7 @@
 <?php
 
 // this doesn't work? try `composer install`
-require 'vendor/autoload.php';
+require '../../autoload.php';
 
 use Graviton\Rql\Query;
 

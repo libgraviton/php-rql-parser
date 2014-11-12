@@ -17,8 +17,10 @@ namespace Graviton\Rql;
  */
 interface QueryInterface {
 
+    public function sort($fieldName, $direction);
+
     public function andEqual($field, $value);
 
     public function orEqual($field, $value);
 
-} 
+}

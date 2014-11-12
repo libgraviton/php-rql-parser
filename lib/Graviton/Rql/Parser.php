@@ -14,10 +14,21 @@ namespace Graviton\Rql;
  * @license  http://opensource.org/licenses/gpl-license.php GNU Public License
  * @link     http://swisscom.com
  */
-class Parser {
+class Parser
+{
 
+    /**
+     * The query from the client
+     *
+     * @var string query
+     */
     private $query;
 
+    /**
+     * Methods we allow to pass through as in [methodName]() expression
+     *
+     * @var array methods
+     */
     private $allowedMethods = array(
         '=' => 'eq',
         '==' => 'eq',
@@ -27,28 +38,51 @@ class Parser {
         '<=' => 'le',
         '!=' => 'ne',
         'and' => 'and',
-        'or' => 'or'
+        'or' => 'or',
+        'sort' => 'sort',
+        'limit' => 'limit'
     );
 
+    /**
+     * Condition type map
+     *
+     * @var array
+     */
     private $allowedConditions = array(
         '&' => 'and',
         '|' => 'or'
     );
 
-    public function __construct($query) {
+    /**
+     * Constructor
+     *
+     * @param $query The user RQL query
+     */
+    public function __construct($query)
+    {
         $this->query = $query;
     }
 
+    /**
+     * Here we parse the expression
+     *
+     * @return array The condition parts
+     */
     public function parse()
     {
         // @todo replace fiql expressions before parsing
         return $this->parseExpression();
     }
 
+    /**
+     * Final parsing of the query expression into array structure
+     *
+     * @return array Condition parts
+     */
     private function parseExpression()
     {
         $ret = array();
-        $pattern = '/([\(]?)([&|\|]?)([a-z|0-9|,]*)\(([a-z|0-9|,]*)\)([\)]?)/';
+        $pattern = '/([\(]?)([&|\|]?)([[:alnum:]|[:blank:]|,]*)\(([[:alnum:]|[:blank:]|,|"]*)\)([\)]?)/';
 
         preg_match_all($pattern, $this->query, $matches, PREG_SET_ORDER);
 
@@ -66,11 +100,15 @@ class Parser {
             $closingCond = $match[5]; // ")" if set
 
             // cleanup
-            if (strlen($conditionType) < 1) $conditionType = '&';
+            if (strlen($conditionType) < 1) {
+                $conditionType = '&';
+            }
 
             if (in_array($action, $this->allowedMethods)) {
 
-                if ($openingCond == '(') $currentParent = $i;
+                if ($openingCond == '(') {
+                    $currentParent = $i;
+                }
 
                 $ret[$i] = array(
                     'conditionType' => $this->allowedConditions[$conditionType],
@@ -80,11 +118,12 @@ class Parser {
                 );
                 $i++;
 
-                if ($closingCond == ')') $currentParent = 0;
+                if ($closingCond == ')') {
+                    $currentParent = 0;
+                }
             }
         }
 
         return $ret;
     }
-
 }
