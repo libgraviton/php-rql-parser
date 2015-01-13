@@ -111,6 +111,10 @@ class MongoOdm implements QueryInterface
             }
         }
 
+        if (is_numeric($value)) {
+            $ret = floatval($value);
+        }
+
         return $ret;
     }
 
