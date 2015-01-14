@@ -52,20 +52,26 @@ class MongoOdm implements QueryInterface
      * @param int                $limit      Amount of documents to be returned
      * @param int                $skip       Starting point from which the set of documents shall be returned
      */
-    public function __construct(DocumentRepository $repository, $limit = 10, $skip = 0)
+    public function __construct(DocumentRepository $repository, $limit = 0, $skip = 0)
     {
         $this->repository = $repository;
 	$this->classMetadata = $repository->getClassMetadata();
 
-        // init querybuilder..
+         // init querybuilder..
         $this->qb = $this->repository
             ->getDocumentManager()
             ->createQueryBuilder()
-            ->limit($limit)
-            ->skip($skip)
             ->find(
                 $repository->getDocumentName()
             );
+
+        if (0 < $limit) {
+            $this->qb->limit($limit);
+        }
+
+        if (0 < $skip) {
+            $this->qb->skip($skip);
+        }
     }
 
     /**
