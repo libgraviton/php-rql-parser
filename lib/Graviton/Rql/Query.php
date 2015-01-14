@@ -77,7 +77,7 @@ class Query
      */
     public function applyToQueriable(QueryInterface $queriable)
     {
-        $conditions = $this->parse();
+        $conditions = $this->getParsedConditions();
 
         foreach ($conditions as $condition) {
             // set the name (i.e. andEq)
@@ -105,11 +105,35 @@ class Query
     /**
      * Parses an expression with Parser
      *
+     * @deprecated this is an alias for getParsedConditions() now..
      * @return array the conditions
      */
     public function parse()
     {
+        return $this->getConditions();
+    }
+
+    /**
+     * Returns all parsed conditions in the internal array format
+     *
+     * @return array conditions
+     */
+    public function getParsedConditions()
+    {
         $parser = new Parser($this->query);
         return $parser->parse();
     }
+
+    /**
+     * Returns all conditions as they came in (through the query). This is an
+     * array, one item per condition.
+     *
+     * @return array conditions
+     */
+    public function getConditions()
+    {
+        $parser = new Parser($this->query);
+        return $parser->getMatchingConditions();
+    }
+
 }
