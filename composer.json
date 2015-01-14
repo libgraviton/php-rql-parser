@@ -1,6 +1,6 @@
 {
     "name": "graviton/php-rql-parser",
-    "version": "0.1.0-dev",
+    "version": "1.0.0",
     "homepage": "https://github.com/libgraviton/php-rql-parser",
     "description": "A standalone RQL (Resource Query Language) Parser with flexible usage possibilities",
     "keywords": ["rest", "rql", "resource", "query", "language", "parser"],
