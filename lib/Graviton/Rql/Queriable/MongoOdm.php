@@ -55,6 +55,7 @@ class MongoOdm implements QueryInterface
     public function __construct(DocumentRepository $repository, $limit = 10, $skip = 0)
     {
         $this->repository = $repository;
+	$this->classMetadata = $repository->getClassMetadata();
 
         // init querybuilder..
         $this->qb = $this->repository
