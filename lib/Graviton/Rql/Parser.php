@@ -83,9 +83,7 @@ class Parser
     private function parseExpression()
     {
         $ret = array();
-        $pattern = '/([\(]?)([&|\|]?)([[:alnum:]|[:blank:]|,]*)\(([[:alnum:]|[:blank:]|[:punct:]|,|"]*)\)([\)]?)/U';
-
-        preg_match_all($pattern, $this->query, $matches, PREG_SET_ORDER);
+        $matches = $this->getMatches();
 
         $i = 1;
         $currentParent = 0;
@@ -133,4 +131,35 @@ class Parser
 
         return $ret;
     }
+
+    /**
+     * applies our regex and returns the matches in SET order..
+     *
+     * @return array the matches
+     */
+    public function getMatches()
+    {
+        $matches = array();
+        $pattern = '/([\(]?)([&|\|]?)([[:alnum:]|[:blank:]|,]*)\(([[:alnum:]|[:blank:]|[:punct:]|,|"]*)\)([\)]?)/U';
+
+        preg_match_all($pattern, $this->query, $matches, PREG_SET_ORDER);
+
+        return $matches;
+    }
+
+    /**
+     * Returns the matching conditions (those text parts who make up the conditions) from our input query.
+     * This is an array, one elemnt per condition.
+     *
+     * @return array The matched conditions
+     */
+    public function getMatchingConditions()
+    {
+        $conditions = array();
+        foreach ($this->getMatches() as $match) {
+            $conditions[] = $match[0];
+        }
+        return $conditions;
+    }
+
 }
