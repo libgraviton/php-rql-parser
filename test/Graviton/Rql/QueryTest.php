@@ -168,5 +168,35 @@ class QueryTest extends \PHPUnit_Framework_TestCase
         $sut->applyToQueriable($mock);
     }
 
+    /**
+     * test legacy asc specification in sort
+     */
+    public function testLegacyAscendingSort()
+    {
+        $sut = new \Graviton\Rql\Query('sort(price,asc)');
 
+        $mock = $this->getMock('\Graviton\Rql\QueryInterface');
+
+        $mock->expects($this->once())
+             ->method('sort')
+             ->with($this->equalTo('price'), $this->equalTo('asc'));
+
+        $sut->applyToQueriable($mock);
+    }
+
+    /**
+     * test legacy desc specification in sort
+     */
+    public function testLegacyDescendingSort()
+    {
+        $sut = new \Graviton\Rql\Query('sort(price,desc)');
+
+        $mock = $this->getMock('\Graviton\Rql\QueryInterface');
+
+        $mock->expects($this->once())
+             ->method('sort')
+             ->with($this->equalTo('price'), $this->equalTo('desc'));
+
+        $sut->applyToQueriable($mock);
+    }
 }
