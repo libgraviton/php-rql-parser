@@ -7,6 +7,9 @@ allowing a flexible integration of your own business logic and into your applica
 This package adheres to [SemVer](http://semver.org/spec/v2.0.0.html) versioning. It will be considered stable after reaching 2.x since the initial 1.x release is
 considered too buggy at the moment.
 
+It uses a github version of [git-flow](http://nvie.com/posts/a-successful-git-branching-model/) in which new features and bugfixes must be merged to develop
+using a github pull request. It uses the standard git-flow naming conventions with the addition of a 'v' prefix to version tags.
+
 ## How to use
 
 Basically, this library consists of the following parts:
