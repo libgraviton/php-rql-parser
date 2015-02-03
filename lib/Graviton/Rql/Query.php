@@ -135,5 +135,4 @@ class Query
         $parser = new Parser($this->query);
         return $parser->getMatchingConditions();
     }
-
 }
