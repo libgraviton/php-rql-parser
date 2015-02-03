@@ -77,7 +77,7 @@ class QueryTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * test lt or gt acse
+     * test lt or gt case
      */
     public function testLtOrGtMatches()
     {
@@ -91,6 +91,28 @@ class QueryTest extends \PHPUnit_Framework_TestCase
         $mock->expects($this->once())
              ->method('orGt')
              ->with($this->equalTo('count'), $this->equalTo(0));
+
+        $sut->applyToQueriable($mock);
+    }
+
+    /**
+     * test blocks
+     */
+    public function testBlockMatches()
+    {
+        $sut = new \Graviton\Rql\Query('(ge(count,0)&le(count,10)&eq(name,foo))');
+
+        $mock = $this->getMock('\Graviton\Rql\QueryInterface');
+
+        $mock->expects($this->once())
+             ->method('andGe')
+             ->with($this->equalTo('count'), $this->equalTo(0));
+        $mock->expects($this->once())
+             ->method('andLe')
+             ->with($this->equalTo('count'), $this->equalTo(10));
+        $mock->expects($this->once())
+             ->method('andEq')
+             ->with($this->equalTo('name'), $this->equalTo('foo'));
 
         $sut->applyToQueriable($mock);
     }
