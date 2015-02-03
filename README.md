@@ -4,6 +4,9 @@ php-rql-parser - A PHP RQL Parsing Library
 This is a small RQL (Resource Query Language) parsing library written in PHP (a port of the js implementation at https://github.com/persvr/rql/),
 allowing a flexible integration of your own business logic and into your application, while still having the parsing logic decoupled. Read on if this is what you need.. ;-)  
 
+This package adheres to [SemVer](http://semver.org/spec/v2.0.0.html) versioning. It will be considered stable after reaching 2.x since the initial 1.x release is
+considered too buggy at the moment.
+
 ## How to use
 
 Basically, this library consists of the following parts:
