@@ -110,7 +110,6 @@ class Parser
             }
 
             if (in_array($action, $this->allowedMethods)) {
-
                 if ($openingCond == '(') {
                     $currentParent = $i;
                 }
@@ -161,5 +160,4 @@ class Parser
         }
         return $conditions;
     }
-
 }

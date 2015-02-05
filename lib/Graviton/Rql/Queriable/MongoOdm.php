@@ -55,7 +55,7 @@ class MongoOdm implements QueryInterface
     public function __construct(DocumentRepository $repository, $limit = 0, $skip = 0)
     {
         $this->repository = $repository;
-	$this->classMetadata = $repository->getClassMetadata();
+        $this->classMetadata = $repository->getClassMetadata();
 
          // init querybuilder..
         $this->qb = $this->repository
@@ -94,9 +94,7 @@ class MongoOdm implements QueryInterface
     public function getDocuments()
     {
         $docs = array();
-        foreach ($this->qb->getQuery()
-                          ->execute() as $doc
-        ) {
+        foreach ($this->qb->getQuery()->execute() as $doc) {
             $docs[] = $doc;
         }
 

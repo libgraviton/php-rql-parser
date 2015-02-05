@@ -15,7 +15,8 @@
         "psr-0": { "Graviton": "lib/"}
     },
     "require-dev": {
-        "phpunit/phpunit": "*"
+        "phpunit/phpunit": "*",
+        "squizlabs/php_codesniffer": "~2.2"
     },
     "require": {
         "php": "~5.4"
