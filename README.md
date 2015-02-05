@@ -1,6 +1,8 @@
 php-rql-parser - A PHP RQL Parsing Library
 ==============
 
+[![Build Status](https://travis-ci.org/libgraviton/php-rql-parser.svg?branch=develop)](https://travis-ci.org/libgraviton/php-rql-parser) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/libgraviton/php-rql-parser/badges/quality-score.png?b=develop)](https://scrutinizer-ci.com/g/libgraviton/php-rql-parser/?branch=develop)
+
 This is a small RQL (Resource Query Language) parsing library written in PHP (a port of the js implementation at https://github.com/persvr/rql/),
 allowing a flexible integration of your own business logic and into your application, while still having the parsing logic decoupled. Read on if this is what you need.. ;-)  
 
