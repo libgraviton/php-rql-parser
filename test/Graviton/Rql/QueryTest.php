@@ -199,4 +199,58 @@ class QueryTest extends \PHPUnit_Framework_TestCase
 
         $sut->applyToQueriable($mock);
     }
+
+    /**
+     * test for or() method
+     */
+    public function testOrMethod()
+    {
+        $sut = new \Graviton\Rql\Query('or(eq(name,foo),eq(name,bar))');
+
+        $mock = $this->getMock('\Graviton\Rql\QueryInterface');
+        $mock->expects($this->once())
+              ->method('andEq')
+              ->with($this->equalTo('name'), $this->equalTo('foo'));
+        $mock->expects($this->once())
+              ->method('orEq')
+              ->with($this->equalTo('name'), $this->equalTo('bar'));
+
+        $sut->applyToQueriable($mock);
+    }
+
+    /**
+     * test for and() method
+     */
+    public function testAndMethod()
+    {
+        $sut = new \Graviton\Rql\Query('and(eq(name,foo),eq(name,bar))');
+
+        $mock = $this->getMock('\Graviton\Rql\QueryInterface');
+        $mock->expects($this->once())
+              ->method('andEq')
+              ->with($this->equalTo('name'), $this->equalTo('foo'));
+        $mock->expects($this->once())
+              ->method('andEq')
+              ->with($this->equalTo('name'), $this->equalTo('bar'));
+
+        $sut->applyToQueriable($mock);
+    }
+
+    /**
+     * test for match() calls
+     */
+    public function testMatchMethod()
+    {
+        $sut = new \Graviton\Rql\Query('match(name,foo.*)|match(name,^bar)');
+
+        $mock = $this->getMock('\Graviton\Rql\QueryInterface');
+        $mock->expects($this->once())
+              ->method('andMatch')
+              ->with($this->equalTo('name'), $this->equalTo('foo.*'));
+        $mock->expects($this->once())
+              ->method('orMatch')
+              ->with($this->equalTo('name'), $this->equalTo('^bar'));
+
+        $sut->applyToQueriable($mock);
+    }
 }
