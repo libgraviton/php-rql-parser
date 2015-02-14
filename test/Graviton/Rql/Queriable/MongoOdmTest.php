@@ -71,11 +71,11 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
         $parser->applyToQueriable($mongo);
         $results = $mongo->getDocuments();
 
-        $this->assertEquals(count($results), count($expected));
+        $this->assertEquals(count($expected), count($results));
 
         foreach ($expected AS $position => $data) {
             foreach ($data AS $name => $value) {
-                $this->assertEquals($results[$position]->$name, $value);
+                $this->assertEquals($value, $results[$position]->$name);
             }
         }
     }
