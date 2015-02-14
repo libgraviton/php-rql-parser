@@ -27,6 +27,8 @@ use Doctrine\ODM\MongoDB\Mapping\Driver\AnnotationDriver;
  */
 class MongoOdmTest extends \PHPUnit_Framework_TestCase
 {
+    private $repo;
+
     /**
      * setup mongo-odm and load fixtures
      *
@@ -43,30 +45,29 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
         $config->setProxyNamespace('Proxies');
         $config->setMetadataDriverImpl(AnnotationDriver::create(__DIR__ . '/Documents/'));
 
-        $connection = new Connection();
         $dm = DocumentManager::create(new Connection(), $config);
 
         $loader = new Loader();
         $loader->addFixture(new MongoOdmFixtures());
 
-        $executor = new MongoDbExecutor($dm, new MongoDBPurger());
+        $executor = new MongoDBExecutor($dm, new MongoDBPurger());
         $executor->execute($loader->getFixtures());
 
-        $this->dm = $dm;
+        $this->repo = $dm->getRepository('Graviton\Rql\Queriable\Documents\Foo');
     }
 
     /**
      * @dataProvider basicQueryProvider
      *
-     * @param string $query    rql query string
-     * @param string $expected structure of expected return value
+     * @param string  $query    rql query string
+     * @param array[] $expected structure of expected return value
      *
      * @return void
      */
     public function testBasicQueries($query, $expected)
     {
         $parser = new Query($query);
-        $mongo = new MongoOdm($this->dm->getRepository('Graviton\Rql\Queriable\Documents\Foo'));
+        $mongo = new MongoOdm($this->repo);
 
         $parser->applyToQueriable($mongo);
         $results = $mongo->getDocuments();
