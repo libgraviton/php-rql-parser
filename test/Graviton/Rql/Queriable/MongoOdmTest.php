@@ -71,7 +71,7 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
         $parser->applyToQueriable($mongo);
         $results = $mongo->getDocuments();
 
-        $this->assertEquals(count($expected), count($results));
+        $this->assertEquals(count($expected), count($results), 'record count mismatch');
 
         foreach ($expected AS $position => $data) {
             foreach ($data AS $name => $value) {
@@ -94,6 +94,34 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
                     array('name' => 'My First Sprocket')
                 )
             ),
+            'eq OR search' => array(
+                'or(eq(name,My First Sprocket),eq(name,The Third Wheel))', array(
+                    array('name' => 'My First Sprocket'),
+                    array('name' => 'The Third Wheel')
+                )
+            ),
+            'eq OR search with sugar' => array(
+                'eq(name,My First Sprocket)|eq(name,The Third Wheel)', array(
+                    array('name' => 'My First Sprocket'),
+                    array('name' => 'The Third Wheel')
+                )
+            ),
+            'ne search' => array(
+                'ne(name,My First Sprocket)', array(
+                    array('name' => 'The Third Wheel'),
+                    array('name' => 'A Simple Widget'),
+                )
+            ),
+            'eq AND search' => array(
+                'and(eq(name,My First Sprocket),eq(count,10))', array(
+                    array('name' => 'My First Sprocket'),
+                )
+            ),
+            'eq AND search with sugar' => array(
+                'eq(name,My First Sprocket)&eq(count,10)', array(
+                    array('name' => 'My First Sprocket'),
+                )
+            ),
             'gt 10 search' => array(
                 'gt(count,10)', array(
                     array('name' => 'A Simple Widget', 'count' => 100)
@@ -103,6 +131,59 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
                 'gte(count,10)', array(
                     array('name' => 'My First Sprocket'),
                     array('name' => 'A Simple Widget', 'count' => 100)
+                )
+            ),
+            'lt 10 search' => array(
+                'lt(count,10)', array(
+                    array('name' => 'The Third Wheel', 'count' => 3)
+                )
+            ),
+            'lte 10 search' => array(
+                'lte(count,10)', array(
+                    array('name' => 'My First Sprocket', 'count' => 10),
+                    array('name' => 'The Third Wheel', 'count' => 3)
+                )
+            ),
+            'sort by int' => array(
+                'sort(count)', array(
+                    array('count' => 3),
+                    array('count' => 10),
+                    array('count' => 100),
+                )
+            ),
+            'sort by int explicit' => array(
+                'sort(+count)', array(
+                    array('count' => 3),
+                    array('count' => 10),
+                    array('count' => 100),
+                )
+            ),
+            'reverse sort by int' => array(
+                'sort(-count)', array(
+                    array('count' => 100),
+                    array('count' => 10),
+                    array('count' => 3),
+                )
+            ),
+            'string sort' => array(
+                'sort(name)', array(
+                    array('name' => 'A Simple Widget', 'count' => 100),
+                    array('name' => 'My First Sprocket', 'count' => 10),
+                    array('name' => 'The Third Wheel', 'count' => 3),
+                )
+            ),
+            'string sort explicit ' => array(
+                'sort(+name)', array(
+                    array('name' => 'A Simple Widget', 'count' => 100),
+                    array('name' => 'My First Sprocket', 'count' => 10),
+                    array('name' => 'The Third Wheel', 'count' => 3),
+                )
+            ),
+            'reverse string sort' => array(
+                'sort(-name)', array(
+                    array('name' => 'The Third Wheel', 'count' => 3),
+                    array('name' => 'My First Sprocket', 'count' => 10),
+                    array('name' => 'A Simple Widget', 'count' => 100),
                 )
             ),
         );

@@ -33,6 +33,12 @@ class MongoOdm implements FixtureInterface
 
         $manager->persist($doc);
 
+        $wheel = new Foo;
+        $wheel->name = 'The Third Wheel';
+        $wheel->count = 3;
+
+        $manager->persist($wheel);
+
         $widget = new Foo;
         $widget->name = 'A Simple Widget';
         $widget->count = 100;
