@@ -66,7 +66,6 @@ class Lexer extends \Doctrine\Common\Lexer
                 $type = self::T_FLOAT;
             }
         } elseif (in_array($value, $this->getOperators())) {
-            $origValue = $value;
             $constName = sprintf('self::T_%s', strtoupper($value));
             if ($value == '+') {
                 $constName = 'self::T_PLUS';

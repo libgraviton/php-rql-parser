@@ -60,6 +60,9 @@ class MongoOdm implements VisitorInterface
         }
     }
 
+    /**
+     * @param string $addMethod
+     */
     protected function visitQuery($addMethod, OperationInterface $operation)
     {
         foreach ($operation->queries as $query) {

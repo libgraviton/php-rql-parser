@@ -17,9 +17,19 @@ class Operation implements OperationInterface
     public $property = '';
 
     /**
+     * @var mixed
+     */
+    public $value;
+
+    /**
      * @var Operation[]
      */
     public $queries = array();
+
+    /**
+     * @var array<string[]>
+     */
+    public $fields = array();
 
     public function __construct($name)
     {

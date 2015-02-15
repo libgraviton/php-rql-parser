@@ -31,12 +31,12 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $eqAST->value = 'foo';
         $tests['simple eq'] = array('eq(name,foo)', $eqAST);
 
-        $eqASTwhitespace = new AST\Operation('eq', 'name');
+        $eqASTwhitespace = new AST\Operation('eq');
         $eqASTwhitespace->property = 'name';
         $eqASTwhitespace->value = 'foo bar';
         $tests['simple eq with whitespace'] = array('eq(name,foo bar)', $eqASTwhitespace);
 
-        $neAST = new AST\Operation('ne', 'name');
+        $neAST = new AST\Operation('ne');
         $neAST->property = 'name';
         $neAST->value = 'bar';
         $tests['simple ne'] = array('ne(name,bar)', $neAST);
@@ -45,7 +45,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $andAST->queries = array($eqAST, $neAST);
         $tests['simple and'] = array('and(eq(name,foo),ne(name,bar))', $andAST);
 
-        $eqASTint = new AST\Operation('eq', 'count');
+        $eqASTint = new AST\Operation('eq');
         $eqASTint->property = 'count';
         $eqASTint->value = 1;
         $tests['integer in eq'] = array('eq(count,1)', $eqASTint);
@@ -76,7 +76,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
 
         $sortAST = new AST\Operation('sort');
         $sortAST->fields = array(array('count', 'asc'), array('name', 'desc'));
-        $test['sort'] = array('sort(+count,-name)', $sortAST);
+        $tests['sort'] = array('sort(+count,-name)', $sortAST);
 
         return $tests;
     }

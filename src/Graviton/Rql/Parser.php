@@ -44,8 +44,6 @@ class Parser
      * create parser and lex input
      *
      * @param string $rql rql to lex
-     *
-     * @return Parser
      */
     public function __construct($rql)
     {
@@ -121,6 +119,7 @@ class Parser
         $operation->fields = array();
         $sortDone = false;
         while (!$sortDone) {
+            $property = null;
             $this->lexer->moveNext();
             switch ($this->lexer->lookahead['type']) {
                 case Lexer::T_MINUS:
@@ -134,6 +133,7 @@ class Parser
                     $type = 'asc';
                     break;
             }
+
             if ($this->lexer->lookahead == null) {
                 $sortDone = true;
             } elseif ($this->lexer->lookahead['type'] != Lexer::T_STRING) {
@@ -142,6 +142,7 @@ class Parser
                 $property = $this->lexer->lookahead['value'];
                 $this->lexer->moveNext();
             }
+
             if ($this->lexer->lookahead['type'] != Lexer::T_COMMA) {
                 $this->lexer->moveNext();
             } elseif ($this->lexer->lookahead['type'] != Lexer::T_CLOSE_PARENTHESIS) {
@@ -197,6 +198,9 @@ class Parser
         return $string;
     }
 
+    /**
+     * @param string $message
+     */
     protected function syntaxError($message)
     {
         throw new \LogicException($message);
