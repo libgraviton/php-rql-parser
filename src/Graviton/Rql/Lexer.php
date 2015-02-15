@@ -13,14 +13,17 @@ class Lexer extends \Doctrine\Common\Lexer
     const T_COMMA             = 8;
 
 
-    const T_EQ  = 100;
-    const T_NE  = 101;
-    const T_AND = 102;
-    const T_OR  = 103;
-    const T_LT  = 104;
-    const T_GT  = 105;
-    const T_LTE = 106;
-    const T_GTE = 107;
+    const T_EQ    = 100;
+    const T_NE    = 101;
+    const T_AND   = 102;
+    const T_OR    = 103;
+    const T_LT    = 104;
+    const T_GT    = 105;
+    const T_LTE   = 106;
+    const T_GTE   = 107;
+    const T_SORT  = 108;
+    const T_PLUS  = 108;
+    const T_MINUS = 108;
 
     protected function getCatchablePatterns()
     {
@@ -42,6 +45,9 @@ class Lexer extends \Doctrine\Common\Lexer
             'gt',
             'lte',
             'gte',
+            'sort',
+            '+',
+            '-',
         );
     }
 
@@ -60,7 +66,13 @@ class Lexer extends \Doctrine\Common\Lexer
                 $type = self::T_FLOAT;
             }
         } elseif (in_array($value, $this->getOperators())) {
+            $origValue = $value;
             $constName = sprintf('self::T_%s', strtoupper($value));
+            if ($value == '+') {
+                $constName = 'self::T_PLUS';
+            } elseif ($value == '-') {
+                $constName = 'self::T_MINUS';
+            }
             if (defined($constName)) {
                 $type = constant($constName);
             }

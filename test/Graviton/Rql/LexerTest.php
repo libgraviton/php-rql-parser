@@ -68,6 +68,16 @@ class LexerTest extends \PHPUnit_Framework_TestCase
                 ',' => Lexer::T_COMMA,
                 'gte' => Lexer::T_GTE,
             )),
+            'sort' => array('sort(+count,-name)', array(
+                'sort' => Lexer::T_SORT,
+                '(' => Lexer::T_OPEN_PARENTHESIS,
+                '+' => Lexer::T_PLUS,
+                'count' => Lexer::T_STRING,
+                ',' => Lexer::T_COMMA,
+                '-' => Lexer::T_MINUS,
+                'name' => Lexer::T_STRING,
+                ')' => Lexer::T_CLOSE_PARENTHESIS,
+            )),
         );
     }
 }
