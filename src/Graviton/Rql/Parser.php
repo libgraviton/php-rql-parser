@@ -107,8 +107,10 @@ class Parser
     protected function getArgument()
     {
         $this->lexer->moveNext();
-        if ($this->lexer->lookahead['type'] == Lexer::T_STRING || $this->lexer->lookahead['type'] == Lexer::T_INTEGER) {
+        if ($this->lexer->lookahead['type'] == Lexer::T_STRING) {
             $string = $this->lexer->lookahead['value'];
+        } else if ($this->lexer->lookahead['type'] == Lexer::T_INTEGER) {
+            $string = (int) $this->lexer->lookahead['value'];
         } else {
             $this->syntaxError('no valid argument found');
         }

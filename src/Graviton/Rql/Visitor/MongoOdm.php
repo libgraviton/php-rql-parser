@@ -19,7 +19,12 @@ class MongoOdm implements VisitorInterface
 
     public function visit(OperationInterface $operation)
     {
+        if ($operation->name == 'eq') {
+            $this->queryBuilder->field($operation->property)->equals($operation->value);
+        } else if ($operation->name == 'ne') {
+            $this->queryBuilder->field($operation->property)->notEqual($operation->value);
         }
+    }
 
     /**
      *
