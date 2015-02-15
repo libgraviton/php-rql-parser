@@ -17,15 +17,6 @@ class MongoOdm implements VisitorInterface
         $this->queryBuilder = $queryBuilder;
     }
 
-    public function visit(OperationInterface $operation)
-    {
-        if ($operation->name == 'eq') {
-            $this->queryBuilder->field($operation->property)->equals($operation->value);
-        } else if ($operation->name == 'ne') {
-            $this->queryBuilder->field($operation->property)->notEqual($operation->value);
-        }
-    }
-
     /**
      *
      * @return QueryBuilder
@@ -34,4 +25,34 @@ class MongoOdm implements VisitorInterface
     {
         return $this->queryBuilder;
     }
+
+    public function visit(OperationInterface $operation)
+    {
+        if ($operation->name == 'eq') {
+            $this->queryBuilder->field($operation->property)->equals($operation->value);
+        } else if ($operation->name == 'ne') {
+            $this->queryBuilder->field($operation->property)->notEqual($operation->value);
+        } else if ($operation->name == 'and') {
+            $this->visitQuery('addAnd', $operation);
+        } else if ($operation->name == 'or') {
+            $this->visitQuery('addOr', $operation);
+        }
+    }
+
+    protected function visitQuery($addMethod, OperationInterface $operation) {
+        foreach ($operation->queries AS $query) {
+            $this->queryBuilder->$addMethod($this->getExpr($query));
+        }
+    }
+
+    protected function getExpr(OperationInterface $operation) {
+        $expr = $this->queryBuilder->expr()->field($operation->property);
+        if ($operation->name == 'eq') {
+            $expr->equals($operation->value);
+        } else if ($operation->name == 'ne') {
+            $expr->notEqual($operation->value);
+        }
+        return $expr;
+    }
+
 }

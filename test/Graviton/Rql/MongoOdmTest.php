@@ -72,8 +72,8 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
         $results = array();
         if ($ast != null) {
             $ast->accept($mongo);
-            $builder = $mongo->getBuilder();
-            foreach($builder->getQuery()->execute() as $doc) {
+            $query = $mongo->getBuilder()->getQuery();
+            foreach($query->execute() as $doc) {
                 $results[] = $doc;
             }
         }
