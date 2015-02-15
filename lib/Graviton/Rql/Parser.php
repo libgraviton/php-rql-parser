@@ -40,10 +40,13 @@ class Parser
 
         switch($this->lexer->lookahead['type']) {
             case Lexer::T_EQ:
-                $operation = $this->eqOperation();
+                $operation = $this->propertyOperation('eq');
                 break;
             case Lexer::T_NE:
-                $operation = $this->neOperation();
+                $operation = $this->propertyOperation('ne');
+                break;
+            case Lexer::T_AND:
+                $operation = $this->queryOperation('and');
                 break;
         }
 
@@ -54,34 +57,51 @@ class Parser
         return $operation;
     }
 
-    protected function eqOperation()
+    protected function propertyOperation($name)
     {
-        $operation = $this->operation('eq');
+        $operation = $this->operation($name);
+        $operation->property = $this->getString();
+        $this->lexer->moveNext();
+        if ($this->lexer->lookahead['type'] != Lexer::T_COMMA) {
+            $this->syntaxError('missing comma');
+        }
         $operation->value = $this->getString();
+        $this->closeOperation();
         return $operation;
     }
 
-    protected function neOperation()
+    protected function queryOperation($name)
     {
-        $operation = $this->operation('ne');
-        $operation->value = $this->getString();
+        $operation = $this->operation($name);
+        $operation->queries = array();
+        $operation->queries[] = $this->resourceQuery();
+        $this->lexer->moveNext();
+        $hasQueries = $this->lexer->lookahead['type'] == Lexer::T_COMMA;
+        while ($hasQueries) {
+            $operation->queries[] = $this->resourceQuery();
+
+            $this->lexer->moveNext();
+            $hasQueries = $this->lexer->lookahead['type'] == Lexer::T_COMMA;
+        }
         return $operation;
     }
 
     protected function operation($name)
     {
         $this->lexer->moveNext();
-        if ($this->lexer->lookahead['type'] == Lexer::T_OPEN_PARENTHESIS) {
-            $property = $this->getString();
-            $this->lexer->moveNext();
-            if ($this->lexer->lookahead['type'] != Lexer::T_COMMA) {
-                $this->syntaxError('missing comma');
-            }
-        } else {
+        if ($this->lexer->lookahead['type'] != Lexer::T_OPEN_PARENTHESIS) {
             $this->syntaxError('missing open parenthesis');
         }
-        $operation = new AST\Operation($name, $property);
+        $operation = new AST\Operation($name);
         return $operation;
+    }
+
+    protected function closeOperation()
+    {
+        $this->lexer->moveNext();
+        if ($this->lexer->lookahead['type'] != Lexer::T_CLOSE_PARENTHESIS) {
+            $this->syntaxError('missing close parenthesis');
+        }
     }
 
     protected function getString()
@@ -96,7 +116,7 @@ class Parser
     }
 
     protected function syntaxError($message) {
-            throw new \LogicException($message);
+        throw new \LogicException($message);
     }
 }
 
