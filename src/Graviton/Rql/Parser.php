@@ -51,6 +51,18 @@ class Parser
             case Lexer::T_OR:
                 $operation = $this->queryOperation('or');
                 break;
+            case Lexer::T_LT:
+                $operation = $this->propertyOperation('lt');
+                break;
+            case Lexer::T_LTE:
+                $operation = $this->propertyOperation('lte');
+                break;
+            case Lexer::T_GT:
+                $operation = $this->propertyOperation('gt');
+                break;
+            case Lexer::T_GTE:
+                $operation = $this->propertyOperation('gte');
+                break;
         }
 
         if ($this->lexer->lookahead === null) {

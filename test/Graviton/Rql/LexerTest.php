@@ -54,6 +54,20 @@ class LexerTest extends \PHPUnit_Framework_TestCase
                 'eq' => Lexer::T_EQ,
                 '(' => Lexer::T_OPEN_PARENTHESIS,
             )),
+            'lt,gt' => array('lt(),gt())', array(
+                'lt' => Lexer::T_LT,
+                '(' => Lexer::T_OPEN_PARENTHESIS,
+                ')' => Lexer::T_CLOSE_PARENTHESIS,
+                ',' => Lexer::T_COMMA,
+                'gt' => Lexer::T_GT,
+            )),
+            'lte,gte' => array('lte(),gte())', array(
+                'lte' => Lexer::T_LTE,
+                '(' => Lexer::T_OPEN_PARENTHESIS,
+                ')' => Lexer::T_CLOSE_PARENTHESIS,
+                ',' => Lexer::T_COMMA,
+                'gte' => Lexer::T_GTE,
+            )),
         );
     }
 }

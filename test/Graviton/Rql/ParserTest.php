@@ -54,6 +54,26 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $orAST->queries = array($eqAST, $neAST);
         $tests['simple or'] = array('or(eq(name,foo),ne(name,bar))', $orAST);
 
+        $ltAST = new AST\Operation('lt');
+        $ltAST->property = 'count';
+        $ltAST->value = 1;
+        $tests['lt attribute'] = array('lt(count,1)', $ltAST);
+
+        $gtAST = new AST\Operation('gt');
+        $gtAST->property = 'count';
+        $gtAST->value = 1;
+        $tests['gt attribute'] = array('gt(count,1)', $gtAST);
+
+        $lteAST = new AST\Operation('lte');
+        $lteAST->property = 'count';
+        $lteAST->value = 1;
+        $tests['lte attribute'] = array('lte(count,1)', $lteAST);
+
+        $gteAST = new AST\Operation('gte');
+        $gteAST->property = 'count';
+        $gteAST->value = 1;
+        $tests['gte attribute'] = array('gte(count,1)', $gteAST);
+
         return $tests;
     }
 }

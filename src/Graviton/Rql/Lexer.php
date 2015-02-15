@@ -17,6 +17,10 @@ class Lexer extends \Doctrine\Common\Lexer
     const T_NE  = 101;
     const T_AND = 102;
     const T_OR  = 103;
+    const T_LT  = 104;
+    const T_GT  = 105;
+    const T_LTE = 106;
+    const T_GTE = 107;
 
     protected function getCatchablePatterns()
     {
@@ -33,7 +37,11 @@ class Lexer extends \Doctrine\Common\Lexer
             'eq',
             'ne',
             'and',
-            'or'
+            'or',
+            'lt',
+            'gt',
+            'lte',
+            'gte',
         );
     }
 
