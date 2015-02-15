@@ -20,7 +20,7 @@ class Lexer extends \Doctrine\Common\Lexer
         return array(
             '\(',
             '\)',
-            '\w+',
+            '[\w\s]+',
         );
     }
 
@@ -51,13 +51,12 @@ class Lexer extends \Doctrine\Common\Lexer
             if (defined($constName)) {
                 $type = constant($constName);
             }
-        } elseif (ctype_alpha($value)) {
-            $type = self::T_STRING;
         } else {
             switch ($value) {
                 case ',': $type = self::T_COMMA; break;
                 case '(': $type = self::T_OPEN_PARENTHESIS; break;
                 case ')': $type = self::T_CLOSE_PARENTHESIS; break;
+                default: $type = self::T_STRING; break;
             }
         }
 

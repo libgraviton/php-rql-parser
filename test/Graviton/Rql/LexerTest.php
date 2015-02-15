@@ -26,12 +26,12 @@ class LexerTest extends \PHPUnit_Framework_TestCase
     public function lexerProvider()
     {
         return array(
-            'simple eq' => array('eq(name,foo)', array(
+            'simple eq' => array('eq(name,foo bar)', array(
                 'eq' => Lexer::T_EQ,
                 '(' => Lexer::T_OPEN_PARENTHESIS,
                 'name' => Lexer::T_STRING,
                 ',' => Lexer::T_COMMA,
-                'foo' => Lexer::T_STRING,
+                'foo bar' => Lexer::T_STRING,
                 ')' => Lexer::T_CLOSE_PARENTHESIS
             )),
             'simple ne' => array('ne(name,foo)', array('ne' => Lexer::T_NE)),
