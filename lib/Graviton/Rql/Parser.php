@@ -56,41 +56,47 @@ class Parser
 
     protected function eqOperation()
     {
-            $operation = $this->operation('eq');
-            $this->lexer->moveNext();
-            if ($this->lexer->lookahead['type'] != Lexer::T_STRING) {
-                $this->syntaxError('missing value for eq');
-            }
-            $operation->value = $this->lexer->lookahead['value'];
-            return $operation;
+        $operation = $this->operation('eq');
+        $operation->value = $this->getString();
+        return $operation;
     }
 
     protected function neOperation()
     {
-        return $this->operation('ne');
+        $operation = $this->operation('ne');
+        $operation->value = $this->getString();
+        return $operation;
     }
 
     protected function operation($name)
     {
         $this->lexer->moveNext();
         if ($this->lexer->lookahead['type'] == Lexer::T_OPEN_PARENTHESIS) {
-            $this->lexer->moveNext();
-            if ($this->lexer->lookahead['type'] == Lexer::T_STRING) {
-                $property = $this->lexer->lookahead['value'];
-            } else {
-                $this->syntaxError('no property specified');
-            }
+            $property = $this->getString();
             $this->lexer->moveNext();
             if ($this->lexer->lookahead['type'] != Lexer::T_COMMA) {
                 $this->syntaxError('missing comma');
             }
-
-
         } else {
             $this->syntaxError('missing open parenthesis');
         }
         $operation = new AST\Operation($name, $property);
         return $operation;
+    }
+
+    protected function getString()
+    {
+        $this->lexer->moveNext();
+        if ($this->lexer->lookahead['type'] == Lexer::T_STRING) {
+            $string = $this->lexer->lookahead['value'];
+        } else {
+            $this->syntaxError('no string found');
+        }
+        return $string;
+    }
+
+    protected function syntaxError($message) {
+            throw new \LogicException($message);
     }
 }
 

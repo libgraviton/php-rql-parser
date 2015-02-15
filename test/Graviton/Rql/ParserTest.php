@@ -13,12 +13,12 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function testParser($rql, $expected)
     {
-            $sut = new \Graviton\Rql\Parser($rql);
+        $sut = new \Graviton\Rql\Parser($rql);
 
-            $AST = $sut->getAST();
-            $this->assertEquals($expected->name, $AST->name);
-            $this->assertEquals($expected->target, $AST->target);
-            $this->assertEquals($expected->value, $AST->value);
+        $AST = $sut->getAST();
+        $this->assertEquals($expected->name, $AST->name);
+        $this->assertEquals($expected->target, $AST->target);
+        $this->assertEquals($expected->value, $AST->value);
     }
 
     /**
