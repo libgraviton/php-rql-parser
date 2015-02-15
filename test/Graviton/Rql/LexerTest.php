@@ -32,9 +32,15 @@ class LexerTest extends \PHPUnit_Framework_TestCase
                 'name' => Lexer::T_STRING,
                 ',' => Lexer::T_COMMA,
                 'foo bar' => Lexer::T_STRING,
-                ')' => Lexer::T_CLOSE_PARENTHESIS
+                ')' => Lexer::T_CLOSE_PARENTHESIS,
             )),
             'simple ne' => array('ne(name,foo)', array('ne' => Lexer::T_NE)),
+            'simple and' => array('and(eq(name,foo),ne(name,bar))', array(
+                'and' => Lexer::T_AND,
+                '(' => Lexer::T_OPEN_PARENTHESIS,
+                'eq' => Lexer::T_EQ,
+                '(' => Lexer::T_OPEN_PARENTHESIS,
+            )),
         );
     }
 }

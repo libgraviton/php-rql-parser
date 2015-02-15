@@ -4,16 +4,18 @@ namespace Graviton\Rql;
 
 class Lexer extends \Doctrine\Common\Lexer
 {
-    const T_NONE        = 1;
-    const T_INTEGER         = 2;
-    const T_STRING          = 3;
+    const T_NONE              = 1;
+    const T_INTEGER           = 2;
+    const T_STRING            = 3;
 
-    const T_CLOSE_PARENTHESIS   = 6;
-    const T_OPEN_PARENTHESIS    = 7;
-    const T_COMMA           = 8;
+    const T_CLOSE_PARENTHESIS = 6;
+    const T_OPEN_PARENTHESIS  = 7;
+    const T_COMMA             = 8;
 
-    const T_EQ = 100;
-    const T_NE = 101;
+
+    const T_EQ  = 100;
+    const T_NE  = 101;
+    const T_AND = 102;
 
     protected function getCatchablePatterns()
     {
@@ -29,6 +31,7 @@ class Lexer extends \Doctrine\Common\Lexer
         return array(
             'eq',
             'ne',
+            'and',
         );
     }
 
