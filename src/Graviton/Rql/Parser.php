@@ -21,12 +21,43 @@ class Parser
      */
     private $lexer;
 
+    /**
+     * @var string<int>
+     */
+    private $propertyOperations = array(
+        Lexer::T_EQ => 'eq',
+        Lexer::T_NE => 'ne',
+        Lexer::T_LT => 'lt',
+        Lexer::T_LTE => 'lte',
+        Lexer::T_GT => 'gt',
+        Lexer::T_GTE => 'gte',
+    );
+    /**
+     * @var string<int>
+     */
+    private $queryOperations = array(
+        Lexer::T_AND => 'and',
+        Lexer::T_OR  => 'or',
+    );
+
+    /**
+     * create parser and lex input
+     *
+     * @param string $rql rql to lex
+     *
+     * @return Parser
+     */
     public function __construct($rql)
     {
         $this->lexer = new Lexer;
         $this->lexer->setInput($rql);
     }
 
+    /**
+     * return abstract syntax tree
+     *
+     * @return AST\Operation
+     */
     public function getAST()
     {
         $AST = $this->resourceQuery();
@@ -34,38 +65,22 @@ class Parser
         return $AST;
     }
 
+    /**
+     * @return AST\Operation
+     */
     public function resourceQuery()
     {
         $this->lexer->moveNext();
+        $type = $this->lexer->lookahead['type'];
 
-        switch($this->lexer->lookahead['type']) {
-            case Lexer::T_EQ:
-                $operation = $this->propertyOperation('eq');
-                break;
-            case Lexer::T_NE:
-                $operation = $this->propertyOperation('ne');
-                break;
-            case Lexer::T_AND:
-                $operation = $this->queryOperation('and');
-                break;
-            case Lexer::T_OR:
-                $operation = $this->queryOperation('or');
-                break;
-            case Lexer::T_LT:
-                $operation = $this->propertyOperation('lt');
-                break;
-            case Lexer::T_LTE:
-                $operation = $this->propertyOperation('lte');
-                break;
-            case Lexer::T_GT:
-                $operation = $this->propertyOperation('gt');
-                break;
-            case Lexer::T_GTE:
-                $operation = $this->propertyOperation('gte');
-                break;
-            case Lexer::T_SORT:
-                $operation = $this->sortOperation();
-                break;
+        if (in_array($type, array_keys($this->propertyOperations))) {
+            $operation = $this->propertyOperation($this->propertyOperations[$type]);
+
+        } else if (in_array($type, array_keys($this->queryOperations))) {
+            $operation = $this->queryOperation($this->queryOperations[$type]);
+
+        } else if ($type == Lexer::T_SORT) {
+            $operation = $this->sortOperation();
         }
 
         return $operation;

@@ -12,6 +12,26 @@ class MongoOdm implements VisitorInterface
      */
     private $queryBuilder;
 
+    /**
+     * @var string[]
+     */
+    private $queryOperations = array(
+        'and',
+        'or'
+    );
+
+    /**
+     * @var string[]
+     */
+    private $operationMap = array(
+        'eq' => 'equals',
+        'ne' => 'notEqual',
+        'lt' => 'lt',
+        'gt' => 'gt',
+        'lte' => 'lte',
+        'gte' => 'gte'
+    );
+
     public function __construct(QueryBuilder $queryBuilder)
     {
         $this->queryBuilder = $queryBuilder;
@@ -28,48 +48,45 @@ class MongoOdm implements VisitorInterface
 
     public function visit(OperationInterface $operation)
     {
-        if ($operation->name == 'eq') {
-            $this->queryBuilder->field($operation->property)->equals($operation->value);
-        } else if ($operation->name == 'ne') {
-            $this->queryBuilder->field($operation->property)->notEqual($operation->value);
-        } else if ($operation->name == 'and') {
-            $this->visitQuery('addAnd', $operation);
-        } else if ($operation->name == 'or') {
-            $this->visitQuery('addOr', $operation);
-        } else if ($operation->name == 'lt') {
-            $this->queryBuilder->field($operation->property)->lt($operation->value);
-        } else if ($operation->name == 'lte') {
-            $this->queryBuilder->field($operation->property)->lte($operation->value);
-        } else if ($operation->name == 'gt') {
-            $this->queryBuilder->field($operation->property)->gt($operation->value);
-        } else if ($operation->name == 'gte') {
-            $this->queryBuilder->field($operation->property)->gte($operation->value);
-        } else if ($operation->name == 'sort') {
+        $name = $operation->name;
+
+        if (in_array($name, $this->queryOperations)) {
+            $this->visitQuery(sprintf('add%s', ucfirst($name)), $operation);
+        } else if (in_array($name, array_keys($this->operationMap))) {
+            $method = $this->operationMap[$name];
+            $this->queryBuilder->field($operation->property)->$method($operation->value);
+        } else if ($name == 'sort') {
             $this->visitSort($operation);
         }
     }
 
-    protected function visitQuery($addMethod, OperationInterface $operation) {
+    protected function visitQuery($addMethod, OperationInterface $operation)
+    {
         foreach ($operation->queries AS $query) {
             $this->queryBuilder->$addMethod($this->getExpr($query));
         }
     }
 
-    protected function visitSort(OperationInterface $operation) {
+    protected function visitSort(OperationInterface $operation)
+    {
         foreach ($operation->fields AS $field) {
             list($name, $order) = $field;
             $this->queryBuilder->sort($name, $order);
         }
     }
 
-    protected function getExpr(OperationInterface $operation) {
-        $expr = $this->queryBuilder->expr()->field($operation->property);
+    protected function getExpr(OperationInterface $operation)
+    {
+        $expr = $this
+            ->queryBuilder
+            ->expr()
+            ->field($operation->property);
+
         if ($operation->name == 'eq') {
-            $expr->equals($operation->value);
+            $expr = $expr->equals($operation->value);
         } else if ($operation->name == 'ne') {
-            $expr->notEqual($operation->value);
+            $expr = $expr->notEqual($operation->value);
         }
         return $expr;
     }
-
 }
