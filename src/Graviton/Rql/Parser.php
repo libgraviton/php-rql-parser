@@ -68,10 +68,6 @@ class Parser
                 break;
         }
 
-        if ($this->lexer->lookahead === null) {
-            $this->syntaxError('end of string');
-        }
-        
         return $operation;
     }
 
@@ -122,13 +118,21 @@ class Parser
                         $type = 'asc';
                         break;
                 }
-                if ($this->lexer->lookahead['type'] != Lexer::T_STRING) {
+                if ($this->lexer->lookahead == NULL) {
+                    $sortDone = true;
+                } elseif ($this->lexer->lookahead['type'] != Lexer::T_STRING) {
                     $this->syntaxError('property name expected in sort');
+                } else {
+                    $property = $this->lexer->lookahead['value'];
+                    $this->lexer->moveNext();
                 }
                 if ($this->lexer->lookahead['type'] != Lexer::T_COMMA) {
                     $this->lexer->moveNext();
                 } elseif ($this->lexer->lookahead['type'] != Lexer::T_CLOSE_PARENTHESIS) {
-                    $sortDone = false;
+                    $sortDone = true;
+                }
+                if (!$sortDone) {
+                    $operation->fields[] = array($property, $type);
                 }
             }
 

@@ -22,8 +22,8 @@ class Lexer extends \Doctrine\Common\Lexer
     const T_LTE   = 106;
     const T_GTE   = 107;
     const T_SORT  = 108;
-    const T_PLUS  = 108;
-    const T_MINUS = 108;
+    const T_PLUS  = 109;
+    const T_MINUS = 110;
 
     protected function getCatchablePatterns()
     {

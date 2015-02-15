@@ -44,12 +44,21 @@ class MongoOdm implements VisitorInterface
             $this->queryBuilder->field($operation->property)->gt($operation->value);
         } else if ($operation->name == 'gte') {
             $this->queryBuilder->field($operation->property)->gte($operation->value);
+        } else if ($operation->name == 'sort') {
+            $this->visitSort($operation);
         }
     }
 
     protected function visitQuery($addMethod, OperationInterface $operation) {
         foreach ($operation->queries AS $query) {
             $this->queryBuilder->$addMethod($this->getExpr($query));
+        }
+    }
+
+    protected function visitSort(OperationInterface $operation) {
+        foreach ($operation->fields AS $field) {
+            list($name, $order) = $field;
+            $this->queryBuilder->sort($name, $order);
         }
     }
 
