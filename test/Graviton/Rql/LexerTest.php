@@ -48,6 +48,12 @@ class LexerTest extends \PHPUnit_Framework_TestCase
                 ',' => Lexer::T_COMMA,
                 '1' => Lexer::T_INTEGER
             )),
+            'simple or' => array('or(eq(name,foo),eq(name,bar))', array(
+                'or' => Lexer::T_OR,
+                '(' => Lexer::T_OPEN_PARENTHESIS,
+                'eq' => Lexer::T_EQ,
+                '(' => Lexer::T_OPEN_PARENTHESIS,
+            )),
         );
     }
 }
