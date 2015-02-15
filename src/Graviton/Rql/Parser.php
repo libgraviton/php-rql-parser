@@ -65,7 +65,7 @@ class Parser
         if ($this->lexer->lookahead['type'] != Lexer::T_COMMA) {
             $this->syntaxError('missing comma');
         }
-        $operation->value = $this->getString();
+        $operation->value = $this->getArgument();
         $this->closeOperation();
         return $operation;
     }
@@ -103,6 +103,18 @@ class Parser
             $this->syntaxError('missing close parenthesis');
         }
     }
+
+    protected function getArgument()
+    {
+        $this->lexer->moveNext();
+        if ($this->lexer->lookahead['type'] == Lexer::T_STRING || $this->lexer->lookahead['type'] == Lexer::T_INTEGER) {
+            $string = $this->lexer->lookahead['value'];
+        } else {
+            $this->syntaxError('no valid argument found');
+        }
+        return $string;
+    }
+
 
     protected function getString()
     {

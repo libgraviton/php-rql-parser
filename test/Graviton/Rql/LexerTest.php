@@ -41,6 +41,13 @@ class LexerTest extends \PHPUnit_Framework_TestCase
                 'eq' => Lexer::T_EQ,
                 '(' => Lexer::T_OPEN_PARENTHESIS,
             )),
+            'integer' => array('eq(count,1)', array(
+                'eq' => Lexer::T_EQ,
+                '(' => Lexer::T_OPEN_PARENTHESIS,
+                'count' => Lexer::T_STRING,
+                ',' => Lexer::T_COMMA,
+                '1' => Lexer::T_INTEGER
+            )),
         );
     }
 }
