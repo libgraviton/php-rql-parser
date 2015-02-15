@@ -12,7 +12,7 @@
         }
     ],
     "autoload": {
-        "psr-0": { "Graviton": ["lib/", "test/"]}
+        "psr-0": { "Graviton": ["src/", "test/"]}
     },
     "require-dev": {
         "phpunit/phpunit": "*",
