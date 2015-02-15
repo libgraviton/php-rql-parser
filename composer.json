@@ -21,7 +21,8 @@
         "doctrine/data-fixtures": "~1.0"
     },
     "require": {
-        "php": "~5.4"
+        "php": "~5.4",
+        "doctrine/lexer": "~1.0"
     },
     "suggest": {
         "doctrine/mongodb-odm": "Needs ~1.0 if you want to use Graviton\\Rql\\Queriable\\MongoOdm."
