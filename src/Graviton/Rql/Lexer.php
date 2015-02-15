@@ -25,6 +25,15 @@ class Lexer extends \Doctrine\Common\Lexer
     const T_PLUS  = 109;
     const T_MINUS = 110;
 
+    /**
+     * @var array<string>
+     */
+    private $primitiveMap = array(
+            ',' => self::T_COMMA,
+            '(' => self::T_OPEN_PARENTHESIS,
+            ')' => self::T_CLOSE_PARENTHESIS,
+    );
+
     protected function getCatchablePatterns()
     {
         return array(
@@ -75,20 +84,10 @@ class Lexer extends \Doctrine\Common\Lexer
             if (defined($constName)) {
                 $type = constant($constName);
             }
+        } elseif (in_array($value, array_keys($this->primitiveMap))) {
+            $type = $this->primitiveMap[$value];
         } else {
-            switch ($value) {
-                case ',':
-                    $type = self::T_COMMA;
-                    break;
-                case '(':
-                    $type = self::T_OPEN_PARENTHESIS;
-                    break;
-                case ')':
-                    $type = self::T_CLOSE_PARENTHESIS;
-                    break;
-                default:
-                    $type = self::T_STRING;
-            }
+            $type = self::T_STRING;
         }
 
         return $type;
