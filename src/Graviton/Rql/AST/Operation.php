@@ -36,6 +36,46 @@ class Operation implements OperationInterface
         $this->name = $name;
     }
 
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getProperty()
+    {
+        return $this->property;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getValue()
+    {
+        return $this->value;
+    }
+
+    /**
+     * @return array<string[]>
+     */
+    public function getFields()
+    {
+        return $this->fields;
+    }
+
+    /**
+     * @return OperationInterface[]
+     */
+    public function getQueries()
+    {
+        return $this->queries;
+    }
+
     public function accept(VisitorInterface $visitor)
     {
         foreach ($this->queries as $query) {

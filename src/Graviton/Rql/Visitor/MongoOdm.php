@@ -48,13 +48,13 @@ class MongoOdm implements VisitorInterface
 
     public function visit(OperationInterface $operation)
     {
-        $name = $operation->name;
+        $name = $operation->getName();
 
         if (in_array($name, $this->queryOperations)) {
             $this->visitQuery(sprintf('add%s', ucfirst($name)), $operation);
         } elseif (in_array($name, array_keys($this->operationMap))) {
             $method = $this->operationMap[$name];
-            $this->queryBuilder->field($operation->property)->$method($operation->value);
+            $this->queryBuilder->field($operation->getProperty())->$method($operation->getValue());
         } elseif ($name == 'sort') {
             $this->visitSort($operation);
         }
@@ -65,14 +65,14 @@ class MongoOdm implements VisitorInterface
      */
     protected function visitQuery($addMethod, OperationInterface $operation)
     {
-        foreach ($operation->queries as $query) {
+        foreach ($operation->getQueries() as $query) {
             $this->queryBuilder->$addMethod($this->getExpr($query));
         }
     }
 
     protected function visitSort(OperationInterface $operation)
     {
-        foreach ($operation->fields as $field) {
+        foreach ($operation->getFields() as $field) {
             list($name, $order) = $field;
             $this->queryBuilder->sort($name, $order);
         }
@@ -83,12 +83,12 @@ class MongoOdm implements VisitorInterface
         $expr = $this
             ->queryBuilder
             ->expr()
-            ->field($operation->property);
+            ->field($operation->getProperty());
 
-        if ($operation->name == 'eq') {
-            $expr = $expr->equals($operation->value);
-        } elseif ($operation->name == 'ne') {
-            $expr = $expr->notEqual($operation->value);
+        if ($operation->getName() == 'eq') {
+            $expr = $expr->equals($operation->getValue());
+        } elseif ($operation->getName() == 'ne') {
+            $expr = $expr->notEqual($operation->getValue());
         }
         return $expr;
     }

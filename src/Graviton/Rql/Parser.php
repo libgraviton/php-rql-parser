@@ -79,6 +79,9 @@ class Parser
 
         } elseif ($type == Lexer::T_SORT) {
             $operation = $this->sortOperation();
+
+        } else {
+            throw new \LogicException(sprintf('unknown operation %s', $type));
         }
 
         return $operation;
@@ -177,6 +180,7 @@ class Parser
     protected function getArgument()
     {
         $this->lexer->moveNext();
+        $string = null;
         if ($this->lexer->lookahead['type'] == Lexer::T_STRING) {
             $string = $this->lexer->lookahead['value'];
         } elseif ($this->lexer->lookahead['type'] == Lexer::T_INTEGER) {
@@ -190,6 +194,7 @@ class Parser
     protected function getString()
     {
         $this->lexer->moveNext();
+        $string = null;
         if ($this->lexer->lookahead['type'] == Lexer::T_STRING) {
             $string = $this->lexer->lookahead['value'];
         } else {
