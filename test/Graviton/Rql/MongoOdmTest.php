@@ -3,14 +3,14 @@
  * acceptence tests for the MongoOdm queriable.
  */
 
-namespace Graviton\Rql\Queriable;
+namespace Graviton\Rql;
 
 use Doctrine\MongoDB\Connection;
 use Doctrine\ODM\MongoDB\Configuration;
 use Doctrine\Common\DataFixtures\Loader;
 use Doctrine\ODM\MongoDB\DocumentManager;
-use Graviton\Rql\Query;
-use Graviton\Rql\Queriable\MongoOdm;
+use Graviton\Rql\Parser;
+use Graviton\Rql\Visitor\MongoOdm;
 use Graviton\Rql\DataFixtures\MongoOdm as MongoOdmFixtures;
 use Doctrine\Common\DataFixtures\Executor\MongoDBExecutor;
 use Doctrine\Common\DataFixtures\Purger\MongoDBPurger;
@@ -27,7 +27,7 @@ use Doctrine\ODM\MongoDB\Mapping\Driver\AnnotationDriver;
  */
 class MongoOdmTest extends \PHPUnit_Framework_TestCase
 {
-    private $repo;
+    private $builder;
 
     /**
      * setup mongo-odm and load fixtures
@@ -53,7 +53,7 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
         $executor = new MongoDBExecutor($dm, new MongoDBPurger());
         $executor->execute($loader->getFixtures());
 
-        $this->repo = $dm->getRepository('Graviton\Rql\Queriable\Documents\Foo');
+        $this->builder = $dm->createQueryBuilder('Graviton\Rql\Documents\Foo');
     }
 
     /**
@@ -66,13 +66,17 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
      */
     public function testBasicQueries($query, $expected)
     {
-        //$parser = new Query($query);
-        $mongo = new MongoOdm($this->repo);
-
-        //$parser->applyToQueriable($mongo);
-        $results = $mongo->getDocuments();
-
-        $this->markTestSkipped("refactoring to visitor is needed");
+        $parser = new Parser($query);
+        $mongo = new MongoOdm($this->builder);
+        $ast = $parser->getAST();
+        $results = array();
+        if ($ast != null) {
+            $ast->accept($mongo);
+            $builder = $mongo->getBuilder();
+            foreach($builder->getQuery()->execute() as $doc) {
+                $results[] = $doc;
+            }
+        }
 
         $this->assertEquals(count($expected), count($results), 'record count mismatch');
 

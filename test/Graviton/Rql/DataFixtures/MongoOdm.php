@@ -7,7 +7,7 @@ namespace Graviton\Rql\DataFixtures;
 
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use Graviton\Rql\Queriable\Documents\Foo;
+use Graviton\Rql\Documents\Foo;
 
 /**
  * Make up some fixtures for testing
