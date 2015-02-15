@@ -148,8 +148,6 @@ class Parser
 
             if ($this->lexer->lookahead['type'] != Lexer::T_COMMA) {
                 $this->lexer->moveNext();
-            } elseif ($this->lexer->lookahead['type'] != Lexer::T_CLOSE_PARENTHESIS) {
-                $sortDone = true;
             }
             if (!$sortDone) {
                 $operation->fields[] = array($property, $type);
