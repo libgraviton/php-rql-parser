@@ -26,8 +26,9 @@ class Operation implements OperationInterface
         $this->name = $name;
     }
 
-    public function accept(VisitorInterface $visitor) {
-        foreach ($this->queries AS $query) {
+    public function accept(VisitorInterface $visitor)
+    {
+        foreach ($this->queries as $query) {
             $query->accept($visitor);
         }
         $visitor->visit($this);

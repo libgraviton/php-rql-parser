@@ -78,10 +78,17 @@ class Lexer extends \Doctrine\Common\Lexer
             }
         } else {
             switch ($value) {
-                case ',': $type = self::T_COMMA; break;
-                case '(': $type = self::T_OPEN_PARENTHESIS; break;
-                case ')': $type = self::T_CLOSE_PARENTHESIS; break;
-                default: $type = self::T_STRING; break;
+                case ',':
+                    $type = self::T_COMMA;
+                    break;
+                case '(':
+                    $type = self::T_OPEN_PARENTHESIS;
+                    break;
+                case ')':
+                    $type = self::T_CLOSE_PARENTHESIS;
+                    break;
+                default:
+                    $type = self::T_STRING;
             }
         }
 

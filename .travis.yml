@@ -12,5 +12,5 @@ php:
 script:
   - ./vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
   - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
-  - ./vendor/bin/phpcs --standard=PSR1 lib/
-  - ./vendor/bin/phpcs --standard=PSR2 lib/
+  - ./vendor/bin/phpcs --standard=PSR1 src/ test/
+  - ./vendor/bin/phpcs --standard=PSR2 src/ test/

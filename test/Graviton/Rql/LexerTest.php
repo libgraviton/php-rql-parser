@@ -13,7 +13,7 @@ class LexerTest extends \PHPUnit_Framework_TestCase
     {
         $sut = new \Graviton\Rql\Lexer;
         $sut->setInput($rql);
-        foreach ($expected AS $part => $type) {
+        foreach ($expected as $part => $type) {
             $sut->moveNext();
             $this->assertEquals($part, $sut->lookahead['value']);
             $this->assertEquals($type, $sut->lookahead['type'], sprintf('type mismatch for %s', $part));

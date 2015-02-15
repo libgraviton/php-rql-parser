@@ -76,10 +76,10 @@ class Parser
         if (in_array($type, array_keys($this->propertyOperations))) {
             $operation = $this->propertyOperation($this->propertyOperations[$type]);
 
-        } else if (in_array($type, array_keys($this->queryOperations))) {
+        } elseif (in_array($type, array_keys($this->queryOperations))) {
             $operation = $this->queryOperation($this->queryOperations[$type]);
 
-        } else if ($type == Lexer::T_SORT) {
+        } elseif ($type == Lexer::T_SORT) {
             $operation = $this->sortOperation();
         }
 
@@ -117,41 +117,42 @@ class Parser
 
     protected function sortOperation()
     {
-            $operation = $this->operation('sort');
-            $operation->fields = array();
-            $sortDone = false;
-            while (!$sortDone) {
-                $this->lexer->moveNext();
-                switch ($this->lexer->lookahead['type']) {
-                    case Lexer::T_MINUS:
-                        $this->lexer->moveNext();
-                        $type = 'desc';
-                        break;
-                    case Lexer::T_PLUS:
-                        $this->lexer->moveNext();
-                    default:
-                        $type = 'asc';
-                        break;
-                }
-                if ($this->lexer->lookahead == NULL) {
-                    $sortDone = true;
-                } elseif ($this->lexer->lookahead['type'] != Lexer::T_STRING) {
-                    $this->syntaxError('property name expected in sort');
-                } else {
-                    $property = $this->lexer->lookahead['value'];
+        $operation = $this->operation('sort');
+        $operation->fields = array();
+        $sortDone = false;
+        while (!$sortDone) {
+            $this->lexer->moveNext();
+            switch ($this->lexer->lookahead['type']) {
+                case Lexer::T_MINUS:
                     $this->lexer->moveNext();
-                }
-                if ($this->lexer->lookahead['type'] != Lexer::T_COMMA) {
+                    $type = 'desc';
+                    break;
+                case Lexer::T_PLUS:
                     $this->lexer->moveNext();
-                } elseif ($this->lexer->lookahead['type'] != Lexer::T_CLOSE_PARENTHESIS) {
-                    $sortDone = true;
-                }
-                if (!$sortDone) {
-                    $operation->fields[] = array($property, $type);
-                }
+                    // + is same as default
+                default:
+                    $type = 'asc';
+                    break;
             }
+            if ($this->lexer->lookahead == null) {
+                $sortDone = true;
+            } elseif ($this->lexer->lookahead['type'] != Lexer::T_STRING) {
+                $this->syntaxError('property name expected in sort');
+            } else {
+                $property = $this->lexer->lookahead['value'];
+                $this->lexer->moveNext();
+            }
+            if ($this->lexer->lookahead['type'] != Lexer::T_COMMA) {
+                $this->lexer->moveNext();
+            } elseif ($this->lexer->lookahead['type'] != Lexer::T_CLOSE_PARENTHESIS) {
+                $sortDone = true;
+            }
+            if (!$sortDone) {
+                $operation->fields[] = array($property, $type);
+            }
+        }
 
-            return $operation;
+        return $operation;
     }
 
     protected function operation($name)
@@ -177,7 +178,7 @@ class Parser
         $this->lexer->moveNext();
         if ($this->lexer->lookahead['type'] == Lexer::T_STRING) {
             $string = $this->lexer->lookahead['value'];
-        } else if ($this->lexer->lookahead['type'] == Lexer::T_INTEGER) {
+        } elseif ($this->lexer->lookahead['type'] == Lexer::T_INTEGER) {
             $string = (int) $this->lexer->lookahead['value'];
         } else {
             $this->syntaxError('no valid argument found');
@@ -196,8 +197,8 @@ class Parser
         return $string;
     }
 
-    protected function syntaxError($message) {
+    protected function syntaxError($message)
+    {
         throw new \LogicException($message);
     }
 }
-

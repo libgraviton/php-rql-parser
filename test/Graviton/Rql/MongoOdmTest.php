@@ -72,15 +72,15 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
         $results = array();
         if ($ast != null) {
             $ast->accept($mongo);
-            foreach($mongo->getBuilder()->getQuery()->execute() as $doc) {
+            foreach ($mongo->getBuilder()->getQuery()->execute() as $doc) {
                 $results[] = $doc;
             }
         }
 
         $this->assertEquals(count($expected), count($results), 'record count mismatch');
 
-        foreach ($expected AS $position => $data) {
-            foreach ($data AS $name => $value) {
+        foreach ($expected as $position => $data) {
+            foreach ($data as $name => $value) {
                 $this->assertEquals($value, $results[$position]->$name);
             }
         }
@@ -193,7 +193,5 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
                 )
             ),
         );
-
     }
-
 }

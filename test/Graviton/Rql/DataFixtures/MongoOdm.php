@@ -25,7 +25,7 @@ class MongoOdm implements FixtureInterface
      *
      *  @param ObjectManager $manager
      */
-    public function load (ObjectManager $manager)
+    public function load(ObjectManager $manager)
     {
         $doc = new Foo;
         $doc->name = 'My First Sprocket';
