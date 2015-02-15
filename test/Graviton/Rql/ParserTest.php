@@ -50,6 +50,10 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $eqASTint->value = 1;
         $tests['integer in eq'] = array('eq(count,1)', $eqASTint);
 
+        $orAST = new AST\Operation('or');
+        $orAST->queries = array($eqAST, $neAST);
+        $tests['simple or'] = array('or(eq(name,foo),ne(name,bar))', $orAST);
+
         return $tests;
     }
 }

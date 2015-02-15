@@ -48,6 +48,9 @@ class Parser
             case Lexer::T_AND:
                 $operation = $this->queryOperation('and');
                 break;
+            case Lexer::T_OR:
+                $operation = $this->queryOperation('or');
+                break;
         }
 
         if ($this->lexer->lookahead === null) {
@@ -116,7 +119,6 @@ class Parser
         }
         return $string;
     }
-
 
     protected function getString()
     {
