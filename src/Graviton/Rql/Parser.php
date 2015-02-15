@@ -63,6 +63,9 @@ class Parser
             case Lexer::T_GTE:
                 $operation = $this->propertyOperation('gte');
                 break;
+            case Lexer::T_SORT:
+                $operation = $this->sortOperation();
+                break;
         }
 
         if ($this->lexer->lookahead === null) {
@@ -99,6 +102,37 @@ class Parser
             $hasQueries = $this->lexer->lookahead['type'] == Lexer::T_COMMA;
         }
         return $operation;
+    }
+
+    protected function sortOperation()
+    {
+            $operation = $this->operation('sort');
+            $operation->fields = array();
+            $sortDone = false;
+            while (!$sortDone) {
+                $this->lexer->moveNext();
+                switch ($this->lexer->lookahead['type']) {
+                    case Lexer::T_MINUS:
+                        $this->lexer->moveNext();
+                        $type = 'desc';
+                        break;
+                    case Lexer::T_PLUS:
+                        $this->lexer->moveNext();
+                    default:
+                        $type = 'asc';
+                        break;
+                }
+                if ($this->lexer->lookahead['type'] != Lexer::T_STRING) {
+                    $this->syntaxError('property name expected in sort');
+                }
+                if ($this->lexer->lookahead['type'] != Lexer::T_COMMA) {
+                    $this->lexer->moveNext();
+                } elseif ($this->lexer->lookahead['type'] != Lexer::T_CLOSE_PARENTHESIS) {
+                    $sortDone = false;
+                }
+            }
+
+            return $operation;
     }
 
     protected function operation($name)
