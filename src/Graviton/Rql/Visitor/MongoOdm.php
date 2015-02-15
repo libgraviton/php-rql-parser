@@ -36,6 +36,14 @@ class MongoOdm implements VisitorInterface
             $this->visitQuery('addAnd', $operation);
         } else if ($operation->name == 'or') {
             $this->visitQuery('addOr', $operation);
+        } else if ($operation->name == 'lt') {
+            $this->queryBuilder->field($operation->property)->lt($operation->value);
+        } else if ($operation->name == 'lte') {
+            $this->queryBuilder->field($operation->property)->lte($operation->value);
+        } else if ($operation->name == 'gt') {
+            $this->queryBuilder->field($operation->property)->gt($operation->value);
+        } else if ($operation->name == 'gte') {
+            $this->queryBuilder->field($operation->property)->gte($operation->value);
         }
     }
 
