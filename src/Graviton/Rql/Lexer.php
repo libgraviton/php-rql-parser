@@ -32,6 +32,8 @@ class Lexer extends \Doctrine\Common\Lexer
             ',' => self::T_COMMA,
             '(' => self::T_OPEN_PARENTHESIS,
             ')' => self::T_CLOSE_PARENTHESIS,
+            '+' => self::T_PLUS,
+            '-' => self::T_MINUS,
     );
 
     protected function getCatchablePatterns()
@@ -55,8 +57,6 @@ class Lexer extends \Doctrine\Common\Lexer
             'lte',
             'gte',
             'sort',
-            '+',
-            '-',
         );
     }
 
@@ -76,11 +76,6 @@ class Lexer extends \Doctrine\Common\Lexer
             }
         } elseif (in_array($value, $this->getOperators())) {
             $constName = sprintf('self::T_%s', strtoupper($value));
-            if ($value == '+') {
-                $constName = 'self::T_PLUS';
-            } elseif ($value == '-') {
-                $constName = 'self::T_MINUS';
-            }
             if (defined($constName)) {
                 $type = constant($constName);
             }
