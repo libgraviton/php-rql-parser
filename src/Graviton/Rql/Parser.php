@@ -103,15 +103,6 @@ class Parser
 
     protected function propertyOperation($name)
     {
-        $operation = $this->operation($name);
-        $operation->property = $this->getString();
-        $this->lexer->moveNext();
-        if ($this->lexer->lookahead['type'] != Lexer::T_COMMA) {
-            $this->syntaxError('missing comma');
-        }
-        $operation->value = $this->getArgument();
-        $this->closeOperation();
-        return $operation;
     }
 
     protected function queryOperation($name)
@@ -236,12 +227,6 @@ class Parser
 
     protected function operation($name)
     {
-        $this->lexer->moveNext();
-        if ($this->lexer->lookahead['type'] != Lexer::T_OPEN_PARENTHESIS) {
-            $this->syntaxError('missing open parenthesis');
-        }
-        $operation = new AST\Operation($name);
-        return $operation;
     }
 
     protected function closeOperation()
