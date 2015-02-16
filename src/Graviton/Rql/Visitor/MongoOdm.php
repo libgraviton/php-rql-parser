@@ -30,6 +30,14 @@ class MongoOdm implements VisitorInterface
         'gt' => 'gt',
         'lte' => 'lte',
         'gte' => 'gte'
+);
+
+    /**
+     * @var string<string>
+     */
+    private $internalMethods = array(
+        'sort' => 'visitSort',
+        'like' => 'visitLike',
     );
 
     public function __construct(QueryBuilder $queryBuilder)
@@ -55,8 +63,9 @@ class MongoOdm implements VisitorInterface
         } elseif (in_array($name, array_keys($this->operationMap))) {
             $method = $this->operationMap[$name];
             $this->queryBuilder->field($operation->getProperty())->$method($operation->getValue());
-        } elseif ($name == 'sort') {
-            $this->visitSort($operation);
+        } elseif (in_array($name, array_keys($this->internalMethods))) {
+            $methodName = $this->internalMethods[$name];
+            $this->$methodName($operation);
         }
     }
 
@@ -76,6 +85,12 @@ class MongoOdm implements VisitorInterface
             list($name, $order) = $field;
             $this->queryBuilder->sort($name, $order);
         }
+    }
+
+    protected function visitLike(OperationInterface $operation)
+    {
+        $regex = new \MongoRegex(sprintf('/%s/', str_replace('*', '.*', $operation->value)));
+        $this->queryBuilder->field($operation->getProperty())->equals($regex);
     }
 
     protected function getExpr(OperationInterface $operation)

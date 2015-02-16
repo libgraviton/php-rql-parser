@@ -192,6 +192,11 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
                     array('name' => 'A Simple Widget', 'count' => 100),
                 )
             ),
+            'like search' => array(
+                'like(name,My*)', array(
+                    array('name' => 'My First Sprocket', 'count' => 10),
+                )
+            ),
         );
     }
 }
