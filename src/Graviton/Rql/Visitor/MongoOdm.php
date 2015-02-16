@@ -100,11 +100,11 @@ class MongoOdm implements VisitorInterface
     {
         $fields = $operation->getFields();
 
-        $limit = $fields[0];
+        $limit = (int) $fields[0];
 
         $skip = 0;
         if (!empty($fields[1])) {
-            $skip = $fields[1];
+            $skip = (int) $fields[1];
         }
 
         $this->queryBuilder->limit($limit)->skip($skip);
