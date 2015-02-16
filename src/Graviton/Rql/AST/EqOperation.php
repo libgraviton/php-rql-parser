@@ -4,7 +4,6 @@ namespace Graviton\Rql\AST;
 
 use Graviton\Rql\Visitor\VisitorInterface;
 
-interface OperationInterface
+class EqOperation extends AbstractPropertyOperation
 {
-    public function accept(VisitorInterface $visitor);
 }
