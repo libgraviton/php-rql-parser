@@ -75,8 +75,6 @@ class MongoOdm implements VisitorInterface
      */
     protected function visitQuery($addMethod, OperationInterface $operation)
     {
-        // needed to do addOr searches as first query
-        $this->queryBuilder->where('true = true');
         foreach ($operation->getQueries() as $query) {
             $this->queryBuilder->$addMethod($this->getExpr($query));
         }
