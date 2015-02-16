@@ -61,11 +61,15 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
      *
      * @param string  $query    rql query string
      * @param array[] $expected structure of expected return value
+     * @param boolean $skip     skip test
      *
      * @return void
      */
-    public function testBasicQueries($query, $expected)
+    public function testBasicQueries($query, $expected, $skip = false)
     {
+        if ($skip) {
+            $this->markTestSkipped(sprintf('Please unskip the test when you add support for %s', $query));
+        }
         $parser = new Parser($query);
         $mongo = new MongoOdm($this->builder);
         $ast = $parser->getAST();
@@ -110,7 +114,8 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
                 'eq(name,My First Sprocket)|eq(name,The Third Wheel)', array(
                     array('name' => 'My First Sprocket'),
                     array('name' => 'The Third Wheel')
-                )
+                ),
+                true // markTestSkipped
             ),
             'ne search' => array(
                 'ne(name,My First Sprocket)', array(
