@@ -92,7 +92,7 @@ class MongoOdm implements VisitorInterface
 
     protected function visitLike(OperationInterface $operation)
     {
-        $regex = new \MongoRegex(sprintf('/%s/', str_replace('*', '.*', $operation->value)));
+        $regex = new \MongoRegex(sprintf('/%s/', str_replace('*', '.*', $operation->getValue())));
         $this->queryBuilder->field($operation->getProperty())->equals($regex);
     }
 
