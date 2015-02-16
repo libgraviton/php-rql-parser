@@ -43,6 +43,14 @@ class Parser
     );
 
     /**
+     * @var string<int>
+     */
+    private $internalOperations = array(
+        Lexer::T_SORT => 'sortOperation',
+        Lexer::T_LIMIT => 'limitOperation'
+    );
+
+    /**
      * create parser and lex input
      *
      * @param string $rql rql to lex
@@ -79,8 +87,10 @@ class Parser
         } elseif (in_array($type, array_keys($this->queryOperations))) {
             $operation = $this->queryOperation($this->queryOperations[$type]);
 
-        } elseif ($type == Lexer::T_SORT) {
-            $operation = $this->sortOperation();
+        } elseif (in_array($type, array_keys($this->internalOperations))) {
+            $methodName = $this->internalOperations[$type];
+
+            $operation = $this->$methodName();
 
         } else {
             throw new \LogicException(sprintf('unknown operation %s', $type));
@@ -158,6 +168,24 @@ class Parser
 
         return $operation;
     }
+
+    protected function limitOperation()
+    {
+        $operation = $this->operation('limit');
+        $operation->fields = array();
+        $limitDone = false;
+        while (!$limitDone) {
+            if ($this->lexer->lookahead == null) {
+                $limitDone = true;
+            } elseif ($this->lexer->lookahead['type'] == Lexer::T_INTEGER) {
+                $operation->fields[] = $this->lexer->lookahead['value'];
+                $this->lexer->moveNext();
+            } else {
+                $this->lexer->moveNext();
+            }
+        }
+        return $operation;
+     }
 
     protected function operation($name)
     {

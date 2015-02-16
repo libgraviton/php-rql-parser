@@ -83,6 +83,11 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $likeAST->value = 'fo*';
         $tests['like'] = array('like(name,fo*)', $likeAST);
 
+        $limitAST = new AST\Operation('limit');
+        $limitAST->fields[] = 0;
+        $limitAST->fields[] = 10;
+        $tests['limit'] = array('limit(0,10)', $limitAST);
+
         return $tests;
     }
 }

@@ -25,6 +25,7 @@ class Lexer extends \Doctrine\Common\Lexer
     const T_PLUS  = 109;
     const T_MINUS = 110;
     const T_LIKE  = 111;
+    const T_LIMIT = 112;
 
     /**
      * @var array<string>
@@ -59,6 +60,7 @@ class Lexer extends \Doctrine\Common\Lexer
             'gte',
             'sort',
             'like',
+            'limit',
         );
     }
 

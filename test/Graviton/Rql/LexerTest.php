@@ -85,6 +85,14 @@ class LexerTest extends \PHPUnit_Framework_TestCase
                 ',' => Lexer::T_COMMA,
                 'fo*' => Lexer::T_STRING,
                 ')' => Lexer::T_CLOSE_PARENTHESIS,
+             )),
+            'limit' => array('limit(1,2)', array(
+                'limit' => Lexer::T_LIMIT,
+                '(' => Lexer::T_OPEN_PARENTHESIS,
+                '1' => Lexer::T_INTEGER,
+                ',' => Lexer::T_COMMA,
+                '2' => Lexer::T_INTEGER,
+                ')' => Lexer::T_CLOSE_PARENTHESIS,
             )),
         );
     }
