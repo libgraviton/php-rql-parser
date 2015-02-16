@@ -1,6 +1,8 @@
 sudo: false
 language: php
+services: mongodb
 before_script:
+  - echo "extension = mongo.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - composer install --dev --no-interaction
   - wget https://scrutinizer-ci.com/ocular.phar
 php:
