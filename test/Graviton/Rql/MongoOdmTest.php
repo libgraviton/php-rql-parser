@@ -207,6 +207,16 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
                     array('name' => 'The Third Wheel', 'count' => 3),
                 )
             ),
+            'in() search' => array(
+                'in(name,[The Third Wheel])', array(
+                    array('name' => 'The Third Wheel')
+                )
+            ),
+            'out() search' => array(
+                'out(name,[A Simple Widget,My First Sprocket])', array(
+                    array('name' => 'The Third Wheel')
+                )
+            ),
         );
     }
 }

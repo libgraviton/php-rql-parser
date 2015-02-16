@@ -29,8 +29,10 @@ class MongoOdm implements VisitorInterface
         'lt' => 'lt',
         'gt' => 'gt',
         'lte' => 'lte',
-        'gte' => 'gte'
-);
+        'gte' => 'gte',
+        'in' => 'in',
+        'out' => 'notIn'
+    );
 
     /**
      * @var string<string>
