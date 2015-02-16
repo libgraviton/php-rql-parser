@@ -7,11 +7,11 @@ class Lexer extends \Doctrine\Common\Lexer
     const T_NONE              = 1;
     const T_INTEGER           = 2;
     const T_STRING            = 3;
-
+    const T_OPEN_BRACKET      = 4;
+    const T_CLOSE_BRACKET     = 5;
     const T_CLOSE_PARENTHESIS = 6;
     const T_OPEN_PARENTHESIS  = 7;
     const T_COMMA             = 8;
-
 
     const T_EQ    = 100;
     const T_NE    = 101;
@@ -26,12 +26,16 @@ class Lexer extends \Doctrine\Common\Lexer
     const T_MINUS = 110;
     const T_LIKE  = 111;
     const T_LIMIT = 112;
+    const T_IN    = 113;
+    const T_OUT   = 114;
 
     /**
      * @var array<string>
      */
     private $primitiveMap = array(
             ',' => self::T_COMMA,
+            '[' => self::T_OPEN_BRACKET,
+            ']' => self::T_CLOSE_BRACKET,
             '(' => self::T_OPEN_PARENTHESIS,
             ')' => self::T_CLOSE_PARENTHESIS,
             '+' => self::T_PLUS,
@@ -43,6 +47,8 @@ class Lexer extends \Doctrine\Common\Lexer
         return array(
             '\(',
             '\)',
+            '\[',
+            '\]',
             '[\w\s\*]+',
         );
     }
@@ -61,6 +67,8 @@ class Lexer extends \Doctrine\Common\Lexer
             'sort',
             'like',
             'limit',
+            'in',
+            'out',
         );
     }
 

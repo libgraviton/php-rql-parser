@@ -94,6 +94,22 @@ class LexerTest extends \PHPUnit_Framework_TestCase
                 '2' => Lexer::T_INTEGER,
                 ')' => Lexer::T_CLOSE_PARENTHESIS,
             )),
+            'in tests' => array('in(name,[foo,bar]', array(
+                'in' => Lexer::T_IN,
+                '(' => Lexer::T_OPEN_PARENTHESIS,
+                'name' => Lexer::T_STRING,
+                ',' => Lexer::T_COMMA,
+                '[' => Lexer::T_OPEN_BRACKET,
+                'foo' => Lexer::T_STRING
+            )),
+            'out tests' => array('out(name,[foo,bar]', array(
+                'out' => Lexer::T_OUT,
+                '(' => Lexer::T_OPEN_PARENTHESIS,
+                'name' => Lexer::T_STRING,
+                ',' => Lexer::T_COMMA,
+                '[' => Lexer::T_OPEN_BRACKET,
+                'foo' => Lexer::T_STRING
+            )),
         );
     }
 }
