@@ -38,6 +38,7 @@ class MongoOdm implements VisitorInterface
     private $internalMethods = array(
         'sort' => 'visitSort',
         'like' => 'visitLike',
+        'limit' => 'visitLimit',
     );
 
     public function __construct(QueryBuilder $queryBuilder)
@@ -93,6 +94,16 @@ class MongoOdm implements VisitorInterface
     {
         $regex = new \MongoRegex(sprintf('/%s/', str_replace('*', '.*', $operation->value)));
         $this->queryBuilder->field($operation->getProperty())->equals($regex);
+    }
+
+    protected function visitLimit(OperationInterface $operation)
+    {
+        list($limit, $skip) = $operation->getFields();
+
+        $this->queryBuilder->limit($limit);
+        if ($skip) {
+            $this->queryBuilder->skip($skip);
+        }
     }
 
     protected function getExpr(OperationInterface $operation)

@@ -197,6 +197,16 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
                     array('name' => 'My First Sprocket', 'count' => 10),
                 )
             ),
+            'limit(1) search' => array(
+                'limit(1)', array(
+                    array('name' => 'My First Sprocket', 'count' => 10),
+                )
+            ),
+            'limit(1,1) search' => array(
+                'limit(1,1)', array(
+                    array('name' => 'The Third Wheel', 'count' => 3),
+                )
+            ),
         );
     }
 }
