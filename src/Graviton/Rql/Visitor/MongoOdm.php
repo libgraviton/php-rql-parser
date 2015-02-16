@@ -98,12 +98,16 @@ class MongoOdm implements VisitorInterface
 
     protected function visitLimit(OperationInterface $operation)
     {
-        list($limit, $skip) = $operation->getFields();
+        $fields = $operation->getFields();
 
-        $this->queryBuilder->limit($limit);
-        if ($skip) {
-            $this->queryBuilder->skip($skip);
+        $limit = $fields[0];
+
+        $skip = 0;
+        if (!empty($fields[1])) {
+            $skip = $fields[1];
         }
+
+        $this->queryBuilder->limit($limit)->skip($skip);
     }
 
     protected function getExpr(OperationInterface $operation)
