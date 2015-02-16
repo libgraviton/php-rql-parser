@@ -47,7 +47,9 @@ class Parser
      */
     private $internalOperations = array(
         Lexer::T_SORT => 'sortOperation',
-        Lexer::T_LIMIT => 'limitOperation'
+        Lexer::T_LIMIT => 'limitOperation',
+        Lexer::T_IN => 'inOperation',
+        Lexer::T_OUT => 'outOperation',
     );
 
     /**
@@ -185,7 +187,52 @@ class Parser
             }
         }
         return $operation;
-     }
+    }
+
+    protected function inOperation()
+    {
+        return $this->arrayOperation('in');
+    }
+
+    protected function outOperation()
+    {
+        return $this->arrayOperation('out');
+    }
+
+    protected function arrayOperation($name)
+    {
+        $operation = $this->operation($name);
+        $operation->value = array();
+
+        $operation->property = $this->getString();
+        $this->lexer->moveNext();
+        if ($this->lexer->lookahead['type'] != Lexer::T_COMMA) {
+            $this->syntaxError('missing comma');
+        }
+
+        $this->lexer->moveNext();
+        if ($this->lexer->lookahead['type'] == Lexer::T_OPEN_BRACKET) {
+            $this->lexer->moveNext();
+        } else {
+            $this->syntaxError(sprintf('Missing [ in %s params', $name));
+        }
+
+        $hasValues = true;
+        while ($hasValues) {
+            if ($this->lexer->lookahead['type'] == Lexer::T_COMMA) {
+                $this->lexer->moveNext();
+            }
+            if ($this->lexer->lookahead['type'] == Lexer::T_STRING) {
+                $operation->value[] = $this->lexer->lookahead['value'];
+                $this->lexer->moveNext();
+            }
+            if ($this->lexer->lookahead == null || $this->lexer->lookahead['type'] == Lexer::T_CLOSE_BRACKET) {
+                $hasValues = false;
+            }
+        }
+
+        return $operation;
+    }
 
     protected function operation($name)
     {

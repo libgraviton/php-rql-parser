@@ -88,6 +88,16 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $limitAST->fields[] = 10;
         $tests['limit'] = array('limit(0,10)', $limitAST);
 
+        $inAST = new AST\Operation('in');
+        $inAST->property = 'name';
+        $inAST->value = array('foo', 'bar');
+        $tests['in'] = array('in(name,[foo,bar])', $inAST);
+
+        $outAST = new AST\Operation('out');
+        $outAST->property = 'name';
+        $outAST->value = array('foo', 'bar');
+        $tests['out'] = array('out(name,[foo,bar])', $outAST);
+
         return $tests;
     }
 }
