@@ -78,9 +78,6 @@ class Operation implements OperationInterface
 
     public function accept(VisitorInterface $visitor)
     {
-        foreach ($this->queries as $query) {
-            $query->accept($visitor);
-        }
         $visitor->visit($this);
     }
 }
