@@ -24,6 +24,7 @@ class Lexer extends \Doctrine\Common\Lexer
     const T_SORT  = 108;
     const T_PLUS  = 109;
     const T_MINUS = 110;
+    const T_LIKE  = 111;
 
     /**
      * @var array<string>
@@ -41,7 +42,7 @@ class Lexer extends \Doctrine\Common\Lexer
         return array(
             '\(',
             '\)',
-            '[\w\s]+',
+            '[\w\s\*]+',
         );
     }
 
@@ -57,6 +58,7 @@ class Lexer extends \Doctrine\Common\Lexer
             'lte',
             'gte',
             'sort',
+            'like',
         );
     }
 
@@ -74,13 +76,16 @@ class Lexer extends \Doctrine\Common\Lexer
             if (strpos($value, '.') !== false || stripos($value, 'e') !== false) {
                 $type = self::T_FLOAT;
             }
+
         } elseif (in_array($value, $this->getOperators())) {
             $constName = sprintf('self::T_%s', strtoupper($value));
             if (defined($constName)) {
                 $type = constant($constName);
             }
+
         } elseif (in_array($value, array_keys($this->primitiveMap))) {
             $type = $this->primitiveMap[$value];
+
         } else {
             $type = self::T_STRING;
         }

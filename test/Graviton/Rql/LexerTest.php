@@ -78,6 +78,14 @@ class LexerTest extends \PHPUnit_Framework_TestCase
                 'name' => Lexer::T_STRING,
                 ')' => Lexer::T_CLOSE_PARENTHESIS,
             )),
+            'like' => array('like(name,fo*)', array(
+                'like' => Lexer::T_LIKE,
+                '(' => Lexer::T_OPEN_PARENTHESIS,
+                'name' => Lexer::T_STRING,
+                ',' => Lexer::T_COMMA,
+                'fo*' => Lexer::T_STRING,
+                ')' => Lexer::T_CLOSE_PARENTHESIS,
+            )),
         );
     }
 }

@@ -78,6 +78,11 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $sortAST->fields = array(array('count', 'asc'), array('name', 'desc'));
         $tests['sort'] = array('sort(+count,-name)', $sortAST);
 
+        $likeAST = new AST\Operation('like');
+        $likeAST->property = 'name';
+        $likeAST->value = 'fo*';
+        $tests['like'] = array('like(name,fo*)', $likeAST);
+
         return $tests;
     }
 }

@@ -31,7 +31,9 @@ class Parser
         Lexer::T_LTE => 'lte',
         Lexer::T_GT => 'gt',
         Lexer::T_GTE => 'gte',
+        Lexer::T_LIKE => 'like'
     );
+
     /**
      * @var string<int>
      */
