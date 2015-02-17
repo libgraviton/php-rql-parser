@@ -11,7 +11,10 @@
         }
     ],
     "autoload": {
-        "psr-0": { "Graviton": ["src/", "test/"]}
+        "psr-4": { "Graviton\\Rql\\": "src/"}
+    },
+    "autoload-dev": {
+        "psr-4": { "Graviton\\Rql\\": "test/"}
     },
     "require-dev": {
         "phpunit/phpunit": "*",
