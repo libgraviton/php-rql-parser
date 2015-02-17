@@ -3,6 +3,7 @@
 namespace Graviton\Rql\Parser\Strategy;
 
 use Graviton\Rql\Parser\ParserUtil;
+use Graviton\Rql\AST\OperationFactory;
 
 class PropertyOperationStrategy extends ParsingStrategy
 {

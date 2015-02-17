@@ -101,10 +101,6 @@ class Parser
         return $operation;
     }
 
-    protected function propertyOperation($name)
-    {
-    }
-
     protected function queryOperation($name)
     {
         $operation = $this->operation($name);
@@ -225,49 +221,4 @@ class Parser
         return $operation;
     }
 
-    protected function operation($name)
-    {
-    }
-
-    protected function closeOperation()
-    {
-        $this->lexer->moveNext();
-        if ($this->lexer->lookahead['type'] != Lexer::T_CLOSE_PARENTHESIS) {
-            $this->syntaxError('missing close parenthesis');
-        }
-    }
-
-    protected function getArgument()
-    {
-        $this->lexer->moveNext();
-        $string = null;
-        if ($this->lexer->lookahead['type'] == Lexer::T_STRING) {
-            $string = $this->lexer->lookahead['value'];
-        } elseif ($this->lexer->lookahead['type'] == Lexer::T_INTEGER) {
-            $string = (int) $this->lexer->lookahead['value'];
-        } else {
-            $this->syntaxError('no valid argument found');
-        }
-        return $string;
-    }
-
-    protected function getString()
-    {
-        $this->lexer->moveNext();
-        $string = null;
-        if ($this->lexer->lookahead['type'] == Lexer::T_STRING) {
-            $string = $this->lexer->lookahead['value'];
-        } else {
-            $this->syntaxError('no string found');
-        }
-        return $string;
-    }
-
-    /**
-     * @param string $message
-     */
-    protected function syntaxError($message)
-    {
-        throw new \LogicException($message);
-    }
 }
