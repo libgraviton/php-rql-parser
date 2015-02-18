@@ -1,6 +1,5 @@
 {
     "name": "graviton/php-rql-parser",
-    "version": "1.0.0",
     "homepage": "https://github.com/libgraviton/php-rql-parser",
     "description": "A standalone RQL (Resource Query Language) Parser with flexible usage possibilities",
     "keywords": ["rest", "rql", "resource", "query", "language", "parser"],
@@ -12,7 +11,7 @@
         }
     ],
     "autoload": {
-        "psr-0": { "Graviton": ["lib/", "test/"]}
+        "psr-0": { "Graviton": ["src/", "test/"]}
     },
     "require-dev": {
         "phpunit/phpunit": "*",
@@ -21,7 +20,8 @@
         "doctrine/data-fixtures": "~1.0"
     },
     "require": {
-        "php": "~5.4"
+        "php": "~5.4",
+        "doctrine/lexer": "~1.0"
     },
     "suggest": {
         "doctrine/mongodb-odm": "Needs ~1.0 if you want to use Graviton\\Rql\\Queriable\\MongoOdm."

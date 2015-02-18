@@ -3,7 +3,7 @@
  * foo document for testing
  */
 
-namespace Graviton\Rql\Queriable\Documents;
+namespace Graviton\Rql\Documents;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 

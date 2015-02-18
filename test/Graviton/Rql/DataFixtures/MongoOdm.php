@@ -7,7 +7,7 @@ namespace Graviton\Rql\DataFixtures;
 
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use Graviton\Rql\Queriable\Documents\Foo;
+use Graviton\Rql\Documents\Foo;
 
 /**
  * Make up some fixtures for testing
@@ -25,7 +25,7 @@ class MongoOdm implements FixtureInterface
      *
      *  @param ObjectManager $manager
      */
-    public function load (ObjectManager $manager)
+    public function load(ObjectManager $manager)
     {
         $doc = new Foo;
         $doc->name = 'My First Sprocket';

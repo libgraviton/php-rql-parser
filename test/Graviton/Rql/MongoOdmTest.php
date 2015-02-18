@@ -3,14 +3,14 @@
  * acceptence tests for the MongoOdm queriable.
  */
 
-namespace Graviton\Rql\Queriable;
+namespace Graviton\Rql;
 
 use Doctrine\MongoDB\Connection;
 use Doctrine\ODM\MongoDB\Configuration;
 use Doctrine\Common\DataFixtures\Loader;
 use Doctrine\ODM\MongoDB\DocumentManager;
-use Graviton\Rql\Query;
-use Graviton\Rql\Queriable\MongoOdm;
+use Graviton\Rql\Parser;
+use Graviton\Rql\Visitor\MongoOdm;
 use Graviton\Rql\DataFixtures\MongoOdm as MongoOdmFixtures;
 use Doctrine\Common\DataFixtures\Executor\MongoDBExecutor;
 use Doctrine\Common\DataFixtures\Purger\MongoDBPurger;
@@ -27,7 +27,7 @@ use Doctrine\ODM\MongoDB\Mapping\Driver\AnnotationDriver;
  */
 class MongoOdmTest extends \PHPUnit_Framework_TestCase
 {
-    private $repo;
+    private $builder;
 
     /**
      * setup mongo-odm and load fixtures
@@ -53,7 +53,7 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
         $executor = new MongoDBExecutor($dm, new MongoDBPurger());
         $executor->execute($loader->getFixtures());
 
-        $this->repo = $dm->getRepository('Graviton\Rql\Queriable\Documents\Foo');
+        $this->builder = $dm->createQueryBuilder('Graviton\Rql\Documents\Foo');
     }
 
     /**
@@ -61,21 +61,30 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
      *
      * @param string  $query    rql query string
      * @param array[] $expected structure of expected return value
+     * @param boolean $skip     skip test
      *
      * @return void
      */
-    public function testBasicQueries($query, $expected)
+    public function testBasicQueries($query, $expected, $skip = false)
     {
-        $parser = new Query($query);
-        $mongo = new MongoOdm($this->repo);
-
-        $parser->applyToQueriable($mongo);
-        $results = $mongo->getDocuments();
+        if ($skip) {
+            $this->markTestSkipped(sprintf('Please unskip the test when you add support for %s', $query));
+        }
+        $parser = new Parser($query);
+        $mongo = new MongoOdm($this->builder);
+        $ast = $parser->getAST();
+        $results = array();
+        if ($ast != null) {
+            $ast->accept($mongo);
+            foreach ($mongo->getBuilder()->getQuery()->execute() as $doc) {
+                $results[] = $doc;
+            }
+        }
 
         $this->assertEquals(count($expected), count($results), 'record count mismatch');
 
-        foreach ($expected AS $position => $data) {
-            foreach ($data AS $name => $value) {
+        foreach ($expected as $position => $data) {
+            foreach ($data as $name => $value) {
                 $this->assertEquals($value, $results[$position]->$name);
             }
         }
@@ -105,7 +114,8 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
                 'eq(name,My First Sprocket)|eq(name,The Third Wheel)', array(
                     array('name' => 'My First Sprocket'),
                     array('name' => 'The Third Wheel')
-                )
+                ),
+                true // markTestSkipped
             ),
             'ne search' => array(
                 'ne(name,My First Sprocket)', array(
@@ -187,8 +197,31 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
                     array('name' => 'A Simple Widget', 'count' => 100),
                 )
             ),
+            'like search' => array(
+                'like(name,My*)', array(
+                    array('name' => 'My First Sprocket', 'count' => 10),
+                )
+            ),
+            'limit(1) search' => array(
+                'limit(1)', array(
+                    array('name' => 'My First Sprocket', 'count' => 10),
+                )
+            ),
+            'limit(1,1) search' => array(
+                'limit(1,1)', array(
+                    array('name' => 'The Third Wheel', 'count' => 3),
+                )
+            ),
+            'in() search' => array(
+                'in(name,[The Third Wheel])', array(
+                    array('name' => 'The Third Wheel')
+                )
+            ),
+            'out() search' => array(
+                'out(name,[A Simple Widget,My First Sprocket])', array(
+                    array('name' => 'The Third Wheel')
+                )
+            ),
         );
-
     }
-
 }
