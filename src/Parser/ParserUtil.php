@@ -14,9 +14,9 @@ class ParserUtil
         }
     }
 
-    static function parseComma(Lexer &$lexer)
+    static function parseComma(Lexer &$lexer, $optional = false)
     {
-        if ($this->lexer->lookahead['type'] != Lexer::T_COMMA) {
+        if (!$optional && $lexer->lookahead['type'] != Lexer::T_COMMA) {
             $this->syntaxError('missing comma');
         }
         $lexer->moveNext();

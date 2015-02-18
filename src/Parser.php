@@ -22,6 +22,11 @@ class Parser
     private $lexer;
 
     /**
+     * @var ParsingStrategyInterface[]
+     */
+    private $strategies = array();
+
+    /**
      * @var string<int>
      */
     private $propertyOperations = array(
@@ -61,6 +66,11 @@ class Parser
     {
         $this->lexer = new Lexer;
         $this->lexer->setInput($rql);
+    }
+
+    public function addStrategy(ParsingStrategyInterface $strategy)
+    {
+        $this->strategies[] = $strategy;
     }
 
     /**
@@ -103,9 +113,6 @@ class Parser
 
     protected function queryOperation($name)
     {
-        $operation = $this->operation($name);
-        $operation->queries = array();
-        $operation->queries[] = $this->resourceQuery();
         $this->lexer->moveNext();
         $hasQueries = $this->lexer->lookahead['type'] == Lexer::T_COMMA;
         while ($hasQueries) {
