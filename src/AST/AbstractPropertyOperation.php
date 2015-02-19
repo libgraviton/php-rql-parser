@@ -7,12 +7,20 @@ abstract class AbstractPropertyOperation extends AbstractOperation implements Pr
     /**
      * @var string
      */
-    public $property = '';
+    protected $property = '';
 
     /**
      * @var mixed
      */
-    public $value;
+    protected $value;
+
+    /**
+     * @param string $property name
+     */
+    public function setProperty($property)
+    {
+        $this->property = $property;
+    }
 
     /**
      * @return string
@@ -20,6 +28,14 @@ abstract class AbstractPropertyOperation extends AbstractOperation implements Pr
     public function getProperty()
     {
         return $this->property;
+    }
+
+    /**
+     * @param mixed $value value
+     */
+    public function setValue($value)
+    {
+        $this->value = $value;
     }
 
     /**

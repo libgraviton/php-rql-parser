@@ -33,18 +33,18 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $tests = array();
 
         $eqAST = new AST\EqOperation;
-        $eqAST->property = 'name';
-        $eqAST->value = 'foo';
+        $eqAST->setProperty('name');
+        $eqAST->setValue('foo');
         $tests['simple eq'] = array('eq(name,foo)', $eqAST);
 
         $eqASTwhitespace = new AST\EqOperation;
-        $eqASTwhitespace->property = 'name';
-        $eqASTwhitespace->value = 'foo bar';
+        $eqASTwhitespace->setProperty('name');
+        $eqASTwhitespace->setValue('foo bar');
         $tests['simple eq with whitespace'] = array('eq(name,foo bar)', $eqASTwhitespace);
 
         $neAST = new AST\NeOperation;
-        $neAST->property = 'name';
-        $neAST->value = 'bar';
+        $neAST->setProperty('name');
+        $neAST->setValue('bar');
         $tests['simple ne'] = array('ne(name,bar)', $neAST);
 
         $andAST = new AST\AndOperation;
@@ -53,8 +53,8 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $tests['simple and'] = array('and(eq(name,foo),ne(name,bar))', $andAST);
 
         $eqASTint = new AST\EqOperation;
-        $eqASTint->property = 'count';
-        $eqASTint->value = 1;
+        $eqASTint->setProperty('count');
+        $eqASTint->setValue(1);
         $tests['integer in eq'] = array('eq(count,1)', $eqASTint);
 
         $orAST = new AST\OrOperation;
@@ -63,23 +63,23 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $tests['simple or'] = array('or(eq(name,foo),ne(name,bar))', $orAST);
 
         $ltAST = new AST\LtOperation;
-        $ltAST->property = 'count';
-        $ltAST->value = 1;
+        $ltAST->setProperty('count');
+        $ltAST->setValue(1);
         $tests['lt attribute'] = array('lt(count,1)', $ltAST);
 
         $gtAST = new AST\GtOperation;
-        $gtAST->property = 'count';
-        $gtAST->value = 1;
+        $gtAST->setProperty('count');
+        $gtAST->setValue(1);
         $tests['gt attribute'] = array('gt(count,1)', $gtAST);
 
         $lteAST = new AST\LteOperation;
-        $lteAST->property = 'count';
-        $lteAST->value = 1;
+        $lteAST->setProperty('count');
+        $lteAST->setValue(1);
         $tests['lte attribute'] = array('lte(count,1)', $lteAST);
 
         $gteAST = new AST\GteOperation;
-        $gteAST->property = 'count';
-        $gteAST->value = 1;
+        $gteAST->setProperty('count');
+        $gteAST->setValue(1);
         $tests['gte attribute'] = array('gte(count,1)', $gteAST);
 
         $sortAST = new AST\SortOperation;
@@ -87,8 +87,8 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $tests['sort'] = array('sort(+count,-name)', $sortAST);
 
         $likeAST = new AST\LikeOperation;
-        $likeAST->property = 'name';
-        $likeAST->value = 'fo*';
+        $likeAST->setProperty('name');
+        $likeAST->setValue('fo*');
         $tests['like'] = array('like(name,fo*)', $likeAST);
 
         $limitAST = new AST\LimitOperation;

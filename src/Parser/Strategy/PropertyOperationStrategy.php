@@ -17,9 +17,9 @@ class PropertyOperationStrategy extends ParsingStrategy
         $operation = OperationFactory::fromLexerToken($this->lexer->lookahead['type']);
 
         ParserUtil::parseStart($this->lexer);
-        $operation->property = ParserUtil::getString($this->lexer);
+        $operation->setProperty(ParserUtil::getString($this->lexer));
         ParserUtil::parseComma($this->lexer);
-        $operation->value = ParserUtil::parseArgument($this->lexer);
+        $operation->setValue(ParserUtil::parseArgument($this->lexer));
         ParserUtil::parseEnd($this->lexer);
 
         return $operation;
