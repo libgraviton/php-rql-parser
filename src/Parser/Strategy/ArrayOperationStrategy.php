@@ -16,7 +16,7 @@ class ArrayOperationStrategy extends ParsingStrategy
     {
         $operation = OperationFactory::fromLexerToken($this->lexer->lookahead['type']);
 
-        $operation->value = array();
+        $operation->array = array();
 
         $this->lexer->moveNext();
         $operation->property = ParserUtil::getString($this->lexer);
@@ -35,7 +35,7 @@ class ArrayOperationStrategy extends ParsingStrategy
                 $this->lexer->moveNext();
             }
             if ($this->lexer->lookahead['type'] == Lexer::T_STRING) {
-                $operation->value[] = $this->lexer->lookahead['value'];
+                $operation->array[] = $this->lexer->lookahead['value'];
                 $this->lexer->moveNext();
             }
             if ($this->lexer->lookahead == null || $this->lexer->lookahead['type'] == Lexer::T_CLOSE_BRACKET) {

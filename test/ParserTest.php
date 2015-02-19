@@ -90,18 +90,18 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $tests['like'] = array('like(name,fo*)', $likeAST);
 
         $limitAST = new AST\LimitOperation;
-        $limitAST->fields[] = 0;
-        $limitAST->fields[] = 10;
+        $limitAST->skip = 0;
+        $limitAST->limit = 10;
         $tests['limit'] = array('limit(0,10)', $limitAST);
 
         $inAST = new AST\InOperation;
         $inAST->property = 'name';
-        $inAST->value = array('foo', 'bar');
+        $inAST->array = array('foo', 'bar');
         $tests['in'] = array('in(name,[foo,bar])', $inAST);
 
         $outAST = new AST\OutOperation;
         $outAST->property = 'name';
-        $outAST->value = array('foo', 'bar');
+        $outAST->array = array('foo', 'bar');
         $tests['out'] = array('out(name,[foo,bar])', $outAST);
 
         return $tests;
