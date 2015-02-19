@@ -7,7 +7,7 @@ use Graviton\Rql\Parser\ParserUtil;
 
 class ParserUtil
 {
-    static public function parseStart(Lexer &$lexer)
+    public static function parseStart(Lexer &$lexer)
     {
         $lexer->moveNext();
         if ($lexer->lookahead['type'] != Lexer::T_OPEN_PARENTHESIS) {
@@ -15,7 +15,7 @@ class ParserUtil
         }
     }
 
-    static public function parseComma(Lexer &$lexer, $optional = false)
+    public static function parseComma(Lexer &$lexer, $optional = false)
     {
         $lexer->moveNext();
         if (!$optional && $lexer->lookahead['type'] != Lexer::T_COMMA) {
@@ -23,7 +23,7 @@ class ParserUtil
         }
     }
 
-    static public function getString(Lexer &$lexer)
+    public static function getString(Lexer &$lexer)
     {
         $lexer->moveNext();
         $string = null;
@@ -35,7 +35,7 @@ class ParserUtil
         return $string;
     }
 
-    static public function parseArgument(Lexer &$lexer)
+    public static function parseArgument(Lexer &$lexer)
     {
         $lexer->moveNext();
         $string = null;
@@ -49,7 +49,7 @@ class ParserUtil
         return $string;
     }
 
-    static public function parseEnd(Lexer &$lexer)
+    public static function parseEnd(Lexer &$lexer)
     {
         $lexer->moveNext();
         if ($lexer->lookahead['type'] != Lexer::T_CLOSE_PARENTHESIS) {
@@ -60,7 +60,7 @@ class ParserUtil
     /**
      * @param string $message
      */
-    static public function syntaxError($message)
+    public static function syntaxError($message)
     {
         throw new \LogicException($message);
     }
