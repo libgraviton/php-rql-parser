@@ -17,10 +17,13 @@ class ParserUtil
 
     public static function parseComma(Lexer &$lexer, $optional = false)
     {
+        $return = true;
         $lexer->moveNext();
-        if (!$optional && $lexer->lookahead['type'] != Lexer::T_COMMA) {
-            self::syntaxError('missing comma');
+        if ($lexer->lookahead['type'] != Lexer::T_COMMA) {
+            $optional || self::syntaxError('missing comma');
+            $return = false;
         }
+        return $return;
     }
 
     public static function getString(Lexer &$lexer, $move = true)

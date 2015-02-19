@@ -32,16 +32,13 @@ class ArrayOperationStrategy extends ParsingStrategy
         }
 
         $hasValues = true;
+        $needsValue = true;
         while ($hasValues) {
-            if ($this->lexer->lookahead['type'] == Lexer::T_COMMA) {
-                $this->lexer->moveNext();
-            }
-            if ($this->lexer->lookahead['type'] == Lexer::T_STRING) {
-                $operation->addValue($this->lexer->lookahead['value']);
-                $this->lexer->moveNext();
-            }
             if ($this->lexer->lookahead == null || $this->lexer->lookahead['type'] == Lexer::T_CLOSE_BRACKET) {
                 $hasValues = false;
+            } elseif ($needsValue || ParserUtil::parseComma($this->lexer, true)) {
+                $operation->addValue(ParserUtil::getString($this->lexer, !$needsValue));
+                $needsValue = false;
             }
         }
 
