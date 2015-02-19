@@ -7,17 +7,7 @@ use Graviton\Rql\Parser\ParserUtil;
 
 class ParserUtil
 {
-    /**
-     * @var Parser
-     */
-    protected $parser;
-
-    public function setParser(Parser &$parser)
-    {
-         $this->parser = &$parser;
-    }
-
-    public function parseStart(Lexer &$lexer)
+    static public function parseStart(Lexer &$lexer)
     {
         $lexer->moveNext();
         if ($lexer->lookahead['type'] != Lexer::T_OPEN_PARENTHESIS) {
@@ -25,15 +15,15 @@ class ParserUtil
         }
     }
 
-    public function parseComma(Lexer &$lexer, $optional = false)
+    static public function parseComma(Lexer &$lexer, $optional = false)
     {
         $lexer->moveNext();
         if (!$optional && $lexer->lookahead['type'] != Lexer::T_COMMA) {
-            $this->syntaxError('missing comma');
+            self::syntaxError('missing comma');
         }
     }
 
-    public function getString(Lexer &$lexer)
+    static public function getString(Lexer &$lexer)
     {
         $lexer->moveNext();
         $string = null;
@@ -45,7 +35,7 @@ class ParserUtil
         return $string;
     }
 
-    public function parseArgument(Lexer &$lexer)
+    static public function parseArgument(Lexer &$lexer)
     {
         $lexer->moveNext();
         $string = null;
@@ -54,23 +44,23 @@ class ParserUtil
         } elseif ($lexer->lookahead['type'] == Lexer::T_INTEGER) {
             $string = (int) $lexer->lookahead['value'];
         } else {
-            $this->syntaxError('no valid argument found');
+            self::syntaxError('no valid argument found');
         }
         return $string;
     }
 
-    public function parseEnd(Lexer &$lexer)
+    static public function parseEnd(Lexer &$lexer)
     {
         $lexer->moveNext();
         if ($lexer->lookahead['type'] != Lexer::T_CLOSE_PARENTHESIS) {
-            $this->syntaxError('missing close parenthesis');
+            self::syntaxError('missing close parenthesis');
         }
     }
 
     /**
      * @param string $message
      */
-    public function syntaxError($message)
+    static public function syntaxError($message)
     {
         throw new \LogicException($message);
     }
