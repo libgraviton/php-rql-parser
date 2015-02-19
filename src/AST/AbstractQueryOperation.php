@@ -14,6 +14,6 @@ abstract class AbstractQueryOperation extends AbstractOperation implements Query
      */
     public function getQueries()
     {
-        return $this->queris;
+        return $this->queries;
     }
 }

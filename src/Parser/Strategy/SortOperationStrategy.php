@@ -52,35 +52,6 @@ class SortOperationStrategy extends ParsingStrategy
         }
 
         return $operation;
-
-        $operation->value = array();
-
-        $this->lexer->moveNext();
-        $operation->property = ParserUtil::getString($this->lexer);
-        ParserUtil::parseComma($this->lexer);
-
-        $this->lexer->moveNext();
-        if ($this->lexer->lookahead['type'] == Lexer::T_OPEN_BRACKET) {
-            $this->lexer->moveNext();
-        } else {
-            ParserUtil::syntaxError(sprintf('Missing [ in %s params', $name));
-        }
-
-        $hasValues = true;
-        while ($hasValues) {
-            if ($this->lexer->lookahead['type'] == Lexer::T_COMMA) {
-                $this->lexer->moveNext();
-            }
-            if ($this->lexer->lookahead['type'] == Lexer::T_STRING) {
-                $operation->value[] = $this->lexer->lookahead['value'];
-                $this->lexer->moveNext();
-            }
-            if ($this->lexer->lookahead == null || $this->lexer->lookahead['type'] == Lexer::T_CLOSE_BRACKET) {
-                $hasValues = false;
-            }
-        }
-
-        return $operation;
     }
 
     public function getAcceptedTypes()

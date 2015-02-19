@@ -7,7 +7,7 @@ use Graviton\AST;
 
 class OperationFactory
 {
-    static function getLexerMap() {
+    static protected function getLexerMap() {
         return array(
             Lexer::T_EQ => 'Graviton\Rql\AST\EqOperation',
             Lexer::T_NE => 'Graviton\Rql\AST\NeOperation',
@@ -28,7 +28,7 @@ class OperationFactory
     /**
      * @return OperationInterface
      */
-    static function fromLexerToken($token)
+    static public function fromLexerToken($token)
     {
         if (in_array($token, array_keys(self::getLexerMap()))) {
             $className = self::getLexerMap()[$token];

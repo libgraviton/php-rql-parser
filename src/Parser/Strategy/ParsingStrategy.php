@@ -7,6 +7,16 @@ use Graviton\Rql\Parser;
 
 abstract class ParsingStrategy implements ParsingStrategyInterface
 {
+    /**
+     * @var Parser
+     */
+    protected $parser;
+
+    /**
+     * @var Lexer
+     */
+    protected $lexer;
+
     public function setParser(Parser &$parser)
     {
         $this->parser =& $parser;

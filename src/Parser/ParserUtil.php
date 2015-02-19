@@ -7,6 +7,11 @@ use Graviton\Rql\Parser\ParserUtil;
 
 class ParserUtil
 {
+    /**
+     * @var Parser
+     */
+    protected $parser;
+
     public function setParser(Parser &$parser)
     {
          $this->parser = &$parser;
