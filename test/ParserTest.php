@@ -48,7 +48,8 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $tests['simple ne'] = array('ne(name,bar)', $neAST);
 
         $andAST = new AST\AndOperation;
-        $andAST->queries = array($eqAST, $neAST);
+        $andAST->addQuery($eqAST);
+        $andAST->addQuery($neAST);
         $tests['simple and'] = array('and(eq(name,foo),ne(name,bar))', $andAST);
 
         $eqASTint = new AST\EqOperation;
@@ -57,7 +58,8 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $tests['integer in eq'] = array('eq(count,1)', $eqASTint);
 
         $orAST = new AST\OrOperation;
-        $orAST->queries = array($eqAST, $neAST);
+        $orAST->addQuery($eqAST);
+        $orAST->addQuery($neAST);
         $tests['simple or'] = array('or(eq(name,foo),ne(name,bar))', $orAST);
 
         $ltAST = new AST\LtOperation;

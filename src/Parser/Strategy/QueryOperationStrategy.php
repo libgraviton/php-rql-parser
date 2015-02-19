@@ -17,15 +17,14 @@ class QueryOperationStrategy extends ParsingStrategy
         $operation = OperationFactory::fromLexerToken($this->lexer->lookahead['type']);
 
         ParserUtil::parseStart($this->lexer);
-        $operation->queries = array();
-        $operation->queries[] = $this->parser->resourceQuery();
+        $operation->addQuery($this->parser->resourceQuery());
 
         $hasQueries = true;
         while ($hasQueries) {
             ParserUtil::parseComma($this->lexer, true);
             $query = $this->parser->resourceQuery();
             if ($query) {
-                $operation->queries[] = $query;
+                $operation->addQuery($query);
             }
             $hasQueries = $this->lexer->lookahead['type'] == Lexer::T_CLOSE_PARENTHESIS;
         }

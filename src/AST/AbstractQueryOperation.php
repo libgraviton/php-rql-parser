@@ -7,7 +7,17 @@ abstract class AbstractQueryOperation extends AbstractOperation implements Query
     /**
      * @var OperationInterface[]
      */
-    public $queries = array();
+    private $queries = array();
+
+    /**
+     * @param OperationInterface $query query to add
+     *
+     * @return void
+     */
+    public function addQuery($query)
+    {
+        $this->queries[] = $query;
+    }
 
     /**
      * @return OperationInterface[]
