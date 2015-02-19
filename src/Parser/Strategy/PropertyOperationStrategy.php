@@ -16,6 +16,10 @@ class PropertyOperationStrategy extends ParsingStrategy
     {
         $operation = OperationFactory::fromLexerToken($this->lexer->lookahead['type']);
 
+        if (!$operation instanceof PropertyOperationInterface) {
+            throw new \RuntimeException;
+        }
+
         ParserUtil::parseStart($this->lexer);
         $operation->setProperty(ParserUtil::getString($this->lexer));
         ParserUtil::parseComma($this->lexer);

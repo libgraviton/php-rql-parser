@@ -15,6 +15,10 @@ class LimitOperationStrategy extends ParsingStrategy
     {
         $operation = OperationFactory::fromLexerToken($this->lexer->lookahead['type']);
 
+        if (!$operation instanceof LimitOperationInterface) {
+            throw new \RuntimeException;
+        }
+
         $fields = array();
         $limitDone = false;
         while (!$limitDone) {

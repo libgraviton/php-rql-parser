@@ -16,6 +16,10 @@ class QueryOperationStrategy extends ParsingStrategy
     {
         $operation = OperationFactory::fromLexerToken($this->lexer->lookahead['type']);
 
+        if (!$operation instanceof QueryOperationInterface) {
+            throw new \RuntimeException;
+        }
+
         ParserUtil::parseStart($this->lexer);
         $operation->addQuery($this->parser->resourceQuery());
 
