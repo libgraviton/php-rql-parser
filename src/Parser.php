@@ -3,7 +3,6 @@
 namespace Graviton\Rql;
 
 use Graviton\Rql\Parser\Strategy\ParsingStrategyInterface;
-use Graviton\Rql\Parser\ParserUtil;
 
 /**
  * RQL Parser
@@ -58,7 +57,7 @@ class Parser
     /**
      * return abstract syntax tree
      *
-     * @return AST\OperationInterface
+     * @return AST\OperationInterface|null
      */
     public function getAST()
     {

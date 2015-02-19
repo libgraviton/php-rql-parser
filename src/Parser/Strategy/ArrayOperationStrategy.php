@@ -4,6 +4,7 @@ namespace Graviton\Rql\Parser\Strategy;
 
 use Graviton\Rql\Parser\ParserUtil;
 use Graviton\Rql\AST\OperationFactory;
+use Graviton\Rql\AST\OperationInterface;
 use Graviton\Rql\Lexer;
 
 class ArrayOperationStrategy extends ParsingStrategy
