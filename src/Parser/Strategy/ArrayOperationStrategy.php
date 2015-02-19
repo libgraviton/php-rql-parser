@@ -20,8 +20,6 @@ class ArrayOperationStrategy extends ParsingStrategy
             throw new \RuntimeException;
         }
 
-        $operation->array = array();
-
         $this->lexer->moveNext();
         $operation->setProperty(ParserUtil::getString($this->lexer));
         ParserUtil::parseComma($this->lexer);

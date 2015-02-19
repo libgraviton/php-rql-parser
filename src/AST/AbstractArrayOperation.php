@@ -10,7 +10,7 @@ abstract class AbstractArrayOperation extends AbstractOperation implements Array
     private $property;
 
     /**
-     * @var OperationInterface[]
+     * @var string[]
      */
     private $array = array();
 
