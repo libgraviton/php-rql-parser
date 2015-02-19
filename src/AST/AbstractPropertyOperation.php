@@ -2,8 +2,6 @@
 
 namespace Graviton\Rql\AST;
 
-use Graviton\Rql\Visitor\VisitorInterface;
-
 abstract class AbstractPropertyOperation extends AbstractOperation implements PropertyOperationInterface
 {
     /**

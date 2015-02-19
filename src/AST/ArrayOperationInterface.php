@@ -2,7 +2,7 @@
 
 namespace Graviton\Rql\AST;
 
-interface PropertyOperationInterface
+interface ArrayOperationInterface
 {
     /**
      * @return string
@@ -10,7 +10,7 @@ interface PropertyOperationInterface
     public function getProperty();
 
     /**
-     * @return mixed
+     * @return OperationInterface[]
      */
-    public function getValue();
+    public function getArray();
 }
