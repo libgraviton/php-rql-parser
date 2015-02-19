@@ -18,6 +18,8 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $sut->addStrategy(new Strategy\PropertyOperationStrategy);
         $sut->addStrategy(new Strategy\QueryOperationStrategy);
         $sut->addStrategy(new Strategy\ArrayOperationStrategy);
+        $sut->addStrategy(new Strategy\SortOperationStrategy);
+        $sut->addStrategy(new Strategy\LimitOperationStrategy);
 
         $AST = $sut->getAST();
         $this->assertEquals($expected, $AST);

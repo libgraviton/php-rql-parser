@@ -20,6 +20,8 @@ class OperationFactory
             Lexer::T_OR => 'Graviton\Rql\AST\OrOperation',
             Lexer::T_IN => 'Graviton\Rql\AST\InOperation',
             Lexer::T_OUT => 'Graviton\Rql\AST\OutOperation',
+            Lexer::T_SORT => 'Graviton\Rql\AST\SortOperation',
+            Lexer::T_LIMIT => 'Graviton\Rql\AST\LimitOperation',
         );
     }
 
