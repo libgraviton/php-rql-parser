@@ -20,7 +20,7 @@ class SortOperationStrategy extends ParsingStrategy
             throw new \RuntimeException;
         }
 
-        $this->lexer->moveNext();
+        ParserUtil::parseStart($this->lexer);
 
         $sortDone = false;
         while (!$sortDone) {
@@ -39,18 +39,13 @@ class SortOperationStrategy extends ParsingStrategy
                     break;
             }
 
-            if ($this->lexer->lookahead == null) {
+            if ($this->lexer->lookahead == null || $this->lexer->lookahead['type'] == Lexer::T_CLOSE_PARENTHESIS) {
                 $sortDone = true;
-            } elseif ($this->lexer->lookahead['type'] != Lexer::T_STRING) {
-                ParserUtil::syntaxError('property name expected in sort');
-            } else {
-                $property = $this->lexer->lookahead['value'];
-                $this->lexer->moveNext();
+            } elseif ($this->lexer->lookahead['type'] == Lexer::T_STRING) {
+                $property = ParserUtil::getString($this->lexer, false);
             }
+            ParserUtil::parseComma($this->lexer, true);
 
-            if ($this->lexer->lookahead['type'] != Lexer::T_COMMA) {
-                $this->lexer->moveNext();
-            }
             if (!$sortDone) {
                 $operation->addField(array($property, $type));
             }

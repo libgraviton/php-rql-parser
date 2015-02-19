@@ -23,9 +23,9 @@ class ParserUtil
         }
     }
 
-    public static function getString(Lexer &$lexer)
+    public static function getString(Lexer &$lexer, $move = true)
     {
-        $lexer->moveNext();
+        $move && $lexer->moveNext();
         $string = null;
         if ($lexer->lookahead['type'] == Lexer::T_STRING) {
             $string = $lexer->lookahead['value'];
