@@ -7,12 +7,22 @@ abstract class AbstractArrayOperation extends AbstractOperation implements Array
     /**
      * @var string
      */
-    public $property;
+    private $property;
 
     /**
      * @var OperationInterface[]
      */
-    public $array = array();
+    private $array = array();
+
+    /**
+     * @var string $property property name
+     *
+     * @return void
+     */
+    public function setProperty($property)
+    {
+        $this->property = $property;
+    }
 
     /**
      * @return string
@@ -23,7 +33,17 @@ abstract class AbstractArrayOperation extends AbstractOperation implements Array
     }
 
     /**
-     * @return OperationInterface[]
+     * @param string $value value operation
+     *
+     * @return void
+     */
+    public function addValue($value)
+    {
+        $this->array[] = $value;
+    }
+
+    /**
+     * @return string[]
      */
     public function getArray()
     {
