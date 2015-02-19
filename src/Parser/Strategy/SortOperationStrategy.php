@@ -24,31 +24,16 @@ class SortOperationStrategy extends ParsingStrategy
 
         $sortDone = false;
         while (!$sortDone) {
-            $property = null;
             $this->lexer->moveNext();
-            switch ($this->lexer->lookahead['type']) {
-                case Lexer::T_MINUS:
-                    $this->lexer->moveNext();
-                    $type = 'desc';
-                    break;
-                case Lexer::T_PLUS:
-                    $this->lexer->moveNext();
-                    // + is same as default
-                default:
-                    $type = 'asc';
-                    break;
-            }
+            $type = $this->getTypeAndMove($this->lexer->lookahead['type']);
 
             if ($this->lexer->lookahead == null || $this->lexer->lookahead['type'] == Lexer::T_CLOSE_PARENTHESIS) {
                 $sortDone = true;
             } elseif ($this->lexer->lookahead['type'] == Lexer::T_STRING) {
                 $property = ParserUtil::getString($this->lexer, false);
-            }
-            ParserUtil::parseComma($this->lexer, true);
-
-            if (!$sortDone) {
                 $operation->addField(array($property, $type));
             }
+            ParserUtil::parseComma($this->lexer, true);
         }
 
         return $operation;
@@ -59,5 +44,22 @@ class SortOperationStrategy extends ParsingStrategy
         return array(
             Lexer::T_SORT,
         );
+    }
+
+    private function getTypeAndMove($token)
+    {
+        switch ($token) {
+            case Lexer::T_MINUS:
+                $this->lexer->moveNext();
+                $type = 'desc';
+                break;
+            case Lexer::T_PLUS:
+                $this->lexer->moveNext();
+                // + is same as default
+            default:
+                $type = 'asc';
+                break;
+        }
+        return $type;
     }
 }
