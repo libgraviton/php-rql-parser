@@ -15,9 +15,13 @@ class SortOperationStrategy extends ParsingStrategy
     public function parse()
     {
         $operation = OperationFactory::fromLexerToken($this->lexer->lookahead['type']);
+
+        if (!$operation instanceof SortOperationInterface) {
+            throw new \RuntimeException;
+        }
+
         $this->lexer->moveNext();
 
-        $operation->fields = array();
         $sortDone = false;
         while (!$sortDone) {
             $property = null;
@@ -48,7 +52,7 @@ class SortOperationStrategy extends ParsingStrategy
                 $this->lexer->moveNext();
             }
             if (!$sortDone) {
-                $operation->fields[] = array($property, $type);
+                $operation->addField(array($property, $type));
             }
         }
 

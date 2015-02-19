@@ -83,7 +83,8 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $tests['gte attribute'] = array('gte(count,1)', $gteAST);
 
         $sortAST = new AST\SortOperation;
-        $sortAST->fields = array(array('count', 'asc'), array('name', 'desc'));
+        $sortAST->addField(array('count', 'asc'));
+        $sortAST->addField(array('name', 'desc'));
         $tests['sort'] = array('sort(+count,-name)', $sortAST);
 
         $likeAST = new AST\LikeOperation;
