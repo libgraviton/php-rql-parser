@@ -10,7 +10,7 @@ use Graviton\Rql\Lexer;
 class QueryOperationStrategy extends ParsingStrategy
 {
     /**
-     * @return OperationInterface
+     * @return QueryOperationInterface
      */
     public function parse()
     {

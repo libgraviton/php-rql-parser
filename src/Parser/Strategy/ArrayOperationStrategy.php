@@ -4,13 +4,13 @@ namespace Graviton\Rql\Parser\Strategy;
 
 use Graviton\Rql\Parser\ParserUtil;
 use Graviton\Rql\AST\OperationFactory;
-use Graviton\Rql\AST\OperationInterface;
+use Graviton\Rql\AST\ArrayOperationInterface;
 use Graviton\Rql\Lexer;
 
 class ArrayOperationStrategy extends ParsingStrategy
 {
     /**
-     * @return OperationInterface
+     * @return ArrayOperationInterface
      */
     public function parse()
     {
@@ -26,7 +26,7 @@ class ArrayOperationStrategy extends ParsingStrategy
         if ($this->lexer->lookahead['type'] == Lexer::T_OPEN_BRACKET) {
             $this->lexer->moveNext();
         } else {
-            ParserUtil::syntaxError(sprintf('Missing [ in %s params', $name));
+            ParserUtil::syntaxError('Missing [ in params');
         }
 
         $hasValues = true;

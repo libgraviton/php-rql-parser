@@ -3,13 +3,13 @@
 namespace Graviton\Rql\Parser\Strategy;
 
 use Graviton\Rql\AST\OperationFactory;
-use Graviton\Rql\AST\OperationInterface;
+use Graviton\Rql\AST\LimitOperationInterface;
 use Graviton\Rql\Lexer;
 
 class LimitOperationStrategy extends ParsingStrategy
 {
     /**
-     * @return OperationInterface
+     * @return LimitOperationInterface
      */
     public function parse()
     {

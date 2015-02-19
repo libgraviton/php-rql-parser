@@ -4,12 +4,13 @@ namespace Graviton\Rql\Parser\Strategy;
 
 use Graviton\Rql\Parser\ParserUtil;
 use Graviton\Rql\AST\OperationFactory;
+use Graviton\Rql\AST\SortOperationInterface;
 use Graviton\Rql\Lexer;
 
 class SortOperationStrategy extends ParsingStrategy
 {
     /**
-     * @return OperationInterface
+     * @return SortOperationInterface
      */
     public function parse()
     {

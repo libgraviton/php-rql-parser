@@ -4,13 +4,13 @@ namespace Graviton\Rql\Parser\Strategy;
 
 use Graviton\Rql\Parser\ParserUtil;
 use Graviton\Rql\AST\OperationFactory;
-use Graviton\Rql\AST\OperationInterface;
+use Graviton\Rql\AST\PropertyOperationInterface;
 use Graviton\Rql\Lexer;
 
 class PropertyOperationStrategy extends ParsingStrategy
 {
     /**
-     * @return OperationInterface
+     * @return PropertyOperationInterface
      */
     public function parse()
     {
