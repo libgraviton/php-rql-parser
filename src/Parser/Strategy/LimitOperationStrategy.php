@@ -27,8 +27,8 @@ class LimitOperationStrategy extends ParsingStrategy
                 $this->lexer->moveNext();
             }
         }
-        $operation->skip = $fields[0];
-        $operation->limit = $fields[1];
+        $operation->setSkip($fields[0]);
+        $operation->setLimit($fields[1]);
         return $operation;
     }
 
