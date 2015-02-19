@@ -3,10 +3,16 @@
 namespace Graviton\Rql\Parser;
 
 use Graviton\Rql\Lexer;
+use Graviton\Rql\Parser\ParserUtil;
 
 class ParserUtil
 {
-    static function parseStart(Lexer &$lexer)
+    public function setParser(Parser &$parser)
+    {
+         $this->parser = &$parser;
+    }
+
+    public function parseStart(Lexer &$lexer)
     {
         $lexer->moveNext();
         if ($lexer->lookahead['type'] != Lexer::T_OPEN_PARENTHESIS) {
@@ -14,27 +20,27 @@ class ParserUtil
         }
     }
 
-    static function parseComma(Lexer &$lexer, $optional = false)
+    public function parseComma(Lexer &$lexer, $optional = false)
     {
+        $lexer->moveNext();
         if (!$optional && $lexer->lookahead['type'] != Lexer::T_COMMA) {
             $this->syntaxError('missing comma');
         }
-        $lexer->moveNext();
     }
 
-    static function getString(Lexer &$lexer)
+    public function getString(Lexer &$lexer)
     {
         $lexer->moveNext();
         $string = null;
         if ($lexer->lookahead['type'] == Lexer::T_STRING) {
             $string = $lexer->lookahead['value'];
         } else {
-            $this->syntaxError('no string found');
+            self::syntaxError('no string found');
         }
         return $string;
     }
 
-    static function parseArgument(Lexer &$lexer)
+    public function parseArgument(Lexer &$lexer)
     {
         $lexer->moveNext();
         $string = null;
@@ -48,7 +54,7 @@ class ParserUtil
         return $string;
     }
 
-    static function parseEnd(Lexer &$lexer)
+    public function parseEnd(Lexer &$lexer)
     {
         $lexer->moveNext();
         if ($lexer->lookahead['type'] != Lexer::T_CLOSE_PARENTHESIS) {
@@ -59,7 +65,7 @@ class ParserUtil
     /**
      * @param string $message
      */
-    static function syntaxError($message)
+    public function syntaxError($message)
     {
         throw new \LogicException($message);
     }

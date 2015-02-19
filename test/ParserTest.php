@@ -3,6 +3,7 @@
 namespace Graviton\Rql;
 
 use Graviton\Rql\AST;
+use Graviton\Rql\Parser\Strategy;
 
 class ParserTest extends \PHPUnit_Framework_TestCase
 {
@@ -14,6 +15,9 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     public function testParser($rql, $expected)
     {
         $sut = new \Graviton\Rql\Parser($rql);
+        $sut->addStrategy(new Strategy\PropertyOperationStrategy);
+        $sut->addStrategy(new Strategy\QueryOperationStrategy);
+        $sut->addStrategy(new Strategy\ArrayOperationStrategy);
 
         $AST = $sut->getAST();
         $this->assertEquals($expected, $AST);
