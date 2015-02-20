@@ -37,7 +37,7 @@ class Parser
         Lexer::T_LIMIT => 'limitOperation',
     );
 
-    static public function createParser($rql)
+    public static function createParser($rql)
     {
         $parser = new Parser($rql);
 
