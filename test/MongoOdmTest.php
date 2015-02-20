@@ -224,6 +224,11 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
                     array('name' => 'The Third Wheel')
                 )
             ),
+            'like and limit search' => array(
+                'like(name,*et),limit(1)', array(
+                    array('name' => 'My First Sprocket')
+                )
+            ),
         );
     }
 }

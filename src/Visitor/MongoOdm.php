@@ -39,11 +39,12 @@ class MongoOdm implements VisitorInterface
     /**
      * map classes of query style operations to builder
      *
-     * @var string<string>
+     * @var string<string>|bool
      */
     private $queryMap = array(
         'Graviton\Rql\AST\AndOperation' => 'addAnd',
         'Graviton\Rql\AST\OrOperation' => 'addOr',
+        'Graviton\Rql\AST\QueryOperation' => false,
     );
 
     /**
@@ -113,12 +114,15 @@ class MongoOdm implements VisitorInterface
     }
 
     /**
-     * @param string $addMethod name of method we will be calling
+     * @param string|false $addMethod name of method we will be calling or false if no method is needed
      */
     protected function visitQuery($addMethod, AST\QueryOperationInterface $operation)
     {
         foreach ($operation->getQueries() as $query) {
-            $this->queryBuilder->$addMethod($this->visit($query, true));
+            $expr = $this->visit($query, $addMethod !== false);
+            if ($addMethod !== false) {
+                $this->queryBuilder->$addMethod($expr);
+            }
         }
     }
 
