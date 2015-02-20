@@ -2,13 +2,7 @@
 
 namespace Graviton\Rql\Visitor;
 
-use Graviton\Rql\AST\OperationInterface;
-use Graviton\Rql\AST\PropertyOperationInterface;
-use Graviton\Rql\AST\QueryOperationInterface;
-use Graviton\Rql\AST\ArrayOperationInterface;
-use Graviton\Rql\AST\LimitOperationInterface;
-use Graviton\Rql\AST\SortOperationInterface;
-use Graviton\Rql\AST\LikeOperation;
+use Graviton\Rql\AST;
 use Doctrine\ODM\MongoDB\Query\Builder as QueryBuilder;
 
 class MongoOdm implements VisitorInterface
@@ -76,31 +70,31 @@ class MongoOdm implements VisitorInterface
         return $this->queryBuilder;
     }
 
-    public function visit(OperationInterface $operation, $expr = false)
+    public function visit(AST\OperationInterface $operation, $expr = false)
     {
         if (in_array(get_class($operation), array_keys($this->internalMap))) {
             $method = $this->internalMap[get_class($operation)];
             $this->$method($operation);
 
-        } elseif ($operation instanceof PropertyOperationInterface) {
+        } elseif ($operation instanceof AST\PropertyOperationInterface) {
             return $this->visitProperty($operation, $expr);
 
-        } elseif ($operation instanceof ArrayOperationInterface) {
+        } elseif ($operation instanceof AST\ArrayOperationInterface) {
             return $this->visitArray($operation, $expr);
 
-        } elseif ($operation instanceof QueryOperationInterface) {
+        } elseif ($operation instanceof AST\QueryOperationInterface) {
             $method = $this->queryMap[get_class($operation)];
             $this->visitQuery($method, $operation);
         }
     }
 
-    protected function visitProperty(PropertyOperationInterface $operation, $expr)
+    protected function visitProperty(AST\PropertyOperationInterface $operation, $expr)
     {
         $method = $this->propertyMap[get_class($operation)];
         return $this->getField($operation->getProperty(), $expr)->$method($operation->getValue());
     }
 
-    protected function visitArray(ArrayOperationInterface $operation, $expr)
+    protected function visitArray(AST\ArrayOperationInterface $operation, $expr)
     {
         $method = $this->arrayMap[get_class($operation)];
         return $this->getField($operation->getProperty(), $expr)->$method($operation->getArray());
@@ -121,14 +115,14 @@ class MongoOdm implements VisitorInterface
     /**
      * @param string $addMethod name of method we will be calling
      */
-    protected function visitQuery($addMethod, QueryOperationInterface $operation)
+    protected function visitQuery($addMethod, AST\QueryOperationInterface $operation)
     {
         foreach ($operation->getQueries() as $query) {
             $this->queryBuilder->$addMethod($this->visit($query, true));
         }
     }
 
-    protected function visitSort(SortOperationInterface $operation)
+    protected function visitSort(AST\SortOperationInterface $operation)
     {
         foreach ($operation->getFields() as $field) {
             list($name, $order) = $field;
@@ -136,13 +130,13 @@ class MongoOdm implements VisitorInterface
         }
     }
 
-    protected function visitLike(LikeOperation $operation)
+    protected function visitLike(AST\LikeOperation $operation)
     {
         $regex = new \MongoRegex(sprintf('/%s/', str_replace('*', '.*', $operation->getValue())));
         $this->queryBuilder->field($operation->getProperty())->equals($regex);
     }
 
-    protected function visitLimit(LimitOperationInterface $operation)
+    protected function visitLimit(AST\LimitOperationInterface $operation)
     {
         $this->queryBuilder->limit($operation->getLimit())->skip($operation->getSkip());
     }
