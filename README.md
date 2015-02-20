@@ -24,6 +24,15 @@ This library consists of the following parts:
 * a visitor implementation for using a mongo-odm quiery builder with the abstract syntax tree
 * unit and acceptance tests for all this
 
+## Current state
+
+All this can currently do is parse a very limited subset of rql. Please have a look 
+at ``test/LexerTest.php`` and ``test/ParserTest.php`` to see what the parser currently 
+supports.
+
+The mongo-odm visitor only supports a limited subset of rql. Look at ``test/MongoOdmTest.php``
+to see what is supported.
+
 ## Installation
 
 Install it using composer.
@@ -32,14 +41,28 @@ Install it using composer.
 composer require graviton/php-rql-parser
 ```
 
-## Current state
+## Usage
 
-All this can currently do is parse a very limited subset of rql. Please have a look 
-at ``test/LexerTest.php`` and ``test/ParserTest.php`` to
-see what the parser currently supports.
+```php
+<?php
 
-The mongo-odm visitor only supports a limited subset of rql. Look at ``test/MongoOdmTest.php``
-to see how to use it and what is supported.
+require 'vendor/autoload.php';
+
+$rql = 'or(eq(name,foo),eq(name,bar))';
+
+// parse some Resource Query Language 
+$parser = \Graviton\Rql\Parser::createParser($rql);
+
+// get abstract syntax tree and do something
+$ast = $parser->getAST();
+// ...
+
+// apply AST to  a doctrine/mongo-odm querybuilder and get a query
+/* @var $builder Doctrine\ODM\MongoDB\Query\Builder */
+$visitor = \Graviton\Rql\Visitor\MongoOdm($builder);
+$visitor->accept($ast);
+$query = $visitor->getBuilder()->getQuery();
+```
 
 ## Development
 
