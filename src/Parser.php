@@ -79,7 +79,7 @@ class Parser
     }
 
     /**
-     * @return AST\Operation
+     * @return null|AST\OperationInterface
      */
     public function resourceQuery($first = false)
     {
@@ -97,7 +97,10 @@ class Parser
                     $this->lexer->moveNext();
                     $wrapper = new AST\QueryOperation();
                     $wrapper->addQuery($operation);
-                    $wrapper->addQuery($this->resourceQuery());
+                    $query = $this->resourceQuery();
+                    if ($query instanceof AST\OperationInterface) {
+                        $wrapper->addQuery($query);
+                    }
                     return $wrapper;
                 }
                 return $operation;
