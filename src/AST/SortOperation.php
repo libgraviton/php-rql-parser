@@ -7,7 +7,7 @@ class SortOperation extends AbstractOperation implements SortOperationInterface
     /**
      * @var
      */
-    protected $fields = array();
+    private $fields = array();
 
     public function addField($field)
     {

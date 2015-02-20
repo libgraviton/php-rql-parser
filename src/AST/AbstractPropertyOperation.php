@@ -7,12 +7,12 @@ abstract class AbstractPropertyOperation extends AbstractOperation implements Pr
     /**
      * @var string
      */
-    protected $property = '';
+    private $property = '';
 
     /**
      * @var mixed
      */
-    protected $value;
+    private $value;
 
     /**
      * @param string $property name
