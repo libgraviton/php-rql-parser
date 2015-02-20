@@ -103,6 +103,11 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $outAST->addValue('bar');
         $tests['out'] = array('out(name,[foo,bar])', $outAST);
 
+        $gtLimitAST = new AST\QueryOperation;
+        $gtLimitAST->addQuery($gtAST);
+        $gtLimitAST->addQuery($limitAST);
+        $tests['gt and limit'] = array('gt(count,1),limit(10)', $gtLimitAST);
+
         return $tests;
     }
 }

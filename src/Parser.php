@@ -75,13 +75,13 @@ class Parser
      */
     public function getAST()
     {
-        return $this->resourceQuery();
+        return $this->resourceQuery(true);
     }
 
     /**
      * @return AST\Operation
      */
-    public function resourceQuery()
+    public function resourceQuery($first = false)
     {
         $this->lexer->moveNext();
         $type = $this->lexer->lookahead['type'];
@@ -92,6 +92,14 @@ class Parser
         foreach ($this->strategies as $strategy) {
             if ($strategy->accepts($type)) {
                 $operation = $strategy->parse();
+                $glimpse = $this->lexer->glimpse();
+                if ($first && $glimpse['type'] == Lexer::T_COMMA) {
+                    $this->lexer->moveNext();
+                    $wrapper = new AST\QueryOperation();
+                    $wrapper->addQuery($operation);
+                    $wrapper->addQuery($this->resourceQuery());
+                    return $wrapper;
+                }
                 return $operation;
             }
         }

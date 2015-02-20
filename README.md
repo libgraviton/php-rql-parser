@@ -117,6 +117,7 @@ The AST that your visitor needs to traverse is built from the following class tr
     * ``AST\GteOperation``
     * ``AST\LikeOperation``
   * ``AST\AbstractQueryOperation``
+    * ``AST\QueryOperation``
     * ``AST\AndOperation``
     * ``AST\OrOperation``
   * ``AST\AbstractArrayOperation``
