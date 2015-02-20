@@ -31,12 +31,9 @@ class ArrayOperationStrategy extends ParsingStrategy
             ParserUtil::syntaxError('Missing [ in params');
         }
 
-        $hasValues = true;
         $needsValue = true;
-        while ($hasValues) {
-            if ($this->lexer->lookahead == null || $this->lexer->lookahead['type'] == Lexer::T_CLOSE_BRACKET) {
-                $hasValues = false;
-            } elseif ($needsValue || ParserUtil::parseComma($this->lexer, true)) {
+        while ($this->hasValues()) {
+            if ($needsValue || ParserUtil::parseComma($this->lexer, true)) {
                 $operation->addValue(ParserUtil::getString($this->lexer, !$needsValue));
                 $needsValue = false;
             }
@@ -51,5 +48,14 @@ class ArrayOperationStrategy extends ParsingStrategy
             Lexer::T_IN,
             Lexer::T_OUT,
         );
+    }
+
+    private function hasValues()
+    {
+        $hasValues = true;
+        if ($this->lexer->lookahead == null || $this->lexer->lookahead['type'] == Lexer::T_CLOSE_BRACKET) {
+            $hasValues = false;
+        }
+        return $hasValues;
     }
 }
