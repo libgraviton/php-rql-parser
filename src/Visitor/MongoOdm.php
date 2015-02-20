@@ -73,23 +73,23 @@ class MongoOdm implements VisitorInterface
     public function visit(OperationInterface $operation, $expr = false)
     {
         if (in_array(get_class($operation), array_keys($this->internalMap))) {
-             $method = $this->internalMap[get_class($operation)];
-             $this->$method($operation);
+            $method = $this->internalMap[get_class($operation)];
+            $this->$method($operation);
         } elseif ($operation instanceof PropertyOperationInterface) {
-             $method = $this->propertyMap[get_class($operation)];
-             if ($expr) {
-                 return $this->queryBuilder->expr()->field($operation->getProperty())->$method($operation->getValue());
-             }
-             $this->queryBuilder->field($operation->getProperty())->$method($operation->getValue());
+            $method = $this->propertyMap[get_class($operation)];
+            if ($expr) {
+                return $this->queryBuilder->expr()->field($operation->getProperty())->$method($operation->getValue());
+            }
+            $this->queryBuilder->field($operation->getProperty())->$method($operation->getValue());
         } elseif ($operation instanceof ArrayOperationInterface) {
-             $method = $this->arrayMap[get_class($operation)];
-             if ($expr) {
-                 return $this->queryBuilder->expr()->field($operation->getProperty())->$method($operation->getArray());
-             }
-             $this->queryBuilder->field($operation->getProperty())->$method($operation->getArray());
+            $method = $this->arrayMap[get_class($operation)];
+            if ($expr) {
+                return $this->queryBuilder->expr()->field($operation->getProperty())->$method($operation->getArray());
+            }
+            $this->queryBuilder->field($operation->getProperty())->$method($operation->getArray());
         } elseif ($operation instanceof QueryOperationInterface) {
-             $method = $this->queryMap[get_class($operation)];
-             $this->visitQuery($method, $operation);
+            $method = $this->queryMap[get_class($operation)];
+            $this->visitQuery($method, $operation);
         }
     }
 
