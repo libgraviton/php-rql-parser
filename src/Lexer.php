@@ -33,13 +33,13 @@ class Lexer extends \Doctrine\Common\Lexer
      * @var array<string>
      */
     private $primitiveMap = array(
-            ',' => self::T_COMMA,
-            '[' => self::T_OPEN_BRACKET,
-            ']' => self::T_CLOSE_BRACKET,
-            '(' => self::T_OPEN_PARENTHESIS,
-            ')' => self::T_CLOSE_PARENTHESIS,
-            '+' => self::T_PLUS,
-            '-' => self::T_MINUS,
+        ',' => self::T_COMMA,
+        '[' => self::T_OPEN_BRACKET,
+        ']' => self::T_CLOSE_BRACKET,
+        '(' => self::T_OPEN_PARENTHESIS,
+        ')' => self::T_CLOSE_PARENTHESIS,
+        '+' => self::T_PLUS,
+        '-' => self::T_MINUS,
     );
 
     protected function getCatchablePatterns()
@@ -79,8 +79,6 @@ class Lexer extends \Doctrine\Common\Lexer
 
     protected function getType(&$value)
     {
-        $type = self::T_NONE;
-
         if (is_numeric($value)) {
             $type = $this->getNumericType($value);
 
@@ -106,8 +104,12 @@ class Lexer extends \Doctrine\Common\Lexer
         return $type;
     }
 
+    /**
+     * @param string $value
+     */
     protected function getConstantType($value)
     {
+        $type = self::T_NONE;
         $constName = sprintf('self::T_%s', strtoupper($value));
         if (defined($constName)) {
             $type = constant($constName);
