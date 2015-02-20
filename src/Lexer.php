@@ -82,16 +82,10 @@ class Lexer extends \Doctrine\Common\Lexer
         $type = self::T_NONE;
 
         if (is_numeric($value)) {
-            $type = self::T_INTEGER;
-            if (strpos($value, '.') !== false || stripos($value, 'e') !== false) {
-                $type = self::T_FLOAT;
-            }
+            $type = $this->getNumericType($value);
 
         } elseif (in_array($value, $this->getOperators())) {
-            $constName = sprintf('self::T_%s', strtoupper($value));
-            if (defined($constName)) {
-                $type = constant($constName);
-            }
+            $type = $this->getConstantType($value);
 
         } elseif (in_array($value, array_keys($this->primitiveMap))) {
             $type = $this->primitiveMap[$value];
@@ -100,6 +94,24 @@ class Lexer extends \Doctrine\Common\Lexer
             $type = self::T_STRING;
         }
 
+        return $type;
+    }
+
+    protected function getNumericType($value)
+    {
+        $type = self::T_INTEGER;
+        if (strpos($value, '.') !== false || stripos($value, 'e') !== false) {
+            $type = self::T_FLOAT;
+        }
+        return $type;
+    }
+
+    protected function getConstantType($value)
+    {
+        $constName = sprintf('self::T_%s', strtoupper($value));
+        if (defined($constName)) {
+            $type = constant($constName);
+        }
         return $type;
     }
 }
