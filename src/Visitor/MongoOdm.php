@@ -19,7 +19,7 @@ class MongoOdm implements VisitorInterface
     private $queryBuilder;
 
     /**
-     * map classnames to querybuilder properties
+     * map classes to querybuilder methods
      *
      * @var string<string>
      */
@@ -32,13 +32,18 @@ class MongoOdm implements VisitorInterface
         'Graviton\Rql\AST\GteOperation' => 'gte',
     );
 
+    /**
+     * map classes to array style methods of querybuilder
+     *
+     * @var string<string>
+     */
     private $arrayMap = array(
         'Graviton\Rql\AST\InOperation' => 'in',
         'Graviton\Rql\AST\OutOperation' => 'notIn',
     );
 
     /**
-     * map classnames of query style operations
+     * map classes of query style operations to builder
      *
      * @var string<string>
      */
@@ -48,6 +53,8 @@ class MongoOdm implements VisitorInterface
     );
 
     /**
+     * map classes with an internal implementation to methods
+     *
      * @var string<string>
      */
     private $internalMap = array(
@@ -62,7 +69,6 @@ class MongoOdm implements VisitorInterface
     }
 
     /**
-     *
      * @return QueryBuilder
      */
     public function getBuilder()
@@ -100,6 +106,10 @@ class MongoOdm implements VisitorInterface
         return $this->getField($operation->getProperty(), $expr)->$method($operation->getArray());
     }
 
+    /**
+     * @param string $field name of field to get
+     * @param bool   $expr  should i wrap this in expr()
+     */
     protected function getField($field, $expr)
     {
         if ($expr) {
@@ -109,7 +119,7 @@ class MongoOdm implements VisitorInterface
     }
 
     /**
-     * @param string $addMethod
+     * @param string $addMethod name of method we will be calling
      */
     protected function visitQuery($addMethod, QueryOperationInterface $operation)
     {
