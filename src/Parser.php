@@ -2,6 +2,7 @@
 
 namespace Graviton\Rql;
 
+use Graviton\Rql\Parser\Strategy;
 use Graviton\Rql\Parser\Strategy\ParsingStrategyInterface;
 
 /**
@@ -35,6 +36,19 @@ class Parser
         Lexer::T_SORT => 'sortOperation',
         Lexer::T_LIMIT => 'limitOperation',
     );
+
+    static public function createParser($rql)
+    {
+        $parser = new Parser($rql);
+
+        $parser->addStrategy(new Strategy\PropertyOperationStrategy);
+        $parser->addStrategy(new Strategy\QueryOperationStrategy);
+        $parser->addStrategy(new Strategy\ArrayOperationStrategy);
+        $parser->addStrategy(new Strategy\SortOperationStrategy);
+        $parser->addStrategy(new Strategy\LimitOperationStrategy);
+
+        return $parser;
+    }
 
     /**
      * create parser and lex input
