@@ -75,22 +75,37 @@ class MongoOdm implements VisitorInterface
         if (in_array(get_class($operation), array_keys($this->internalMap))) {
             $method = $this->internalMap[get_class($operation)];
             $this->$method($operation);
+
         } elseif ($operation instanceof PropertyOperationInterface) {
-            $method = $this->propertyMap[get_class($operation)];
-            if ($expr) {
-                return $this->queryBuilder->expr()->field($operation->getProperty())->$method($operation->getValue());
-            }
-            $this->queryBuilder->field($operation->getProperty())->$method($operation->getValue());
+            return $this->visitProperty($operation, $expr);
+
         } elseif ($operation instanceof ArrayOperationInterface) {
-            $method = $this->arrayMap[get_class($operation)];
-            if ($expr) {
-                return $this->queryBuilder->expr()->field($operation->getProperty())->$method($operation->getArray());
-            }
-            $this->queryBuilder->field($operation->getProperty())->$method($operation->getArray());
+            return $this->visitArray($operation, $expr);
+
         } elseif ($operation instanceof QueryOperationInterface) {
             $method = $this->queryMap[get_class($operation)];
             $this->visitQuery($method, $operation);
         }
+    }
+
+    protected function visitProperty(PropertyOperationInterface $operation, $expr)
+    {
+        $method = $this->propertyMap[get_class($operation)];
+        return $this->getField($operation->getProperty(), $expr)->$method($operation->getValue());
+    }
+
+    protected function visitArray(ArrayOperationInterface $operation, $expr)
+    {
+        $method = $this->arrayMap[get_class($operation)];
+        return $this->getField($operation->getProperty(), $expr)->$method($operation->getArray());
+    }
+
+    protected function getField($field, $expr)
+    {
+        if ($expr) {
+            return $this->queryBuilder->expr()->field($field);
+        }
+        return $this->queryBuilder->field($field);
     }
 
     /**
