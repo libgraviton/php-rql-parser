@@ -95,7 +95,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $limitAST = new AST\LimitOperation;
         $limitAST->setSkip(0);
         $limitAST->setLimit(10);
-        $tests['limit'] = array('limit(0,10)', $limitAST);
+        $tests['limit'] = array('limit(10)', $limitAST);
 
         $inAST = new AST\InOperation;
         $inAST->setProperty('name');

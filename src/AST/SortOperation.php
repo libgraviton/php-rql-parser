@@ -2,7 +2,7 @@
 
 namespace Graviton\Rql\AST;
 
-class SortOperation implements SortOperationInterface
+class SortOperation extends AbstractOperation implements SortOperationInterface
 {
     /**
      * @var

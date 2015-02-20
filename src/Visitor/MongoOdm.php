@@ -3,6 +3,12 @@
 namespace Graviton\Rql\Visitor;
 
 use Graviton\Rql\AST\OperationInterface;
+use Graviton\Rql\AST\PropertyOperationInterface;
+use Graviton\Rql\AST\QueryOperationInterface;
+use Graviton\Rql\AST\ArrayOperationInterface;
+use Graviton\Rql\AST\LimitOperationInterface;
+use Graviton\Rql\AST\SortOperationInterface;
+use Graviton\Rql\AST\LikeOperation;
 use Doctrine\ODM\MongoDB\Query\Builder as QueryBuilder;
 
 class MongoOdm implements VisitorInterface
@@ -13,34 +19,41 @@ class MongoOdm implements VisitorInterface
     private $queryBuilder;
 
     /**
-     * @var string[]
+     * map classnames to querybuilder properties
+     *
+     * @var string<string>
      */
-    private $queryOperations = array(
-        'and',
-        'or'
+    private $propertyMap = array(
+        'Graviton\Rql\AST\EqOperation' => 'equals',
+        'Graviton\Rql\AST\NeOperation' => 'notEqual',
+        'Graviton\Rql\AST\LtOperation' => 'lt',
+        'Graviton\Rql\AST\GtOperation' => 'gt',
+        'Graviton\Rql\AST\LteOperation' => 'lte',
+        'Graviton\Rql\AST\GteOperation' => 'gte',
+    );
+
+    private $arrayMap = array(
+        'Graviton\Rql\AST\InOperation' => 'in',
+        'Graviton\Rql\AST\OutOperation' => 'notIn',
     );
 
     /**
-     * @var string[]
+     * map classnames of query style operations
+     *
+     * @var string<string>
      */
-    private $operationMap = array(
-        'eq' => 'equals',
-        'ne' => 'notEqual',
-        'lt' => 'lt',
-        'gt' => 'gt',
-        'lte' => 'lte',
-        'gte' => 'gte',
-        'in' => 'in',
-        'out' => 'notIn'
+    private $queryMap = array(
+        'Graviton\Rql\AST\AndOperation' => 'addAnd',
+        'Graviton\Rql\AST\OrOperation' => 'addOr',
     );
 
     /**
      * @var string<string>
      */
-    private $internalMethods = array(
-        'sort' => 'visitSort',
-        'like' => 'visitLike',
-        'limit' => 'visitLimit',
+    private $internalMap = array(
+        'Graviton\Rql\AST\SortOperation' => 'visitSort',
+        'Graviton\Rql\AST\LimitOperation' => 'visitLimit',
+        'Graviton\Rql\AST\LikeOperation' => 'visitLike',
     );
 
     public function __construct(QueryBuilder $queryBuilder)
@@ -57,32 +70,40 @@ class MongoOdm implements VisitorInterface
         return $this->queryBuilder;
     }
 
-    public function visit(OperationInterface $operation)
+    public function visit(OperationInterface $operation, $expr = false)
     {
-        $name = $operation->getName();
-
-        if (in_array($name, $this->queryOperations)) {
-            $this->visitQuery(sprintf('add%s', ucfirst($name)), $operation);
-        } elseif (in_array($name, array_keys($this->operationMap))) {
-            $method = $this->operationMap[$name];
-            $this->queryBuilder->field($operation->getProperty())->$method($operation->getValue());
-        } elseif (in_array($name, array_keys($this->internalMethods))) {
-            $methodName = $this->internalMethods[$name];
-            $this->$methodName($operation);
+        if (in_array(get_class($operation), array_keys($this->internalMap))) {
+             $method = $this->internalMap[get_class($operation)];
+             $this->$method($operation);
+        } elseif ($operation instanceof PropertyOperationInterface) {
+             $method = $this->propertyMap[get_class($operation)];
+             if ($expr) {
+                 return $this->queryBuilder->expr()->field($operation->getProperty())->$method($operation->getValue());
+             }
+             $this->queryBuilder->field($operation->getProperty())->$method($operation->getValue());
+        } elseif ($operation instanceof ArrayOperationInterface) {
+             $method = $this->arrayMap[get_class($operation)];
+             if ($expr) {
+                 return $this->queryBuilder->expr()->field($operation->getProperty())->$method($operation->getArray());
+             }
+             $this->queryBuilder->field($operation->getProperty())->$method($operation->getArray());
+        } elseif ($operation instanceof QueryOperationInterface) {
+             $method = $this->queryMap[get_class($operation)];
+             $this->visitQuery($method, $operation);
         }
     }
 
     /**
      * @param string $addMethod
      */
-    protected function visitQuery($addMethod, OperationInterface $operation)
+    protected function visitQuery($addMethod, QueryOperationInterface $operation)
     {
         foreach ($operation->getQueries() as $query) {
-            $this->queryBuilder->$addMethod($this->getExpr($query));
+            $this->queryBuilder->$addMethod($this->visit($query, true));
         }
     }
 
-    protected function visitSort(OperationInterface $operation)
+    protected function visitSort(SortOperationInterface $operation)
     {
         foreach ($operation->getFields() as $field) {
             list($name, $order) = $field;
@@ -90,38 +111,14 @@ class MongoOdm implements VisitorInterface
         }
     }
 
-    protected function visitLike(OperationInterface $operation)
+    protected function visitLike(LikeOperation $operation)
     {
         $regex = new \MongoRegex(sprintf('/%s/', str_replace('*', '.*', $operation->getValue())));
         $this->queryBuilder->field($operation->getProperty())->equals($regex);
     }
 
-    protected function visitLimit(OperationInterface $operation)
+    protected function visitLimit(LimitOperationInterface $operation)
     {
-        $fields = $operation->getFields();
-
-        $limit = (int) $fields[0];
-
-        $skip = 0;
-        if (!empty($fields[1])) {
-            $skip = (int) $fields[1];
-        }
-
-        $this->queryBuilder->limit($limit)->skip($skip);
-    }
-
-    protected function getExpr(OperationInterface $operation)
-    {
-        $expr = $this
-            ->queryBuilder
-            ->expr()
-            ->field($operation->getProperty());
-
-        if ($operation->getName() == 'eq') {
-            $expr = $expr->equals($operation->getValue());
-        } elseif ($operation->getName() == 'ne') {
-            $expr = $expr->notEqual($operation->getValue());
-        }
-        return $expr;
+        $this->queryBuilder->limit($operation->getLimit())->skip($operation->getSkip());
     }
 }

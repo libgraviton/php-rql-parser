@@ -10,6 +10,7 @@ use Doctrine\ODM\MongoDB\Configuration;
 use Doctrine\Common\DataFixtures\Loader;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Graviton\Rql\Parser;
+use Graviton\Rql\Parser\Strategy;
 use Graviton\Rql\Visitor\MongoOdm;
 use Graviton\Rql\DataFixtures\MongoOdm as MongoOdmFixtures;
 use Doctrine\Common\DataFixtures\Executor\MongoDBExecutor;
@@ -71,6 +72,12 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
             $this->markTestSkipped(sprintf('Please unskip the test when you add support for %s', $query));
         }
         $parser = new Parser($query);
+        $parser->addStrategy(new Strategy\PropertyOperationStrategy);
+        $parser->addStrategy(new Strategy\QueryOperationStrategy);
+        $parser->addStrategy(new Strategy\ArrayOperationStrategy);
+        $parser->addStrategy(new Strategy\SortOperationStrategy);
+        $parser->addStrategy(new Strategy\LimitOperationStrategy);
+
         $mongo = new MongoOdm($this->builder);
         $ast = $parser->getAST();
         $results = array();

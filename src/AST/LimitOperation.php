@@ -2,7 +2,7 @@
 
 namespace Graviton\Rql\AST;
 
-class LimitOperation implements LimitOperationInterface
+class LimitOperation extends AbstractOperation implements LimitOperationInterface
 {
         /**
          * @int
