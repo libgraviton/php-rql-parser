@@ -71,8 +71,7 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
         if ($skip) {
             $this->markTestSkipped(sprintf('Please unskip the test when you add support for %s', $query));
         }
-        $parser = \Graviton\Rql\Parser::createParser($query);
-
+        $parser = Parser::createParser($query);
         $mongo = new MongoOdm($this->builder);
         $ast = $parser->getAST();
         $results = array();
