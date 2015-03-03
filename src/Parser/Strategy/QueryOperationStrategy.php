@@ -30,7 +30,8 @@ class QueryOperationStrategy extends ParsingStrategy
             if ($query) {
                 $operation->addQuery($query);
             }
-            $hasQueries = $this->lexer->lookahead['type'] == Lexer::T_CLOSE_PARENTHESIS;
+            $hasQueries = $this->lexer->lookahead['type'] != Lexer::T_CLOSE_PARENTHESIS;
+            $this->lexer->moveNext();
         }
 
         return $operation;

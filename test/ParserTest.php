@@ -108,6 +108,11 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $gtLimitAST->addQuery($limitAST);
         $tests['gt and limit'] = array('gt(count,1),limit(10)', $gtLimitAST);
 
+        $complexAST = new AST\OrOperation;
+        $complexAST->addQuery($andAST);
+        $complexAST->addQuery($gtAST);
+        $tests['complex nested query'] = array('or(and(eq(name,foo),ne(name,bar)),gt(count,1))', $complexAST);
+
         return $tests;
     }
 }
