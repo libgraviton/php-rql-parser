@@ -4,6 +4,7 @@ namespace Graviton\Rql;
 
 use Graviton\Rql\Parser\Strategy;
 use Graviton\Rql\Parser\Strategy\ParsingStrategyInterface;
+use Graviton\Rql\AST\OperationInterface;
 
 /**
  * RQL Parser
@@ -71,7 +72,7 @@ class Parser
     /**
      * return abstract syntax tree
      *
-     * @return AST\OperationInterface|null
+     * @return AST\OperationInterface
      */
     public function getAST()
     {
@@ -79,7 +80,7 @@ class Parser
     }
 
     /**
-     * @return null|AST\OperationInterface
+     * @return AST\OperationInterface
      */
     public function resourceQuery($first = false)
     {
@@ -92,17 +93,24 @@ class Parser
                 $glimpse = $this->lexer->glimpse();
                 if ($first && $glimpse['type'] == Lexer::T_COMMA) {
                     $this->lexer->moveNext();
-                    $wrapper = new AST\QueryOperation();
-                    $wrapper->addQuery($operation);
-                    $query = $this->resourceQuery();
-                    if ($query instanceof AST\OperationInterface) {
-                        $wrapper->addQuery($query);
-                    }
-                    return $wrapper;
+                    $operation = $this->wrapperOperation($operation);
                 }
-                return $operation;
             }
         }
-        throw new \RuntimeException(sprintf("No strategies matched the type %s. Did you load all strategies?", $type));
+        if (!$operation) {
+            throw new \RuntimeException(sprintf("No strategies matched the type %s. Did you load all strategies?", $type));
+        }
+        return $operation;
+    }
+
+    /**
+     * @return AST\OperationInterface
+     */
+    protected function wrapperOperation(OperationInterface $operation)
+    {
+        $wrapper = new AST\QueryOperation();
+        $wrapper->addQuery($operation);
+        $wrapper->addQuery($this->resourceQuery());
+        return $wrapper;
     }
 }
