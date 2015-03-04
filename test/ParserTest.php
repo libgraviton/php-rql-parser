@@ -46,6 +46,12 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $andAST->addQuery($neAST);
         $tests['simple and'] = array('and(eq(name,foo),ne(name,bar))', $andAST);
 
+        $tripleAndAST = new AST\AndOperation;
+        $tripleAndAST->addQuery($eqAST);
+        $tripleAndAST->addQuery($eqAST);
+        $tripleAndAST->addQuery($eqAST);
+        $tests['triple and'] = array('and(eq(name,foo),eq(name,foo),eq(name,foo))', $tripleAndAST);
+
         $eqASTint = new AST\EqOperation;
         $eqASTint->setProperty('count');
         $eqASTint->setValue(1);
