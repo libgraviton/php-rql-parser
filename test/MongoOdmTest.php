@@ -228,6 +228,12 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
                     array('name' => 'My First Sprocket')
                 )
             ),
+            'complex example from #6 without sugar' => array(
+                'or(and(eq(name,The Third Wheel),lt(count,10)),eq(count,100))', array(
+                    array('name' => 'The Third Wheel', 'count' => 3),
+                    array('name' => 'A Simple Widget', 'count' => 100),
+                )
+            ),
         );
     }
 }

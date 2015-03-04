@@ -85,7 +85,7 @@ class MongoOdm implements VisitorInterface
 
         } elseif ($operation instanceof AST\QueryOperationInterface) {
             $method = $this->queryMap[get_class($operation)];
-            $this->visitQuery($method, $operation);
+            return $this->visitQuery($method, $operation, $expr);
         }
     }
 
@@ -116,14 +116,19 @@ class MongoOdm implements VisitorInterface
     /**
      * @param string|false $addMethod name of method we will be calling or false if no method is needed
      */
-    protected function visitQuery($addMethod, AST\QueryOperationInterface $operation)
+    protected function visitQuery($addMethod, AST\QueryOperationInterface $operation, $expr = false)
     {
+        $builder = $this->queryBuilder;
+        if ($expr) {
+            $builder = $this->queryBuilder->expr();
+        }
         foreach ($operation->getQueries() as $query) {
-            $expr = $this->visit($query, $addMethod !== false);
+                $expr = $this->visit($query, $addMethod !== false);
             if ($addMethod !== false) {
-                $this->queryBuilder->$addMethod($expr);
+                $builder->$addMethod($expr);
             }
         }
+        return $builder;
     }
 
     protected function visitSort(AST\SortOperationInterface $operation)
