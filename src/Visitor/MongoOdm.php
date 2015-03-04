@@ -114,7 +114,7 @@ class MongoOdm implements VisitorInterface
     }
 
     /**
-     * @param string|false $addMethod name of method we will be calling or false if no method is needed
+     * @param string|boolean $addMethod name of method we will be calling or false if no method is needed
      */
     protected function visitQuery($addMethod, AST\QueryOperationInterface $operation, $expr = false)
     {
@@ -123,7 +123,7 @@ class MongoOdm implements VisitorInterface
             $builder = $this->queryBuilder->expr();
         }
         foreach ($operation->getQueries() as $query) {
-                $expr = $this->visit($query, $addMethod !== false);
+            $expr = $this->visit($query, $addMethod !== false);
             if ($addMethod !== false) {
                 $builder->$addMethod($expr);
             }

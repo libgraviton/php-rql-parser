@@ -86,9 +86,6 @@ class Parser
         $this->lexer->moveNext();
         $type = $this->lexer->lookahead['type'];
 
-        if (is_null($type)) {
-            return;
-        }
         foreach ($this->strategies as $strategy) {
             if ($strategy->accepts($type)) {
                 $operation = $strategy->parse();
