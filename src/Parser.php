@@ -98,7 +98,9 @@ class Parser
             }
         }
         if (!$operation) {
-            throw new \RuntimeException(sprintf("No strategies matched the type %s. Did you load all strategies?", $type));
+            throw new \RuntimeException(
+                sprintf("No strategies matched the type %s. Did you load all strategies?", $type)
+            );
         }
         return $operation;
     }
