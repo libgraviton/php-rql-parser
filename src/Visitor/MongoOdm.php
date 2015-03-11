@@ -1,11 +1,19 @@
 <?php
-
+/**
+ *
+ */
 namespace Graviton\Rql\Visitor;
 
+use Graviton\Rql\QueryBuilderAwareInterface;
 use Graviton\Rql\AST\OperationInterface;
 use Doctrine\ODM\MongoDB\Query\Builder as QueryBuilder;
 
-class MongoOdm implements VisitorInterface
+/**
+ * Class MongoOdm
+ *
+ * @package Graviton\Rql\Visitor
+ */
+final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
 {
     /**
      * @var QueryBuilder
@@ -43,20 +51,17 @@ class MongoOdm implements VisitorInterface
         'limit' => 'visitLimit',
     );
 
+    /**
+     * @param QueryBuilder $queryBuilder Doctrine QueryBuilder
+     */
     public function __construct(QueryBuilder $queryBuilder)
     {
         $this->queryBuilder = $queryBuilder;
     }
 
     /**
-     *
-     * @return QueryBuilder
+     * @param OperationInterface $operation
      */
-    public function getBuilder()
-    {
-        return $this->queryBuilder;
-    }
-
     public function visit(OperationInterface $operation)
     {
         $name = $operation->getName();
@@ -70,6 +75,26 @@ class MongoOdm implements VisitorInterface
             $methodName = $this->internalMethods[$name];
             $this->$methodName($operation);
         }
+    }
+
+    /**
+     * Provides the  Doctrine QueryBuilder
+     *
+     * @return QueryBuilder
+     */
+    public function getBuilder()
+    {
+        return $this->queryBuilder;
+    }
+
+    /**
+     * Provides the Doctrine Query object to execute.
+     *
+     * @return \Doctrine\ODM\MongoDB\Query\Query
+     */
+    public function getQuery()
+    {
+        return $this->getBuilder()->getQuery();
     }
 
     /**
