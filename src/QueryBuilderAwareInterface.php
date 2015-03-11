@@ -1,15 +1,14 @@
 <?php
+/**
+ * Interface QueryBuilderAwareInterface
+ */
 
 namespace Graviton\Rql;
 
 /**
- * Interface QueryBuilderAwareInterface
- *
- * @category Graviton
- * @package  Rql
- * @author   Dario Nuevo <dario.nuevo@swisscom.com>
+ * @author  List of contributors <https://github.com/libgraviton/php-rql-parser/graphs/contributors>
  * @license  http://opensource.org/licenses/gpl-license.php GNU Public License
- * @link     http://swisscom.com
+ * @link     http://swisscom.ch
  */
 interface QueryBuilderAwareInterface
 {
