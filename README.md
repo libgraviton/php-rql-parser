@@ -26,9 +26,22 @@ This library consists of the following parts:
 
 ## Current state
 
-All this can currently do is parse a very limited subset of rql. Please have a look 
-at ``test/LexerTest.php`` and ``test/ParserTest.php`` to see what the parser currently 
-supports.
+This supports a limited subset of RQL. Currently it does not support any sugar syntax in queries.
+
+* ``eq(name,foo)`` 
+* ``ne(name,foo)``
+* ``lt(count,1)``
+* ``gt(count,1)``
+* ``lte(count,1)``
+* ``gte(count,1)``
+* ``sort(+name,-count)`` and ``sort(name,asc)``
+* ``limit(limit,[skip])``
+* ``in(name,[foo,bar])``
+* ``out(name,[foo,bar])``
+* ``and(<query>,<query>)``
+* ``or(<query>,<query>)``
+
+Please have a look at ``test/LexerTest.php`` and ``test/ParserTest.php`` for more details.
 
 The mongo-odm visitor only supports a limited subset of rql. Look at ``test/MongoOdmTest.php``
 to see what is supported.
