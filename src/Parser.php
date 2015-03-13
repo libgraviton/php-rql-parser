@@ -30,14 +30,6 @@ class Parser
      */
     private $strategies = array();
 
-    /**
-     * @var string<int>
-     */
-    private $internalOperations = array(
-        Lexer::T_SORT => 'sortOperation',
-        Lexer::T_LIMIT => 'limitOperation',
-    );
-
     public static function createParser($rql)
     {
         $parser = new Parser($rql);
