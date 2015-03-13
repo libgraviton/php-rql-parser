@@ -134,7 +134,11 @@ class MongoOdm implements VisitorInterface
     protected function visitSort(AST\SortOperationInterface $operation)
     {
         foreach ($operation->getFields() as $field) {
-            list($name, $order) = $field;
+            $name = $field[0];
+            $order = 'asc';
+            if (!empty($field[1])) {
+                $order = $field[1];
+            }
             $this->queryBuilder->sort($name, $order);
         }
     }

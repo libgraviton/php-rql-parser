@@ -31,7 +31,12 @@ class SortOperationStrategy extends ParsingStrategy
                 $sortDone = true;
             } elseif ($this->lexer->lookahead['type'] == Lexer::T_STRING) {
                 $property = ParserUtil::getString($this->lexer, false);
-                $operation->addField(array($property, $type));
+
+                $field = array($property);
+                if (!empty($type)) {
+                    $field[] = $type;
+                }
+                $operation->addField($field);
             }
             ParserUtil::parseComma($this->lexer, true);
         }
@@ -55,10 +60,11 @@ class SortOperationStrategy extends ParsingStrategy
                 break;
             case Lexer::T_PLUS:
                 $this->lexer->moveNext();
-                // + is same as default
-            default:
                 $type = 'asc';
                 break;
+            default:
+                // don't touch type in default case and leave it up to the visitor to set defaults
+                $type = null;
         }
         return $type;
     }
