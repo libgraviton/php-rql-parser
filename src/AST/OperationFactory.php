@@ -5,6 +5,11 @@ namespace Graviton\Rql\AST;
 use Graviton\Rql\Lexer;
 use Graviton\AST;
 
+/**
+ * @author  List of contributors <https://github.com/libgraviton/php-rql-parser/graphs/contributors>
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ * @link    http://swisscom.ch
+ */
 class OperationFactory
 {
     protected static function getLexerMap()

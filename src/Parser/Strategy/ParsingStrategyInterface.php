@@ -6,6 +6,11 @@ use Graviton\Rql\Lexer;
 use Graviton\Rql\Parser;
 use Graviton\Rql\AST\OperationInterface;
 
+/**
+ * @author  List of contributors <https://github.com/libgraviton/php-rql-parser/graphs/contributors>
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ * @link    http://swisscom.ch
+ */
 interface ParsingStrategyInterface
 {
     public function setParser(Parser &$parser);

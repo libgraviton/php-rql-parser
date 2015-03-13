@@ -5,6 +5,11 @@ namespace Graviton\Rql\Parser;
 use Graviton\Rql\Lexer;
 use Graviton\Rql\Parser\ParserUtil;
 
+/**
+ * @author  List of contributors <https://github.com/libgraviton/php-rql-parser/graphs/contributors>
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ * @link    http://swisscom.ch
+ */
 class ParserUtil
 {
     public static function parseStart(Lexer &$lexer)

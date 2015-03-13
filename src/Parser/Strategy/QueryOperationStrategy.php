@@ -7,6 +7,11 @@ use Graviton\Rql\AST\OperationFactory;
 use Graviton\Rql\AST\QueryOperationInterface;
 use Graviton\Rql\Lexer;
 
+/**
+ * @author  List of contributors <https://github.com/libgraviton/php-rql-parser/graphs/contributors>
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ * @link    http://swisscom.ch
+ */
 class QueryOperationStrategy extends ParsingStrategy
 {
     /**

@@ -5,6 +5,11 @@ namespace Graviton\Rql\Visitor;
 use Graviton\Rql\AST;
 use Doctrine\ODM\MongoDB\Query\Builder as QueryBuilder;
 
+/**
+ * @author  List of contributors <https://github.com/libgraviton/php-rql-parser/graphs/contributors>
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ * @link    http://swisscom.ch
+ */
 class MongoOdm implements VisitorInterface
 {
     /**
