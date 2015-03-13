@@ -30,13 +30,7 @@ class SortOperationStrategy extends ParsingStrategy
             if ($this->lexer->lookahead == null || $this->lexer->lookahead['type'] == Lexer::T_CLOSE_PARENTHESIS) {
                 $sortDone = true;
             } elseif ($this->lexer->lookahead['type'] == Lexer::T_STRING) {
-                $property = ParserUtil::getString($this->lexer, false);
-
-                $field = array($property);
-                if (!empty($type)) {
-                    $field[] = $type;
-                }
-                $operation->addField($field);
+                $operation->addField($this->getField($type));
             }
             ParserUtil::parseComma($this->lexer, true);
         }
@@ -67,5 +61,16 @@ class SortOperationStrategy extends ParsingStrategy
                 $type = null;
         }
         return $type;
+    }
+
+    private function getField($type)
+    {
+        $property = ParserUtil::getString($this->lexer, false);
+
+        $field = array($property);
+        if (!empty($type)) {
+            $field[] = $type;
+        }
+        return $field;
     }
 }

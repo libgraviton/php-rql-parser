@@ -84,6 +84,7 @@ class Parser
      */
     public function resourceQuery($first = false)
     {
+        $operation = false;
         $this->lexer->moveNext();
         $type = $this->lexer->lookahead['type'];
 
