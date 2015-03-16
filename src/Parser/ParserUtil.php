@@ -37,6 +37,13 @@ class ParserUtil
         $string = null;
         if ($lexer->lookahead['type'] == Lexer::T_STRING) {
             $string = $lexer->lookahead['value'];
+            $glimpse = $lexer->glimpse();
+            if ($glimpse['type'] == Lexer::T_MINUS ||
+                $glimpse['type'] == Lexer::T_PLUS
+            ) {
+                $lexer->moveNext();
+                $string = $string . $lexer->lookahead['value'] . self::getString($lexer);
+            }
         } else {
             self::syntaxError('no string found');
         }
@@ -49,6 +56,13 @@ class ParserUtil
         $string = null;
         if ($lexer->lookahead['type'] == Lexer::T_STRING) {
             $string = $lexer->lookahead['value'];
+            $glimpse = $lexer->glimpse();
+            if ($glimpse['type'] == Lexer::T_MINUS ||
+                $glimpse['type'] == Lexer::T_PLUS
+            ) {
+                $lexer->moveNext();
+                $string = $string . $lexer->lookahead['value'] . self::getString($lexer);
+            }
         } elseif ($lexer->lookahead['type'] == Lexer::T_INTEGER) {
             $string = (int) $lexer->lookahead['value'];
         } else {

@@ -41,6 +41,11 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $eqASTwhitespace->setValue('foo bar');
         $tests['simple eq with whitespace'] = array('eq(name,foo bar)', $eqASTwhitespace);
 
+        $eqASTchars = new AST\EqOperation;
+        $eqASTchars->setProperty('name-part+test');
+        $eqASTchars->setValue('foo+bar-baz');
+        $tests['simple eq with special chars'] = array('eq(name-part+test,foo+bar-baz)', $eqASTchars);
+
         $neAST = new AST\NeOperation;
         $neAST->setProperty('name');
         $neAST->setValue('bar');
