@@ -55,14 +55,7 @@ class ParserUtil
         $lexer->moveNext();
         $string = null;
         if ($lexer->lookahead['type'] == Lexer::T_STRING) {
-            $string = $lexer->lookahead['value'];
-            $glimpse = $lexer->glimpse();
-            if ($glimpse['type'] == Lexer::T_MINUS ||
-                $glimpse['type'] == Lexer::T_PLUS
-            ) {
-                $lexer->moveNext();
-                $string = $string . $lexer->lookahead['value'] . self::getString($lexer);
-            }
+            $string = self::getString($lexer, false);
         } elseif ($lexer->lookahead['type'] == Lexer::T_INTEGER) {
             $string = (int) $lexer->lookahead['value'];
         } else {
