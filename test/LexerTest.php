@@ -1,13 +1,26 @@
 <?php
+/**
+ * validate basic lexer features
+ */
 
 namespace Graviton\Rql;
 
+/**
+ * @author  List of contributors <https://github.com/libgraviton/php-rql-parser/graphs/contributors>
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ * @link    http://swisscom.ch
+ */
 class LexerTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * test lexer
      *
      * @dataProvider lexerProvider
+     *
+     * @param string $rql      rql expression
+     * @param array  $expected parts to use for building asserts
+     *
+     * @return void
      */
     public function testLexer($rql, $expected)
     {

@@ -12,18 +12,18 @@ use Graviton\Rql\Documents\Foo;
 /**
  * Make up some fixtures for testing
  *
- * @category MongoODM
- * @package  RqlParser
- * @author   Lucas Bickel <lucas.bickel@swisscom.com>
- * @license  http://opensource.org/licenses/MIT MIT License (c) 2015 Swisscom
- * @link     http://swisscom.ch
+ * @author  List of contributors <https://github.com/libgraviton/php-rql-parser/graphs/contributors>
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ * @link    http://swisscom.ch
  */
 class MongoOdm implements FixtureInterface
 {
     /**
      * load fixtures with the passed em
      *
-     *  @param ObjectManager $manager
+     * @param ObjectManager $manager manager to load fixtures into
+     *
+     * @return void
      */
     public function load(ObjectManager $manager)
     {

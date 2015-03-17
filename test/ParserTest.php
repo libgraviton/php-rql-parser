@@ -1,19 +1,32 @@
 <?php
+/**
+ * verify that parser build a correct AST
+ */
 
 namespace Graviton\Rql;
 
 use Graviton\Rql\AST;
 
+/**
+ * @author  List of contributors <https://github.com/libgraviton/php-rql-parser/graphs/contributors>
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ * @link    http://swisscom.ch
+ */
 class ParserTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * test parser
      *
      * @dataProvider parserProvider
+     *
+     * @param string $rql      rql expression
+     * @param object $expected expected AST object
+     *
+     * @return void
      */
     public function testParser($rql, $expected)
     {
-        $sut = new \Graviton\Rql\Parser($rql);
+        $sut = \Graviton\Rql\Parser::createParser($rql);
 
         $AST = $sut->getAST();
         $this->assertEquals($expected, $AST);
@@ -26,77 +39,108 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     {
         $tests = array();
 
-        $eqAST = new AST\Operation('eq');
-        $eqAST->property = 'name';
-        $eqAST->value = 'foo';
+        $eqAST = new AST\EqOperation;
+        $eqAST->setProperty('name');
+        $eqAST->setValue('foo');
         $tests['simple eq'] = array('eq(name,foo)', $eqAST);
 
-        $eqASTwhitespace = new AST\Operation('eq');
-        $eqASTwhitespace->property = 'name';
-        $eqASTwhitespace->value = 'foo bar';
+        $eqASTwhitespace = new AST\EqOperation;
+        $eqASTwhitespace->setProperty('name');
+        $eqASTwhitespace->setValue('foo bar');
         $tests['simple eq with whitespace'] = array('eq(name,foo bar)', $eqASTwhitespace);
 
-        $neAST = new AST\Operation('ne');
-        $neAST->property = 'name';
-        $neAST->value = 'bar';
+        $eqASTchars = new AST\EqOperation;
+        $eqASTchars->setProperty('name-part+test');
+        $eqASTchars->setValue('foo+bar-baz');
+        $tests['simple eq with special chars'] = array('eq(name-part+test,foo+bar-baz)', $eqASTchars);
+
+        $neAST = new AST\NeOperation;
+        $neAST->setProperty('name');
+        $neAST->setValue('bar');
         $tests['simple ne'] = array('ne(name,bar)', $neAST);
 
-        $andAST = new AST\Operation('and');
-        $andAST->queries = array($eqAST, $neAST);
+        $andAST = new AST\AndOperation;
+        $andAST->addQuery($eqAST);
+        $andAST->addQuery($neAST);
         $tests['simple and'] = array('and(eq(name,foo),ne(name,bar))', $andAST);
 
-        $eqASTint = new AST\Operation('eq');
-        $eqASTint->property = 'count';
-        $eqASTint->value = 1;
+        $tripleAndAST = new AST\AndOperation;
+        $tripleAndAST->addQuery($eqAST);
+        $tripleAndAST->addQuery($eqAST);
+        $tripleAndAST->addQuery($eqAST);
+        $tests['triple and'] = array('and(eq(name,foo),eq(name,foo),eq(name,foo))', $tripleAndAST);
+
+        $eqASTint = new AST\EqOperation;
+        $eqASTint->setProperty('count');
+        $eqASTint->setValue(1);
         $tests['integer in eq'] = array('eq(count,1)', $eqASTint);
 
-        $orAST = new AST\Operation('or');
-        $orAST->queries = array($eqAST, $neAST);
+        $orAST = new AST\OrOperation;
+        $orAST->addQuery($eqAST);
+        $orAST->addQuery($neAST);
         $tests['simple or'] = array('or(eq(name,foo),ne(name,bar))', $orAST);
 
-        $ltAST = new AST\Operation('lt');
-        $ltAST->property = 'count';
-        $ltAST->value = 1;
+        $ltAST = new AST\LtOperation;
+        $ltAST->setProperty('count');
+        $ltAST->setValue(1);
         $tests['lt attribute'] = array('lt(count,1)', $ltAST);
 
-        $gtAST = new AST\Operation('gt');
-        $gtAST->property = 'count';
-        $gtAST->value = 1;
+        $gtAST = new AST\GtOperation;
+        $gtAST->setProperty('count');
+        $gtAST->setValue(1);
         $tests['gt attribute'] = array('gt(count,1)', $gtAST);
 
-        $lteAST = new AST\Operation('lte');
-        $lteAST->property = 'count';
-        $lteAST->value = 1;
+        $lteAST = new AST\LteOperation;
+        $lteAST->setProperty('count');
+        $lteAST->setValue(1);
         $tests['lte attribute'] = array('lte(count,1)', $lteAST);
 
-        $gteAST = new AST\Operation('gte');
-        $gteAST->property = 'count';
-        $gteAST->value = 1;
+        $gteAST = new AST\GteOperation;
+        $gteAST->setProperty('count');
+        $gteAST->setValue(1);
         $tests['gte attribute'] = array('gte(count,1)', $gteAST);
 
-        $sortAST = new AST\Operation('sort');
-        $sortAST->fields = array(array('count', 'asc'), array('name', 'desc'));
+        $sortAST = new AST\SortOperation;
+        $sortAST->addField(array('count', 'asc'));
+        $sortAST->addField(array('name', 'desc'));
         $tests['sort'] = array('sort(+count,-name)', $sortAST);
 
-        $likeAST = new AST\Operation('like');
-        $likeAST->property = 'name';
-        $likeAST->value = 'fo*';
+        $sortASTCanon = new AST\SortOperation;
+        $sortASTCanon->addField(array('count'));
+        $sortASTCanon->addField(array('asc'));
+        $tests['sort with asc as param'] = array('sort(count,asc)', $sortASTCanon);
+
+        $likeAST = new AST\LikeOperation;
+        $likeAST->setProperty('name');
+        $likeAST->setValue('fo*');
         $tests['like'] = array('like(name,fo*)', $likeAST);
 
-        $limitAST = new AST\Operation('limit');
-        $limitAST->fields[] = 0;
-        $limitAST->fields[] = 10;
-        $tests['limit'] = array('limit(0,10)', $limitAST);
+        $limitAST = new AST\LimitOperation;
+        $limitAST->setSkip(0);
+        $limitAST->setLimit(10);
+        $tests['limit'] = array('limit(10)', $limitAST);
 
-        $inAST = new AST\Operation('in');
-        $inAST->property = 'name';
-        $inAST->value = array('foo', 'bar');
+        $inAST = new AST\InOperation;
+        $inAST->setProperty('name');
+        $inAST->addValue('foo');
+        $inAST->addValue('bar');
         $tests['in'] = array('in(name,[foo,bar])', $inAST);
 
-        $outAST = new AST\Operation('out');
-        $outAST->property = 'name';
-        $outAST->value = array('foo', 'bar');
+        $outAST = new AST\OutOperation;
+        $outAST->setProperty('name');
+        $outAST->addValue('foo');
+        $outAST->addValue('bar');
         $tests['out'] = array('out(name,[foo,bar])', $outAST);
+
+        $gtLimitAST = new AST\QueryOperation;
+        $gtLimitAST->addQuery($gtAST);
+        $gtLimitAST->addQuery($limitAST);
+        $tests['gt and limit'] = array('gt(count,1),limit(10)', $gtLimitAST);
+
+        $complexAST = new AST\OrOperation;
+        $complexAST->addQuery($andAST);
+        $complexAST->addQuery($gtAST);
+        $tests['complex nested query'] = array('or(and(eq(name,foo),ne(name,bar)),gt(count,1))', $complexAST);
 
         return $tests;
     }
