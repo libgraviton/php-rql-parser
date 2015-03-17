@@ -1,4 +1,7 @@
 <?php
+/**
+ * interface for "limit()" operations
+ */
 
 namespace Graviton\Rql\AST;
 

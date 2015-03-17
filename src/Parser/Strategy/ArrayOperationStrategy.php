@@ -1,4 +1,7 @@
 <?php
+/**
+ * parse array type operations (like in and out)
+ */
 
 namespace Graviton\Rql\Parser\Strategy;
 
@@ -47,6 +50,9 @@ class ArrayOperationStrategy extends ParsingStrategy
         return $operation;
     }
 
+    /**
+     * @return array
+     */
     public function getAcceptedTypes()
     {
         return array(
@@ -55,6 +61,9 @@ class ArrayOperationStrategy extends ParsingStrategy
         );
     }
 
+    /**
+     * @return boolean
+     */
     private function hasValues()
     {
         $hasValues = true;

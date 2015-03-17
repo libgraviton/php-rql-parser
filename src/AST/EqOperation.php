@@ -1,4 +1,7 @@
 <?php
+/**
+ * "eq()"
+ */
 
 namespace Graviton\Rql\AST;
 

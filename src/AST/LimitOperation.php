@@ -1,4 +1,7 @@
 <?php
+/**
+ * "limit()"
+ */
 
 namespace Graviton\Rql\AST;
 
@@ -19,21 +22,37 @@ class LimitOperation extends AbstractOperation implements LimitOperationInterfac
      */
     private $skip;
 
+    /**
+     * @param int $limit limit
+     *
+     * @return void
+     */
     public function setLimit($limit)
     {
         $this->limit = $limit;
     }
 
+    /**
+     * @return int
+     */
     public function getLimit()
     {
         return $this->limit;
     }
 
+    /**
+     * @param int $skip skip
+     *
+     * @return void
+     */
     public function setSkip($skip)
     {
         $this->skip = $skip;
     }
 
+    /**
+     * @return int
+     */
     public function getSkip()
     {
         return $this->skip;

@@ -1,10 +1,13 @@
 <?php
+/**
+ * parse rql input using the lexer
+ */
 
 namespace Graviton\Rql;
 
 use Graviton\Rql\Parser\Strategy;
 use Graviton\Rql\Parser\Strategy\ParsingStrategyInterface;
-use Graviton\Rql\AST\OperationInterface;
+use Graviton\Rql\AST;
 
 /**
  * RQL Parser
@@ -25,6 +28,13 @@ class Parser
      */
     private $strategies = array();
 
+    /**
+     * craete a new parser
+     *
+     * @param string $rql rql query string
+     *
+     * @return Parser
+     */
     public static function createParser($rql)
     {
         $parser = new Parser($rql);
@@ -49,6 +59,11 @@ class Parser
         $this->lexer->setInput($rql);
     }
 
+    /**
+     * @param ParsingStrategyInterface $strategy strategy to add to parser
+     *
+     * @return void
+     */
     public function addStrategy(ParsingStrategyInterface $strategy)
     {
         $strategy->setParser($this);
@@ -67,6 +82,8 @@ class Parser
     }
 
     /**
+     * @param bool $first is this the first operation we are parsing
+     *
      * @return AST\OperationInterface
      */
     public function resourceQuery($first = false)
@@ -94,9 +111,11 @@ class Parser
     }
 
     /**
+     * @param AST\OperationInterface $operation operation that needs to be wrapped
+     *
      * @return AST\OperationInterface
      */
-    protected function wrapperOperation(OperationInterface $operation)
+    protected function wrapperOperation(AST\OperationInterface $operation)
     {
         $wrapper = new AST\QueryOperation();
         $wrapper->addQuery($operation);

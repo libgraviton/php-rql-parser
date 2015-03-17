@@ -1,4 +1,7 @@
 <?php
+/**
+ * lex rql queries using doctrine/lexer
+ */
 
 namespace Graviton\Rql;
 
@@ -47,6 +50,9 @@ class Lexer extends \Doctrine\Common\Lexer
         '-' => self::T_MINUS,
     );
 
+    /**
+     * @return array
+     */
     protected function getCatchablePatterns()
     {
         return array(
@@ -58,6 +64,9 @@ class Lexer extends \Doctrine\Common\Lexer
         );
     }
 
+    /**
+     * @return array
+     */
     protected function getOperators()
     {
         return array(
@@ -77,11 +86,19 @@ class Lexer extends \Doctrine\Common\Lexer
         );
     }
 
+    /**
+     * @return array
+     */
     protected function getNonCatchablePatterns()
     {
         return array();
     }
 
+    /**
+     * @param string $value value from lexer
+     *
+     * @return int
+     */
     protected function getType(&$value)
     {
         if (is_numeric($value)) {
@@ -100,6 +117,11 @@ class Lexer extends \Doctrine\Common\Lexer
         return $type;
     }
 
+    /**
+     * @param string $value potential float value
+     *
+     * @return int
+     */
     protected function getNumericType($value)
     {
         $type = self::T_INTEGER;
@@ -110,7 +132,9 @@ class Lexer extends \Doctrine\Common\Lexer
     }
 
     /**
-     * @param string $value
+     * @param string $value type name
+     *
+     * @return int
      */
     protected function getConstantType($value)
     {

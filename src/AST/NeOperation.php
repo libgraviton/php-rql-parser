@@ -1,4 +1,7 @@
 <?php
+/**
+ * "ne()"
+ */
 
 namespace Graviton\Rql\AST;
 

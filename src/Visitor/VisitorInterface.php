@@ -1,4 +1,7 @@
 <?php
+/**
+ * RQL Visitor implementation
+ */
 
 namespace Graviton\Rql\Visitor;
 
@@ -11,5 +14,10 @@ use Graviton\Rql\AST\OperationInterface;
  */
 interface VisitorInterface
 {
+    /**
+     * @param OperationInterface $operation AST representation of query
+     *
+     * @return mixed
+     */
     public function visit(OperationInterface $operation);
 }

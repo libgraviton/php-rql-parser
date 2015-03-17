@@ -1,4 +1,7 @@
 <?php
+/**
+ * "or()"
+ */
 
 namespace Graviton\Rql\AST;
 

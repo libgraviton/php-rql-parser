@@ -1,4 +1,7 @@
 <?php
+/**
+ * constrain a mongodb-odm querybuilder based on data from an AST
+ */
 
 namespace Graviton\Rql\Visitor;
 
@@ -63,6 +66,11 @@ class MongoOdm implements VisitorInterface
         'Graviton\Rql\AST\LikeOperation' => 'visitLike',
     );
 
+    /**
+     * create new visitor
+     *
+     * @param QueryBuilder $queryBuilder MongoDB-ODM querybuilder
+     */
     public function __construct(QueryBuilder $queryBuilder)
     {
         $this->queryBuilder = $queryBuilder;
@@ -76,6 +84,14 @@ class MongoOdm implements VisitorInterface
         return $this->queryBuilder;
     }
 
+    /**
+     * build a querybuilder from the AST
+     *
+     * @param AST\OperationInterface $operation AST representation of query
+     * @param bool                   $expr      should i wrap this in expr()
+     *
+     * @return QueryBuilder
+     */
     public function visit(AST\OperationInterface $operation, $expr = false)
     {
         if (in_array(get_class($operation), array_keys($this->internalMap))) {
@@ -94,12 +110,28 @@ class MongoOdm implements VisitorInterface
         }
     }
 
+    /**
+     * add a property based condition to the querybuilder
+     *
+     * @param AST\PropertyOperationInterface $operation AST representation of query
+     * @param bool                           $expr      should i wrap this in expr()
+     *
+     * @return mixed
+     */
     protected function visitProperty(AST\PropertyOperationInterface $operation, $expr)
     {
         $method = $this->propertyMap[get_class($operation)];
         return $this->getField($operation->getProperty(), $expr)->$method($operation->getValue());
     }
 
+    /**
+     * add a array based condition to the querybuilder
+     *
+     * @param AST\ArrayOperationInterface $operation AST representation of query
+     * @param bool                        $expr      should i wrap this in expr()
+     *
+     * @return mixed
+     */
     protected function visitArray(AST\ArrayOperationInterface $operation, $expr)
     {
         $method = $this->arrayMap[get_class($operation)];
@@ -107,8 +139,12 @@ class MongoOdm implements VisitorInterface
     }
 
     /**
+     * get a field condition to add to the querybuilder
+     *
      * @param string $field name of field to get
      * @param bool   $expr  should i wrap this in expr()
+     *
+     * @return mixed
      */
     protected function getField($field, $expr)
     {
@@ -119,7 +155,13 @@ class MongoOdm implements VisitorInterface
     }
 
     /**
-     * @param string|boolean $addMethod name of method we will be calling or false if no method is needed
+     * add query (like and or or) to the querybuilder
+     *
+     * @param string|boolean              $addMethod name of method we will be calling or false if no method is needed
+     * @param AST\QueryOperationInterface $operation AST representation of query operator
+     * @param bool                        $expr      should i wrap this in expr()
+     *
+     * @return void
      */
     protected function visitQuery($addMethod, AST\QueryOperationInterface $operation, $expr = false)
     {
@@ -136,6 +178,13 @@ class MongoOdm implements VisitorInterface
         return $builder;
     }
 
+    /**
+     * add a sort condition to querybuilder
+     *
+     * @param AST\SortOperationInterface $operation sort operation
+     *
+     * @return void
+     */
     protected function visitSort(AST\SortOperationInterface $operation)
     {
         foreach ($operation->getFields() as $field) {
@@ -148,12 +197,26 @@ class MongoOdm implements VisitorInterface
         }
     }
 
+    /**
+     * add like operation to querybuilder
+     *
+     * @param AST\Operation $operation like operation
+     *
+     * @return void
+     */
     protected function visitLike(AST\LikeOperation $operation)
     {
         $regex = new \MongoRegex(sprintf('/%s/', str_replace('*', '.*', $operation->getValue())));
         $this->queryBuilder->field($operation->getProperty())->equals($regex);
     }
 
+    /**
+     * add limit condition to querybuilder
+     *
+     * @param AST\LimitOperationInterface $operation limit operation
+     *
+     * @return void
+     */
     protected function visitLimit(AST\LimitOperationInterface $operation)
     {
         $this->queryBuilder->limit($operation->getLimit())->skip($operation->getSkip());

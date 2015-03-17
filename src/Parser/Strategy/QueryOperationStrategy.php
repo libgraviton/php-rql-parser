@@ -1,4 +1,7 @@
 <?php
+/**
+ * parse "and()" and "or()" queries
+ */
 
 namespace Graviton\Rql\Parser\Strategy;
 
@@ -45,6 +48,9 @@ class QueryOperationStrategy extends ParsingStrategy
         return $operation;
     }
 
+    /**
+     * @return array
+     */
     public function getAcceptedTypes()
     {
         return array(

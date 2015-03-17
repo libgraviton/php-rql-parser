@@ -1,4 +1,7 @@
 <?php
+/**
+ * interface for property type operations like "eq()" and "gt()"
+ */
 
 namespace Graviton\Rql\AST;
 
@@ -11,6 +14,8 @@ interface PropertyOperationInterface
 {
     /**
      * @param string $property name
+     *
+     * @return void
      */
     public function setProperty($property);
 
@@ -21,6 +26,8 @@ interface PropertyOperationInterface
 
     /**
      * @param mixed $value value
+     *
+     * @return void
      */
     public function setValue($value);
 

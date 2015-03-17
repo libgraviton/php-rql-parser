@@ -1,4 +1,7 @@
 <?php
+/**
+ * interface for all AST operations
+ */
 
 namespace Graviton\Rql\AST;
 
@@ -11,5 +14,10 @@ use Graviton\Rql\Visitor\VisitorInterface;
  */
 interface OperationInterface
 {
+    /**
+     * @param VisitorInterface $visitor visitor
+     *
+     * @return void
+     */
     public function accept(VisitorInterface $visitor);
 }

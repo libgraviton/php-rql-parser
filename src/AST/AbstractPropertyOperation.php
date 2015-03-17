@@ -1,4 +1,7 @@
 <?php
+/**
+ * shared code for proerty type operators like "eq()" and "gt()"
+ */
 
 namespace Graviton\Rql\AST;
 
@@ -21,6 +24,8 @@ abstract class AbstractPropertyOperation extends AbstractOperation implements Pr
 
     /**
      * @param string $property name
+     *
+     * @return void
      */
     public function setProperty($property)
     {
@@ -37,6 +42,8 @@ abstract class AbstractPropertyOperation extends AbstractOperation implements Pr
 
     /**
      * @param mixed $value value
+     *
+     * @return void
      */
     public function setValue($value)
     {

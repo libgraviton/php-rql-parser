@@ -1,4 +1,7 @@
 <?php
+/**
+ * interface for all query type operations like "and()" and "or()"
+ */
 
 namespace Graviton\Rql\AST;
 

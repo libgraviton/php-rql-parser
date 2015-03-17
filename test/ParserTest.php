@@ -1,4 +1,7 @@
 <?php
+/**
+ * verify that parser build a correct AST
+ */
 
 namespace Graviton\Rql;
 
@@ -15,6 +18,11 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      * test parser
      *
      * @dataProvider parserProvider
+     *
+     * @param string $rql      rql expression
+     * @param object $expected expected AST object
+     *
+     * @return void
      */
     public function testParser($rql, $expected)
     {
@@ -97,10 +105,10 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $sortAST->addField(array('name', 'desc'));
         $tests['sort'] = array('sort(+count,-name)', $sortAST);
 
-        $sortAST2 = new AST\SortOperation;
-        $sortAST2->addField(array('count'));
-        $sortAST2->addField(array('asc'));
-        $tests['sort with asc as param'] = array('sort(count,asc)', $sortAST2);
+        $sortASTCanon = new AST\SortOperation;
+        $sortASTCanon->addField(array('count'));
+        $sortASTCanon->addField(array('asc'));
+        $tests['sort with asc as param'] = array('sort(count,asc)', $sortASTCanon);
 
         $likeAST = new AST\LikeOperation;
         $likeAST->setProperty('name');

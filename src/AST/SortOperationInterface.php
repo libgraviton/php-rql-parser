@@ -1,4 +1,7 @@
 <?php
+/**
+ * interface for "sort()" operations
+ */
 
 namespace Graviton\Rql\AST;
 
@@ -10,7 +13,9 @@ namespace Graviton\Rql\AST;
 interface SortOperationInterface
 {
     /**
-     * @param string[]
+     * @param array $field array containing ['field', 'direction']
+     *
+     * @return void
      */
     public function addField($field);
 

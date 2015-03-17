@@ -1,4 +1,7 @@
 <?php
+/**
+ * parser "limit()" type operations
+ */
 
 namespace Graviton\Rql\Parser\Strategy;
 
@@ -43,6 +46,9 @@ class LimitOperationStrategy extends ParsingStrategy
         return $operation;
     }
 
+    /**
+     * @return array
+     */
     public function getAcceptedTypes()
     {
         return array(

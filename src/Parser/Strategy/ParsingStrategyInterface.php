@@ -1,4 +1,7 @@
 <?php
+/**
+ * interface for parser streategies to implement
+ */
 
 namespace Graviton\Rql\Parser\Strategy;
 
@@ -13,8 +16,18 @@ use Graviton\Rql\AST\OperationInterface;
  */
 interface ParsingStrategyInterface
 {
+    /**
+     * @param Parser $parser reference to parser
+     *
+     * @return void
+     */
     public function setParser(Parser &$parser);
 
+    /**
+     * @param Lexer $lexer doctrine/lexer
+     *
+     * @return void
+     */
     public function setLexer(Lexer &$lexer);
 
     /**

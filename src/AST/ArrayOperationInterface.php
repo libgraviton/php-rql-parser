@@ -1,4 +1,7 @@
 <?php
+/**
+ * shared code for array type operations like "in()"
+ */
 
 namespace Graviton\Rql\AST;
 
@@ -10,7 +13,7 @@ namespace Graviton\Rql\AST;
 interface ArrayOperationInterface
 {
     /**
-     * @param string $property
+     * @param string $property property
      *
      * @return void
      */

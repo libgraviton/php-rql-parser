@@ -1,4 +1,9 @@
 <?php
+/**
+ * some basic utils for parsers
+ *
+ * @todo this should most likely be moved to the (abstract-)parser himself
+ */
 
 namespace Graviton\Rql\Parser;
 
@@ -12,6 +17,11 @@ use Graviton\Rql\Parser\ParserUtil;
  */
 class ParserUtil
 {
+    /**
+     * @param Lexer $lexer doctrine/lexer
+     *
+     * @return void
+     */
     public static function parseStart(Lexer &$lexer)
     {
         $lexer->moveNext();
@@ -20,6 +30,12 @@ class ParserUtil
         }
     }
 
+    /**
+     * @param Lexer $lexer    doctrine/lexer
+     * @param bool  $optional is the comma optional?
+     *
+     * @return bool
+     */
     public static function parseComma(Lexer &$lexer, $optional = false)
     {
         $return = true;
@@ -31,6 +47,12 @@ class ParserUtil
         return $return;
     }
 
+    /**
+     * @param Lexer $lexer doctrine/lexer
+     * @param bool  $move  should i moveNext before getting a string?
+     *
+     * @return string
+     */
     public static function getString(Lexer &$lexer, $move = true)
     {
         $move && $lexer->moveNext();
@@ -50,6 +72,11 @@ class ParserUtil
         return $string;
     }
 
+    /**
+     * @param Lexer $lexer doctrine/lexer
+     *
+     * @return string
+     */
     public static function parseArgument(Lexer &$lexer)
     {
         $lexer->moveNext();
@@ -64,6 +91,11 @@ class ParserUtil
         return $string;
     }
 
+    /**
+     * @param Lexer $lexer doctrine/lexer
+     *
+     * @return void
+     */
     public static function parseEnd(Lexer &$lexer)
     {
         $lexer->moveNext();
@@ -73,7 +105,9 @@ class ParserUtil
     }
 
     /**
-     * @param string $message
+     * @param string $message error message
+     *
+     * @return void
      */
     public static function syntaxError($message)
     {

@@ -1,4 +1,7 @@
 <?php
+/**
+ * create operations from tokens
+ */
 
 namespace Graviton\Rql\AST;
 
@@ -12,6 +15,9 @@ use Graviton\AST;
  */
 class OperationFactory
 {
+    /**
+     * @return array
+     */
     protected static function getLexerMap()
     {
         return array(
@@ -32,6 +38,8 @@ class OperationFactory
     }
 
     /**
+     * @param int $token token to get an AST intance for
+     *
      * @return OperationInterface
      */
     public static function fromLexerToken($token)

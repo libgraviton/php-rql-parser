@@ -1,4 +1,7 @@
 <?php
+/**
+ * shared code for array type operators like "in()" and "out()"
+ */
 
 namespace Graviton\Rql\AST;
 
@@ -20,7 +23,7 @@ abstract class AbstractArrayOperation extends AbstractOperation implements Array
     private $array = array();
 
     /**
-     * @var string $property property name
+     * @param string $property property name
      *
      * @return void
      */

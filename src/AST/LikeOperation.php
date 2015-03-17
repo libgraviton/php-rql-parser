@@ -1,4 +1,7 @@
 <?php
+/**
+ * "like()"
+ */
 
 namespace Graviton\Rql\AST;
 

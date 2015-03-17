@@ -21,7 +21,9 @@ class MongoOdm implements FixtureInterface
     /**
      * load fixtures with the passed em
      *
-     *  @param ObjectManager $manager
+     * @param ObjectManager $manager manager to load fixtures into
+     *
+     * @return void
      */
     public function load(ObjectManager $manager)
     {

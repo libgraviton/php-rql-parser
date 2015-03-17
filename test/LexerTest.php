@@ -1,4 +1,7 @@
 <?php
+/**
+ * validate basic lexer features
+ */
 
 namespace Graviton\Rql;
 
@@ -13,6 +16,11 @@ class LexerTest extends \PHPUnit_Framework_TestCase
      * test lexer
      *
      * @dataProvider lexerProvider
+     *
+     * @param string $rql      rql expression
+     * @param array  $expected parts to use for building asserts
+     *
+     * @return void
      */
     public function testLexer($rql, $expected)
     {

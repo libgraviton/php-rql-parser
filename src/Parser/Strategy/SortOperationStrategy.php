@@ -1,4 +1,7 @@
 <?php
+/**
+ * parser "sort()" operations
+ */
 
 namespace Graviton\Rql\Parser\Strategy;
 
@@ -43,6 +46,9 @@ class SortOperationStrategy extends ParsingStrategy
         return $operation;
     }
 
+    /**
+     * @return array
+     */
     public function getAcceptedTypes()
     {
         return array(
@@ -50,6 +56,11 @@ class SortOperationStrategy extends ParsingStrategy
         );
     }
 
+    /**
+     * @param int $token Lexer::T_* token
+     *
+     * @return string|null
+     */
     private function getTypeAndMove($token)
     {
         switch ($token) {
@@ -68,6 +79,11 @@ class SortOperationStrategy extends ParsingStrategy
         return $type;
     }
 
+    /**
+     * @param string $type type of sort operation
+     *
+     * @return array
+     */
     private function getField($type)
     {
         $property = ParserUtil::getString($this->lexer, false);

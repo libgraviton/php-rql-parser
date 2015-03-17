@@ -1,4 +1,7 @@
 <?php
+/**
+ * shared code for all query type operators like "and()"
+ */
 
 namespace Graviton\Rql\AST;
 

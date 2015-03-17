@@ -1,4 +1,7 @@
 <?php
+/**
+ * abstract parser strategy
+ */
 
 namespace Graviton\Rql\Parser\Strategy;
 
@@ -22,16 +25,31 @@ abstract class ParsingStrategy implements ParsingStrategyInterface
      */
     protected $lexer;
 
+    /**
+     * @param Parser $parser parser
+     *
+     * @return void
+     */
     public function setParser(Parser &$parser)
     {
         $this->parser =& $parser;
     }
 
+    /**
+     * @param Lexer $lexer doctrine/lexer
+     *
+     * @return void
+     */
     public function setLexer(Lexer &$lexer)
     {
         $this->lexer =& $lexer;
     }
 
+    /**
+     * @param int $type Lexer::T_* type
+     *
+     * @return bool
+     */
     public function accepts($type)
     {
         return in_array(

@@ -1,4 +1,7 @@
 <?php
+/**
+ * parse the various property type operations (like eq, lt, ...)
+ */
 
 namespace Graviton\Rql\Parser\Strategy;
 
@@ -34,6 +37,9 @@ class PropertyOperationStrategy extends ParsingStrategy
         return $operation;
     }
 
+    /**
+     * @return array
+     */
     public function getAcceptedTypes()
     {
         return array(

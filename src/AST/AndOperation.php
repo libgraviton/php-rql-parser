@@ -1,4 +1,7 @@
 <?php
+/**
+ * "and()"
+ */
 
 namespace Graviton\Rql\AST;
 

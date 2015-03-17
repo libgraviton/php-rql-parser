@@ -1,4 +1,7 @@
 <?php
+/**
+ * basic combined query without explicit "and()" or "or()"
+ */
 
 namespace Graviton\Rql\AST;
 

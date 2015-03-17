@@ -1,4 +1,7 @@
 <?php
+/**
+ * "sort()"
+ */
 
 namespace Graviton\Rql\AST;
 
@@ -14,11 +17,19 @@ class SortOperation extends AbstractOperation implements SortOperationInterface
      */
     private $fields = array();
 
+    /**
+     * @param string $field field
+     *
+     * @return void
+     */
     public function addField($field)
     {
         $this->fields[] = $field;
     }
 
+    /**
+     * @return array
+     */
     public function getFields()
     {
         return $this->fields;

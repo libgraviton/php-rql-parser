@@ -1,4 +1,7 @@
 <?php
+/**
+ * "out()"
+ */
 
 namespace Graviton\Rql\AST;
 
