@@ -10,6 +10,7 @@ use Doctrine\ODM\MongoDB\Configuration;
 use Doctrine\Common\DataFixtures\Loader;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Graviton\Rql\Parser;
+use Graviton\Rql\Parser\Strategy;
 use Graviton\Rql\Visitor\MongoOdm;
 use Graviton\Rql\DataFixtures\MongoOdm as MongoOdmFixtures;
 use Doctrine\Common\DataFixtures\Executor\MongoDBExecutor;
@@ -19,11 +20,9 @@ use Doctrine\ODM\MongoDB\Mapping\Driver\AnnotationDriver;
 /**
  * run tests against local mongodb with loaded fixtures
  *
- * @category MongoODM
- * @package  RqlParser
- * @author   Lucas Bickel <lucas.bickel@swisscom.com>
- * @license  http://opensource.org/licenses/MIT MIT License (c) 2015 Swisscom
- * @link     http://swisscom.ch
+ * @author  List of contributors <https://github.com/libgraviton/php-rql-parser/graphs/contributors>
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ * @link    http://swisscom.ch
  */
 class MongoOdmTest extends \PHPUnit_Framework_TestCase
 {
@@ -70,7 +69,7 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
         if ($skip) {
             $this->markTestSkipped(sprintf('Please unskip the test when you add support for %s', $query));
         }
-        $parser = new Parser($query);
+        $parser = Parser::createParser($query);
         $mongo = new MongoOdm($this->builder);
         $ast = $parser->getAST();
         $results = array();
@@ -220,6 +219,17 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
             'out() search' => array(
                 'out(name,[A Simple Widget,My First Sprocket])', array(
                     array('name' => 'The Third Wheel')
+                )
+            ),
+            'like and limit search' => array(
+                'like(name,*et),limit(1)', array(
+                    array('name' => 'My First Sprocket')
+                )
+            ),
+            'complex example from #6 without sugar' => array(
+                'or(and(eq(name,The Third Wheel),lt(count,10)),eq(count,100))', array(
+                    array('name' => 'The Third Wheel', 'count' => 3),
+                    array('name' => 'A Simple Widget', 'count' => 100),
                 )
             ),
         );

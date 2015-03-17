@@ -10,11 +10,9 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 /**
  * @ODM\Document
  *
- * @category MongoODM
- * @package  RqlParser
- * @author   Lucas Bickel <lucas.bickel@swisscom.com>
- * @license  http://opensource.org/licenses/MIT MIT License (c) 2015 Swisscom
- * @link     http://swisscom.ch
+ * @author  List of contributors <https://github.com/libgraviton/php-rql-parser/graphs/contributors>
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ * @link    http://swisscom.ch
  */
 class Foo
 {

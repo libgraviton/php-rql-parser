@@ -1,7 +1,15 @@
 <?php
+/**
+ * lex rql queries using doctrine/lexer
+ */
 
 namespace Graviton\Rql;
 
+/**
+ * @author  List of contributors <https://github.com/libgraviton/php-rql-parser/graphs/contributors>
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ * @link    http://swisscom.ch
+ */
 class Lexer extends \Doctrine\Common\Lexer
 {
     const T_NONE              = 1;
@@ -33,15 +41,18 @@ class Lexer extends \Doctrine\Common\Lexer
      * @var array<string>
      */
     private $primitiveMap = array(
-            ',' => self::T_COMMA,
-            '[' => self::T_OPEN_BRACKET,
-            ']' => self::T_CLOSE_BRACKET,
-            '(' => self::T_OPEN_PARENTHESIS,
-            ')' => self::T_CLOSE_PARENTHESIS,
-            '+' => self::T_PLUS,
-            '-' => self::T_MINUS,
+        ',' => self::T_COMMA,
+        '[' => self::T_OPEN_BRACKET,
+        ']' => self::T_CLOSE_BRACKET,
+        '(' => self::T_OPEN_PARENTHESIS,
+        ')' => self::T_CLOSE_PARENTHESIS,
+        '+' => self::T_PLUS,
+        '-' => self::T_MINUS,
     );
 
+    /**
+     * @return array
+     */
     protected function getCatchablePatterns()
     {
         return array(
@@ -53,6 +64,9 @@ class Lexer extends \Doctrine\Common\Lexer
         );
     }
 
+    /**
+     * @return array
+     */
     protected function getOperators()
     {
         return array(
@@ -72,26 +86,26 @@ class Lexer extends \Doctrine\Common\Lexer
         );
     }
 
+    /**
+     * @return array
+     */
     protected function getNonCatchablePatterns()
     {
         return array();
     }
 
+    /**
+     * @param string $value value from lexer
+     *
+     * @return int
+     */
     protected function getType(&$value)
     {
-        $type = self::T_NONE;
-
         if (is_numeric($value)) {
-            $type = self::T_INTEGER;
-            if (strpos($value, '.') !== false || stripos($value, 'e') !== false) {
-                $type = self::T_FLOAT;
-            }
+            $type = $this->getNumericType($value);
 
         } elseif (in_array($value, $this->getOperators())) {
-            $constName = sprintf('self::T_%s', strtoupper($value));
-            if (defined($constName)) {
-                $type = constant($constName);
-            }
+            $type = $this->getConstantType($value);
 
         } elseif (in_array($value, array_keys($this->primitiveMap))) {
             $type = $this->primitiveMap[$value];
@@ -100,6 +114,35 @@ class Lexer extends \Doctrine\Common\Lexer
             $type = self::T_STRING;
         }
 
+        return $type;
+    }
+
+    /**
+     * @param string $value potential float value
+     *
+     * @return int
+     */
+    protected function getNumericType($value)
+    {
+        $type = self::T_INTEGER;
+        if (strpos($value, '.') !== false || stripos($value, 'e') !== false) {
+            $type = self::T_FLOAT;
+        }
+        return $type;
+    }
+
+    /**
+     * @param string $value type name
+     *
+     * @return int
+     */
+    protected function getConstantType($value)
+    {
+        $type = self::T_NONE;
+        $constName = sprintf('self::T_%s', strtoupper($value));
+        if (defined($constName)) {
+            $type = constant($constName);
+        }
         return $type;
     }
 }

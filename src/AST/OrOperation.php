@@ -1,23 +1,15 @@
 <?php
 /**
- * interface for all AST operations
+ * "or()"
  */
 
 namespace Graviton\Rql\AST;
-
-use Graviton\Rql\Visitor\VisitorInterface;
 
 /**
  * @author  List of contributors <https://github.com/libgraviton/php-rql-parser/graphs/contributors>
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  * @link    http://swisscom.ch
  */
-interface OperationInterface
+class OrOperation extends AbstractQueryOperation
 {
-    /**
-     * @param VisitorInterface $visitor visitor
-     *
-     * @return void
-     */
-    public function accept(VisitorInterface $visitor);
 }
