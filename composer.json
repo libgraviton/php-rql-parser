@@ -6,8 +6,8 @@
     "license": "GPL",
     "authors": [
         {
-            "name": "Dario Nuevo",
-            "email": "dario.nuevo@swisscom.com"
+            "name": "List of contributors",
+            "homepage": "https://github.com/libgraviton/php-rql-parser/graphs/contributors"
         }
     ],
     "autoload": {
