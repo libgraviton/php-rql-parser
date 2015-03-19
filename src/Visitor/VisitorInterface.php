@@ -15,6 +15,8 @@ use Graviton\Rql\AST\OperationInterface;
 interface VisitorInterface
 {
     /**
+     * Acts on the operation defined.
+     *
      * @param OperationInterface $operation AST representation of query
      *
      * @return mixed

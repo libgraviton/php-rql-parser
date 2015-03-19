@@ -1,19 +1,22 @@
 <?php
 /**
+ * ODM MongoDB visitor
+ *
  * constrain a mongodb-odm querybuilder based on data from an AST
  */
 
 namespace Graviton\Rql\Visitor;
 
+use Graviton\Rql\QueryBuilderAwareInterface;
 use Graviton\Rql\AST;
 use Doctrine\ODM\MongoDB\Query\Builder as QueryBuilder;
 
 /**
  * @author  List of contributors <https://github.com/libgraviton/php-rql-parser/graphs/contributors>
- * @license http://opensource.org/licenses/gpl-license.php GNU Public License
- * @link    http://swisscom.ch
+ * @license  http://opensource.org/licenses/gpl-license.php GNU Public License
+ * @link     http://swisscom.ch
  */
-class MongoOdm implements VisitorInterface
+final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
 {
     /**
      * @var QueryBuilder
@@ -111,6 +114,16 @@ class MongoOdm implements VisitorInterface
     }
 
     /**
+     * Provides the Doctrine Query object to execute.
+     *
+     * @return \Doctrine\ODM\MongoDB\Query\Query
+     */
+    public function getQuery()
+    {
+        return $this->getBuilder()->getQuery();
+    }
+
+    /**
      * add a property based condition to the querybuilder
      *
      * @param AST\PropertyOperationInterface $operation AST representation of query
@@ -161,7 +174,7 @@ class MongoOdm implements VisitorInterface
      * @param AST\QueryOperationInterface $operation AST representation of query operator
      * @param bool                        $expr      should i wrap this in expr()
      *
-     * @return void
+     * @return QueryBuilder
      */
     protected function visitQuery($addMethod, AST\QueryOperationInterface $operation, $expr = false)
     {
