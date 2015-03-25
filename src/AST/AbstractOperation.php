@@ -1,6 +1,6 @@
 <?php
 /**
- * interface for all AST operations
+ * shared code for all operations
  */
 
 namespace Graviton\Rql\AST;
@@ -12,12 +12,15 @@ use Graviton\Rql\Visitor\VisitorInterface;
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  * @link    http://swisscom.ch
  */
-interface OperationInterface
+abstract class AbstractOperation implements OperationInterface
 {
     /**
      * @param VisitorInterface $visitor visitor
      *
      * @return void
      */
-    public function accept(VisitorInterface $visitor);
+    public function accept(VisitorInterface $visitor)
+    {
+        $visitor->visit($this);
+    }
 }

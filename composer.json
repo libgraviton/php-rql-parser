@@ -6,8 +6,8 @@
     "license": "GPL",
     "authors": [
         {
-            "name": "Dario Nuevo",
-            "email": "dario.nuevo@swisscom.com"
+            "name": "List of contributors",
+            "homepage": "https://github.com/libgraviton/php-rql-parser/graphs/contributors"
         }
     ],
     "autoload": {
@@ -20,14 +20,23 @@
         "phpunit/phpunit": "*",
         "squizlabs/php_codesniffer": "~2.2",
         "doctrine/mongodb-odm": "1.0.0-BETA11@dev",
-        "doctrine/data-fixtures": "~1.0"
+        "doctrine/data-fixtures": "~1.0",
+        "libgraviton/codesniffer": "~1.3"
     },
     "require": {
         "php": "~5.4",
         "doctrine/lexer": "~1.0"
     },
+    "scripts": {
+        "check": [
+            "./vendor/bin/phpcs --config-set installed_paths ../../libgraviton/codesniffer/CodeSniffer/Standards",
+            "./vendor/bin/phpcs --standard=PSR1 --ignore='*.css' --ignore='*.js' src/ test/",
+            "./vendor/bin/phpcs --standard=PSR2 --ignore='*.css' --ignore='*.js' src/ test/",
+            "./vendor/bin/phpcs --standard=ENTB --ignore='*.css' --ignore='*.js' src/ test/"
+        ]
+    },
     "suggest": {
-        "doctrine/mongodb-odm": "Needs ~1.0 if you want to use Graviton\\Rql\\Queriable\\MongoOdm."
+        "doctrine/mongodb-odm": "Needs ~1.0 if you want to use Graviton\\Rql\\Visitor\\MongoOdm."
     },
     "minimum-stability": "stable"
 }
