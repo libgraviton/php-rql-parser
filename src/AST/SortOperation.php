@@ -18,7 +18,7 @@ class SortOperation extends AbstractOperation implements SortOperationInterface
     private $fields = array();
 
     /**
-     * @param string $field field
+     * @param array $field field
      *
      * @return void
      */

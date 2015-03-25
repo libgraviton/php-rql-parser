@@ -93,7 +93,7 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      * @param AST\OperationInterface $operation AST representation of query
      * @param bool                   $expr      should i wrap this in expr()
      *
-     * @return QueryBuilder
+     * @return QueryBuilder|Doctrine\ODM\MongoDB\Query\Expr
      */
     public function visit(AST\OperationInterface $operation, $expr = false)
     {
@@ -143,7 +143,7 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      * @param AST\ArrayOperationInterface $operation AST representation of query
      * @param bool                        $expr      should i wrap this in expr()
      *
-     * @return mixed
+     * @return QueryBuilder|Doctrine\ODM\MongoDB\Query\Expr
      */
     protected function visitArray(AST\ArrayOperationInterface $operation, $expr)
     {
@@ -157,7 +157,7 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      * @param string $field name of field to get
      * @param bool   $expr  should i wrap this in expr()
      *
-     * @return mixed
+     * @return QueryBuilder|Doctrine\ODM\MongoDB\Query\Expr
      */
     protected function getField($field, $expr)
     {
@@ -174,7 +174,7 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      * @param AST\QueryOperationInterface $operation AST representation of query operator
      * @param bool                        $expr      should i wrap this in expr()
      *
-     * @return QueryBuilder
+     * @return QueryBuilder|Doctrine\ODM\MongoDB\Query\Expr
      */
     protected function visitQuery($addMethod, AST\QueryOperationInterface $operation, $expr = false)
     {
