@@ -104,7 +104,11 @@ class Parser
         }
         if (!$operation) {
             throw new \RuntimeException(
-                sprintf("No strategies matched the type %s (%s). Did you load all strategies?", $type, $this->lexer->lookahead['value'])
+                sprintf(
+                    'No strategies matched the type %s (%s). Did you load all strategies?',
+                    $type,
+                    $this->lexer->lookahead['value']
+                )
             );
         }
         return $operation;
