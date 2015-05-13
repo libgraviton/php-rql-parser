@@ -57,7 +57,7 @@ class Lexer extends \Doctrine\Common\Lexer
     /**
      * @var array<string>
      */
-    private static $fieldConcatenatorMap = array(
+    protected static $fieldConcatenatorMap = array(
         '+' => self::T_PLUS,
         '-' => self::T_MINUS,
         '.' => self::T_DOT,
