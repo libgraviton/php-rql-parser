@@ -8,7 +8,6 @@
 namespace Graviton\Rql\Parser;
 
 use Graviton\Rql\Lexer;
-use Graviton\Rql\Parser\ParserUtil;
 
 /**
  * @author  List of contributors <https://github.com/libgraviton/php-rql-parser/graphs/contributors>
@@ -44,6 +43,7 @@ class ParserUtil
             $optional || self::syntaxError('missing comma');
             $return = false;
         }
+
         return $return;
     }
 
@@ -60,15 +60,14 @@ class ParserUtil
         if ($lexer->lookahead['type'] == Lexer::T_STRING) {
             $string = $lexer->lookahead['value'];
             $glimpse = $lexer->glimpse();
-            if ($glimpse['type'] == Lexer::T_MINUS ||
-                $glimpse['type'] == Lexer::T_PLUS
-            ) {
+            if (Lexer::isFieldConcatenationChar($glimpse['type'])) {
                 $lexer->moveNext();
                 $string = $string . $lexer->lookahead['value'] . self::getString($lexer);
             }
         } else {
             self::syntaxError('no string found');
         }
+
         return $string;
     }
 
@@ -84,7 +83,7 @@ class ParserUtil
         if ($lexer->lookahead['type'] == Lexer::T_STRING) {
             $string = self::getString($lexer, false);
         } elseif ($lexer->lookahead['type'] == Lexer::T_INTEGER) {
-            $string = (int) $lexer->lookahead['value'];
+            $string = (int)$lexer->lookahead['value'];
         } else {
             self::syntaxError('no valid argument found');
         }
@@ -94,6 +93,7 @@ class ParserUtil
         if ($string === 'false') {
             $string = false;
         }
+
         return $string;
     }
 

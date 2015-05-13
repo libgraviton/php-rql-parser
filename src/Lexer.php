@@ -20,6 +20,8 @@ class Lexer extends \Doctrine\Common\Lexer
     const T_CLOSE_PARENTHESIS = 6;
     const T_OPEN_PARENTHESIS  = 7;
     const T_COMMA             = 8;
+    const T_DOT               = 9;
+    const T_SLASH             = 10;
 
     const T_EQ    = 100;
     const T_NE    = 101;
@@ -48,6 +50,18 @@ class Lexer extends \Doctrine\Common\Lexer
         ')' => self::T_CLOSE_PARENTHESIS,
         '+' => self::T_PLUS,
         '-' => self::T_MINUS,
+        '.' => self::T_DOT,
+        '/' => self::T_SLASH,
+    );
+
+    /**
+     * @var array<string>
+     */
+    private static $fieldConcatenatorMap = array(
+        '+' => self::T_PLUS,
+        '-' => self::T_MINUS,
+        '.' => self::T_DOT,
+        '/' => self::T_SLASH,
     );
 
     /**
@@ -144,5 +158,10 @@ class Lexer extends \Doctrine\Common\Lexer
             $type = constant($constName);
         }
         return $type;
+    }
+
+    public static function isFieldConcatenationChar($type)
+    {
+        return in_array($type, static::$fieldConcatenatorMap);
     }
 }

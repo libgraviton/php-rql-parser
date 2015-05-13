@@ -39,6 +39,42 @@ class LexerTest extends \PHPUnit_Framework_TestCase
     public function lexerProvider()
     {
         return array(
+            'complex eq search concatenated fields' => array('eq(name-part+test,12)', array(
+                'eq' => Lexer::T_EQ,
+                '(' => Lexer::T_OPEN_PARENTHESIS,
+                'name' => Lexer::T_STRING,
+                '-' => Lexer::T_MINUS,
+                'part' => Lexer::T_STRING,
+                '+' => Lexer::T_PLUS,
+                'test' => Lexer::T_STRING,
+                ',' => Lexer::T_COMMA,
+                '12' => Lexer::T_INTEGER,
+                ')' => Lexer::T_CLOSE_PARENTHESIS,
+            )),
+            'complex eq search concatenated field value' => array('eq(name,foo-bar+baz)', array(
+                'eq' => Lexer::T_EQ,
+                '(' => Lexer::T_OPEN_PARENTHESIS,
+                'name' => Lexer::T_STRING,
+                ',' => Lexer::T_COMMA,
+                'foo' => Lexer::T_STRING,
+                '-' => Lexer::T_MINUS,
+                'bar' => Lexer::T_STRING,
+                '+' => Lexer::T_PLUS,
+                'baz' => Lexer::T_STRING,
+                ')' => Lexer::T_CLOSE_PARENTHESIS,
+            )),
+            'simple eq search in array field' => array('eq(metadata.mime,text/plain)', array(
+                'eq' => Lexer::T_EQ,
+                '(' => Lexer::T_OPEN_PARENTHESIS,
+                'metadata' => Lexer::T_STRING,
+                '.' => Lexer::T_DOT,
+                'mime' => Lexer::T_STRING,
+                ',' => Lexer::T_COMMA,
+                'text' => Lexer::T_STRING,
+                '/' => Lexer::T_SLASH,
+                'plain' => Lexer::T_STRING,
+                ')' => Lexer::T_CLOSE_PARENTHESIS,
+            )),
             'simple eq' => array('eq(name,foo bar)', array(
                 'eq' => Lexer::T_EQ,
                 '(' => Lexer::T_OPEN_PARENTHESIS,
@@ -123,6 +159,26 @@ class LexerTest extends \PHPUnit_Framework_TestCase
                 '[' => Lexer::T_OPEN_BRACKET,
                 'foo' => Lexer::T_STRING
             )),
+        );
+    }
+
+    /**
+     * test set of field concatenators
+     *
+     * @dataProvider concatenatorProvider
+     */
+    public function testIsFieldConcatenationChar($concatenator)
+    {
+        $this->assertTrue(\Graviton\Rql\Lexer::isFieldConcatenationChar($concatenator));
+    }
+
+    public function concatenatorProvider()
+    {
+        return array(
+            'plus' => array(Lexer::T_PLUS),
+            'minus' => array(Lexer::T_MINUS),
+            'dot' => array(Lexer::T_DOT),
+            'slash' => array(Lexer::T_SLASH),
         );
     }
 }
