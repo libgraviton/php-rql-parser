@@ -160,8 +160,15 @@ class Lexer extends \Doctrine\Common\Lexer
         return $type;
     }
 
-    public static function isFieldConcatenationChar($type)
+    /**
+     * Determines that the provided type identifier is part of the field concatenator list.
+     *
+     * @param string $typeId Identifier of the character type
+     *
+     * @return bool
+     */
+    public static function isFieldConcatenationChar($typeId)
     {
-        return in_array($type, static::$fieldConcatenatorMap);
+        return in_array($typeId, static::$fieldConcatenatorMap);
     }
 }

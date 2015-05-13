@@ -166,12 +166,19 @@ class LexerTest extends \PHPUnit_Framework_TestCase
      * test set of field concatenators
      *
      * @dataProvider concatenatorProvider
+     *
+     * @param string $concatenator Character representing a string concatenator.
+     *
+     * @return void
      */
     public function testIsFieldConcatenationChar($concatenator)
     {
         $this->assertTrue(\Graviton\Rql\Lexer::isFieldConcatenationChar($concatenator));
     }
 
+    /**
+     * @return array
+     */
     public function concatenatorProvider()
     {
         return array(

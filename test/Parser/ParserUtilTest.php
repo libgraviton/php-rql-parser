@@ -19,8 +19,10 @@ class ParserUtilTest extends \PHPUnit_Framework_TestCase
      *
      * @dataProvider stringProvider
      *
-     * @param string $expectedString
-     * @param string $rqlAttribs
+     * @param string $expectedString String expected to be returned by the sut
+     * @param string $rqlAttribs     String representing the query parameters of a rql-string
+     *
+     * @return void
      */
     public function testGetString($expectedString, $rqlAttribs)
     {
@@ -32,6 +34,9 @@ class ParserUtilTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedString, ParserUtil::getString($lexer));
     }
 
+    /**
+     * @return array
+     */
     public function stringProvider()
     {
         return array(
@@ -43,6 +48,8 @@ class ParserUtilTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Verify exception handling of getString
+     *
+     * @return void
      */
     public function testGetStringLogicExpectingException()
     {

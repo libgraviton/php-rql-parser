@@ -83,7 +83,7 @@ class ParserUtil
         if ($lexer->lookahead['type'] == Lexer::T_STRING) {
             $string = self::getString($lexer, false);
         } elseif ($lexer->lookahead['type'] == Lexer::T_INTEGER) {
-            $string = (int)$lexer->lookahead['value'];
+            $string = (int) $lexer->lookahead['value'];
         } else {
             self::syntaxError('no valid argument found');
         }
