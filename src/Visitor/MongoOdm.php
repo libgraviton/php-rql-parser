@@ -10,6 +10,7 @@ namespace Graviton\Rql\Visitor;
 use Graviton\Rql\QueryBuilderAwareInterface;
 use Graviton\Rql\AST;
 use Doctrine\ODM\MongoDB\Query\Builder as QueryBuilder;
+use Doctrine\ODM\MongoDB\Query\Expr;
 
 /**
  * @author  List of contributors <https://github.com/libgraviton/php-rql-parser/graphs/contributors>
@@ -157,7 +158,7 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      * @param string $field name of field to get
      * @param bool   $expr  should i wrap this in expr()
      *
-     * @return QueryBuilder|Doctrine\ODM\MongoDB\Query\Expr
+     * @return QueryBuilder|Expr
      */
     protected function getField($field, $expr)
     {

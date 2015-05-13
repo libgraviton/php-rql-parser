@@ -88,6 +88,12 @@ class ParserUtil
         } else {
             self::syntaxError('no valid argument found');
         }
+        if ($string === 'true') {
+            $string = true;
+        }
+        if ($string === 'false') {
+            $string = false;
+        }
         return $string;
     }
 

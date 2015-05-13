@@ -142,6 +142,16 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $complexAST->addQuery($gtAST);
         $tests['complex nested query'] = array('or(and(eq(name,foo),ne(name,bar)),gt(count,1))', $complexAST);
 
+        $booleanAST = new AST\EqOperation;
+        $booleanAST->setProperty('name');
+        $booleanAST->setValue(true);
+        $tests['boolean true in AST'] = array('eq(name,true)', $booleanAST);
+
+        $booleanFalseAST = new AST\EqOperation;
+        $booleanFalseAST->setProperty('name');
+        $booleanFalseAST->setValue(false);
+        $tests['boolean false in AST'] = array('eq(name,false)', $booleanFalseAST);
+
         return $tests;
     }
 }
