@@ -39,131 +39,176 @@ class LexerTest extends \PHPUnit_Framework_TestCase
     public function lexerProvider()
     {
         return array(
-            'complex eq search numeric argument field' => array('eq(size,12)', array(
-                'eq' => Lexer::T_EQ,
-                '(' => Lexer::T_OPEN_PARENTHESIS,
-                'size' => Lexer::T_STRING,
-                ',' => Lexer::T_COMMA,
-                '12' => Lexer::T_INTEGER,
-                ')' => Lexer::T_CLOSE_PARENTHESIS,
-            )),
-            'eq search quoted argument field' => array('eq(size,"12")', array(
-                'eq' => Lexer::T_EQ,
-                '(' => Lexer::T_OPEN_PARENTHESIS,
-                'size' => Lexer::T_STRING,
-                ',' => Lexer::T_COMMA,
-                '"' => Lexer::T_DOUBLE_QUOTE,
-                '12' => Lexer::T_INTEGER,
-                '"' => Lexer::T_DOUBLE_QUOTE,
-            )),
-            'complex eq search concatenated field value' => array('eq(name,foo-bar+baz)', array(
-                'eq' => Lexer::T_EQ,
-                '(' => Lexer::T_OPEN_PARENTHESIS,
-                'name' => Lexer::T_STRING,
-                ',' => Lexer::T_COMMA,
-                'foo' => Lexer::T_STRING,
-                '-' => Lexer::T_MINUS,
-                'bar' => Lexer::T_STRING,
-                '+' => Lexer::T_PLUS,
-                'baz' => Lexer::T_STRING,
-                ')' => Lexer::T_CLOSE_PARENTHESIS,
-            )),
-            'simple eq search in array field' => array('eq(metadata.mime,text/plain)', array(
-                'eq' => Lexer::T_EQ,
-                '(' => Lexer::T_OPEN_PARENTHESIS,
-                'metadata' => Lexer::T_STRING,
-                '.' => Lexer::T_DOT,
-                'mime' => Lexer::T_STRING,
-                ',' => Lexer::T_COMMA,
-                'text' => Lexer::T_STRING,
-                '/' => Lexer::T_SLASH,
-                'plain' => Lexer::T_STRING,
-                ')' => Lexer::T_CLOSE_PARENTHESIS,
-            )),
-            'simple eq' => array('eq(name,foo bar)', array(
-                'eq' => Lexer::T_EQ,
-                '(' => Lexer::T_OPEN_PARENTHESIS,
-                'name' => Lexer::T_STRING,
-                ',' => Lexer::T_COMMA,
-                'foo bar' => Lexer::T_STRING,
-                ')' => Lexer::T_CLOSE_PARENTHESIS,
-            )),
+            'complex eq search numeric argument field' => array(
+                'eq(size,12)',
+                array(
+                    'eq' => Lexer::T_EQ,
+                    '(' => Lexer::T_OPEN_PARENTHESIS,
+                    'size' => Lexer::T_STRING,
+                    ',' => Lexer::T_COMMA,
+                    '12' => Lexer::T_INTEGER,
+                    ')' => Lexer::T_CLOSE_PARENTHESIS,
+                )
+            ),
+            'eq search quoted argument field' => array(
+                'eq(size,"12")',
+                array(
+                    'eq' => Lexer::T_EQ,
+                    '(' => Lexer::T_OPEN_PARENTHESIS,
+                    'size' => Lexer::T_STRING,
+                    ',' => Lexer::T_COMMA,
+                    '"' => Lexer::T_DOUBLE_QUOTE,
+                    '12' => Lexer::T_INTEGER,
+                    '"' => Lexer::T_DOUBLE_QUOTE,
+                )
+            ),
+            'complex eq search concatenated field value' => array(
+                'eq(name,foo-bar+baz)',
+                array(
+                    'eq' => Lexer::T_EQ,
+                    '(' => Lexer::T_OPEN_PARENTHESIS,
+                    'name' => Lexer::T_STRING,
+                    ',' => Lexer::T_COMMA,
+                    'foo' => Lexer::T_STRING,
+                    '-' => Lexer::T_MINUS,
+                    'bar' => Lexer::T_STRING,
+                    '+' => Lexer::T_PLUS,
+                    'baz' => Lexer::T_STRING,
+                    ')' => Lexer::T_CLOSE_PARENTHESIS,
+                )
+            ),
+            'simple eq search in array field' => array(
+                'eq(metadata.mime,text/plain)',
+                array(
+                    'eq' => Lexer::T_EQ,
+                    '(' => Lexer::T_OPEN_PARENTHESIS,
+                    'metadata' => Lexer::T_STRING,
+                    '.' => Lexer::T_DOT,
+                    'mime' => Lexer::T_STRING,
+                    ',' => Lexer::T_COMMA,
+                    'text' => Lexer::T_STRING,
+                    '/' => Lexer::T_SLASH,
+                    'plain' => Lexer::T_STRING,
+                    ')' => Lexer::T_CLOSE_PARENTHESIS,
+                )
+            ),
+            'simple eq' => array(
+                'eq(name,foo bar)',
+                array(
+                    'eq' => Lexer::T_EQ,
+                    '(' => Lexer::T_OPEN_PARENTHESIS,
+                    'name' => Lexer::T_STRING,
+                    ',' => Lexer::T_COMMA,
+                    'foo bar' => Lexer::T_STRING,
+                    ')' => Lexer::T_CLOSE_PARENTHESIS,
+                )
+            ),
             'simple ne' => array('ne(name,foo)', array('ne' => Lexer::T_NE)),
-            'simple and' => array('and(eq(name,foo),ne(name,bar))', array(
-                'and' => Lexer::T_AND,
-                '(' => Lexer::T_OPEN_PARENTHESIS,
-                'eq' => Lexer::T_EQ,
-                '(' => Lexer::T_OPEN_PARENTHESIS,
-            )),
-            'integer' => array('eq(count,1)', array(
-                'eq' => Lexer::T_EQ,
-                '(' => Lexer::T_OPEN_PARENTHESIS,
-                'count' => Lexer::T_STRING,
-                ',' => Lexer::T_COMMA,
-                '1' => Lexer::T_INTEGER
-            )),
-            'simple or' => array('or(eq(name,foo),eq(name,bar))', array(
-                'or' => Lexer::T_OR,
-                '(' => Lexer::T_OPEN_PARENTHESIS,
-                'eq' => Lexer::T_EQ,
-                '(' => Lexer::T_OPEN_PARENTHESIS,
-            )),
-            'lt,gt' => array('lt(),gt())', array(
-                'lt' => Lexer::T_LT,
-                '(' => Lexer::T_OPEN_PARENTHESIS,
-                ')' => Lexer::T_CLOSE_PARENTHESIS,
-                ',' => Lexer::T_COMMA,
-                'gt' => Lexer::T_GT,
-            )),
-            'lte,gte' => array('lte(),gte())', array(
-                'lte' => Lexer::T_LTE,
-                '(' => Lexer::T_OPEN_PARENTHESIS,
-                ')' => Lexer::T_CLOSE_PARENTHESIS,
-                ',' => Lexer::T_COMMA,
-                'gte' => Lexer::T_GTE,
-            )),
-            'sort' => array('sort(+count,-name)', array(
-                'sort' => Lexer::T_SORT,
-                '(' => Lexer::T_OPEN_PARENTHESIS,
-                '+' => Lexer::T_PLUS,
-                'count' => Lexer::T_STRING,
-                ',' => Lexer::T_COMMA,
-                '-' => Lexer::T_MINUS,
-                'name' => Lexer::T_STRING,
-                ')' => Lexer::T_CLOSE_PARENTHESIS,
-            )),
-            'like' => array('like(name,fo*)', array(
-                'like' => Lexer::T_LIKE,
-                '(' => Lexer::T_OPEN_PARENTHESIS,
-                'name' => Lexer::T_STRING,
-                ',' => Lexer::T_COMMA,
-                'fo*' => Lexer::T_STRING,
-                ')' => Lexer::T_CLOSE_PARENTHESIS,
-             )),
-            'limit' => array('limit(1,2)', array(
-                'limit' => Lexer::T_LIMIT,
-                '(' => Lexer::T_OPEN_PARENTHESIS,
-                '1' => Lexer::T_INTEGER,
-                ',' => Lexer::T_COMMA,
-                '2' => Lexer::T_INTEGER,
-                ')' => Lexer::T_CLOSE_PARENTHESIS,
-            )),
-            'in tests' => array('in(name,[foo,bar]', array(
-                'in' => Lexer::T_IN,
-                '(' => Lexer::T_OPEN_PARENTHESIS,
-                'name' => Lexer::T_STRING,
-                ',' => Lexer::T_COMMA,
-                '[' => Lexer::T_OPEN_BRACKET,
-                'foo' => Lexer::T_STRING
-            )),
-            'out tests' => array('out(name,[foo,bar]', array(
-                'out' => Lexer::T_OUT,
-                '(' => Lexer::T_OPEN_PARENTHESIS,
-                'name' => Lexer::T_STRING,
-                ',' => Lexer::T_COMMA,
-                '[' => Lexer::T_OPEN_BRACKET,
-                'foo' => Lexer::T_STRING
-            )),
+            'simple and' => array(
+                'and(eq(name,foo),ne(name,bar))',
+                array(
+                    'and' => Lexer::T_AND,
+                    '(' => Lexer::T_OPEN_PARENTHESIS,
+                    'eq' => Lexer::T_EQ,
+                    '(' => Lexer::T_OPEN_PARENTHESIS,
+                )
+            ),
+            'integer' => array(
+                'eq(count,1)',
+                array(
+                    'eq' => Lexer::T_EQ,
+                    '(' => Lexer::T_OPEN_PARENTHESIS,
+                    'count' => Lexer::T_STRING,
+                    ',' => Lexer::T_COMMA,
+                    '1' => Lexer::T_INTEGER
+                )
+            ),
+            'simple or' => array(
+                'or(eq(name,foo),eq(name,bar))',
+                array(
+                    'or' => Lexer::T_OR,
+                    '(' => Lexer::T_OPEN_PARENTHESIS,
+                    'eq' => Lexer::T_EQ,
+                    '(' => Lexer::T_OPEN_PARENTHESIS,
+                )
+            ),
+            'lt,gt' => array(
+                'lt(),gt())',
+                array(
+                    'lt' => Lexer::T_LT,
+                    '(' => Lexer::T_OPEN_PARENTHESIS,
+                    ')' => Lexer::T_CLOSE_PARENTHESIS,
+                    ',' => Lexer::T_COMMA,
+                    'gt' => Lexer::T_GT,
+                )
+            ),
+            'lte,gte' => array(
+                'lte(),gte())',
+                array(
+                    'lte' => Lexer::T_LTE,
+                    '(' => Lexer::T_OPEN_PARENTHESIS,
+                    ')' => Lexer::T_CLOSE_PARENTHESIS,
+                    ',' => Lexer::T_COMMA,
+                    'gte' => Lexer::T_GTE,
+                )
+            ),
+            'sort' => array(
+                'sort(+count,-name)',
+                array(
+                    'sort' => Lexer::T_SORT,
+                    '(' => Lexer::T_OPEN_PARENTHESIS,
+                    '+' => Lexer::T_PLUS,
+                    'count' => Lexer::T_STRING,
+                    ',' => Lexer::T_COMMA,
+                    '-' => Lexer::T_MINUS,
+                    'name' => Lexer::T_STRING,
+                    ')' => Lexer::T_CLOSE_PARENTHESIS,
+                )
+            ),
+            'like' => array(
+                'like(name,fo*)',
+                array(
+                    'like' => Lexer::T_LIKE,
+                    '(' => Lexer::T_OPEN_PARENTHESIS,
+                    'name' => Lexer::T_STRING,
+                    ',' => Lexer::T_COMMA,
+                    'fo*' => Lexer::T_STRING,
+                    ')' => Lexer::T_CLOSE_PARENTHESIS,
+                )
+            ),
+            'limit' => array(
+                'limit(1,2)',
+                array(
+                    'limit' => Lexer::T_LIMIT,
+                    '(' => Lexer::T_OPEN_PARENTHESIS,
+                    '1' => Lexer::T_INTEGER,
+                    ',' => Lexer::T_COMMA,
+                    '2' => Lexer::T_INTEGER,
+                    ')' => Lexer::T_CLOSE_PARENTHESIS,
+                )
+            ),
+            'in tests' => array(
+                'in(name,[foo,bar]',
+                array(
+                    'in' => Lexer::T_IN,
+                    '(' => Lexer::T_OPEN_PARENTHESIS,
+                    'name' => Lexer::T_STRING,
+                    ',' => Lexer::T_COMMA,
+                    '[' => Lexer::T_OPEN_BRACKET,
+                    'foo' => Lexer::T_STRING
+                )
+            ),
+            'out tests' => array(
+                'out(name,[foo,bar]',
+                array(
+                    'out' => Lexer::T_OUT,
+                    '(' => Lexer::T_OPEN_PARENTHESIS,
+                    'name' => Lexer::T_STRING,
+                    ',' => Lexer::T_COMMA,
+                    '[' => Lexer::T_OPEN_BRACKET,
+                    'foo' => Lexer::T_STRING
+                )
+            ),
         );
     }
 
@@ -199,6 +244,9 @@ class LexerTest extends \PHPUnit_Framework_TestCase
      *
      * @dataProvider quotationCharProvider
      *
+     * @param string $expected      Expected outcome
+     * @param string $quotationChar quotation character (' || ")
+     *
      * @return void
      */
     public function testIsOpeningQuotation($expected, $quotationChar)
@@ -224,7 +272,8 @@ class LexerTest extends \PHPUnit_Framework_TestCase
      *
      * @dataProvider quotationCharProvider
      *
-     * @param string $quotationChar Character representing a string quotationChar.
+     * @param boolean $tmp           not used
+     * @param string  $quotationChar Character representing a string quotationChar.
      *
      * @return void
      */

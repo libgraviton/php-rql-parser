@@ -102,6 +102,9 @@ class ParserUtilTest extends \PHPUnit_Framework_TestCase
      *
      * @dataProvider rqlStringProvider
      *
+     * @param string $expected Expected outcome
+     * @param string $rql      RQL-Query string
+     *
      * @return void
      */
     public function testParseArgument($expected, $rql)
