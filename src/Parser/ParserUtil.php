@@ -64,17 +64,15 @@ class ParserUtil
                 $lexer->moveNext();
                 $string = $string . $lexer->lookahead['value'] . self::getString($lexer);
             }
-        } else {
-            if (Lexer::isFieldQuotationChar($lexer->lookahead['type'])) {
-                $string = $lexer->lookahead['value'];
+        } elseif (Lexer::isFieldQuotationChar($lexer->lookahead['type'])) {
+            $string = $lexer->lookahead['value'];
 
-                if (true === Lexer::isOpeningQuotation($lexer->lookahead['type'])) {
-                    $lexer->moveNext();
-                    $string .= $lexer->lookahead['value'] . self::getString($lexer);
-                }
-            } else {
-                self::syntaxError('no string found');
+            if (true === Lexer::isOpeningQuotation($lexer->lookahead['type'])) {
+                $lexer->moveNext();
+                $string .= $lexer->lookahead['value'] . self::getString($lexer);
             }
+        } else {
+            self::syntaxError('no string found');
         }
 
         return $string;
