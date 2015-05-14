@@ -24,7 +24,7 @@ class LexerTest extends \PHPUnit_Framework_TestCase
      */
     public function testLexer($rql, $expected)
     {
-        $sut = new \Graviton\Rql\Lexer;
+        $sut = new Lexer;
         $sut->setInput($rql);
         foreach ($expected as $part => $type) {
             $sut->moveNext();
@@ -39,17 +39,22 @@ class LexerTest extends \PHPUnit_Framework_TestCase
     public function lexerProvider()
     {
         return array(
-            'complex eq search concatenated fields' => array('eq(name-part+test,12)', array(
+            'complex eq search numeric argument field' => array('eq(size,12)', array(
                 'eq' => Lexer::T_EQ,
                 '(' => Lexer::T_OPEN_PARENTHESIS,
-                'name' => Lexer::T_STRING,
-                '-' => Lexer::T_MINUS,
-                'part' => Lexer::T_STRING,
-                '+' => Lexer::T_PLUS,
-                'test' => Lexer::T_STRING,
+                'size' => Lexer::T_STRING,
                 ',' => Lexer::T_COMMA,
                 '12' => Lexer::T_INTEGER,
                 ')' => Lexer::T_CLOSE_PARENTHESIS,
+            )),
+            'eq search quoted argument field' => array('eq(size,"12")', array(
+                'eq' => Lexer::T_EQ,
+                '(' => Lexer::T_OPEN_PARENTHESIS,
+                'size' => Lexer::T_STRING,
+                ',' => Lexer::T_COMMA,
+                '"' => Lexer::T_DOUBLE_QUOTE,
+                '12' => Lexer::T_INTEGER,
+                '"' => Lexer::T_DOUBLE_QUOTE,
             )),
             'complex eq search concatenated field value' => array('eq(name,foo-bar+baz)', array(
                 'eq' => Lexer::T_EQ,
@@ -173,7 +178,7 @@ class LexerTest extends \PHPUnit_Framework_TestCase
      */
     public function testIsFieldConcatenationChar($concatenator)
     {
-        $this->assertTrue(\Graviton\Rql\Lexer::isFieldConcatenationChar($concatenator));
+        $this->assertTrue(Lexer::isFieldConcatenationChar($concatenator));
     }
 
     /**
@@ -187,5 +192,44 @@ class LexerTest extends \PHPUnit_Framework_TestCase
             'dot' => array(Lexer::T_DOT),
             'slash' => array(Lexer::T_SLASH),
         );
+    }
+
+    /**
+     * test isOpeningQuotation
+     *
+     * @dataProvider quotationCharProvider
+     *
+     * @return void
+     */
+    public function testIsOpeningQuotation($expected, $quotationChar)
+    {
+        $this->assertSame($expected, Lexer::isOpeningQuotation($quotationChar));
+    }
+
+    /**
+     * @return array
+     */
+    public function quotationCharProvider()
+    {
+        return array(
+            '1st single' => array(true, Lexer::T_SINGLE_QUOTE),
+            '2nd single' => array(false, Lexer::T_SINGLE_QUOTE),
+            '1st double' => array(true, Lexer::T_DOUBLE_QUOTE),
+            '2nd double' => array(false, Lexer::T_DOUBLE_QUOTE),
+        );
+    }
+
+    /**
+     * test set of field concatenators
+     *
+     * @dataProvider quotationCharProvider
+     *
+     * @param string $quotationChar Character representing a string quotationChar.
+     *
+     * @return void
+     */
+    public function testIsFieldQuotationChar($tmp, $quotationChar)
+    {
+        $this->assertTrue(Lexer::isFieldQuotationChar($quotationChar));
     }
 }

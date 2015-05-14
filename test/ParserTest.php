@@ -41,6 +41,16 @@ class ParserTest extends \PHPUnit_Framework_TestCase
 
         $eqAST = new AST\EqOperation;
         $eqAST->setProperty('name');
+        $eqAST->setValue('"12"');
+        $tests['simple eq with numeric in double quotes'] = array('eq(name,"12")', $eqAST);
+
+        $eqAST = new AST\EqOperation;
+        $eqAST->setProperty('name');
+        $eqAST->setValue("'12'");
+        $tests['simple eq with numeric in single quotes'] = array("eq(name,'12')", $eqAST);
+
+        $eqAST = new AST\EqOperation;
+        $eqAST->setProperty('name');
         $eqAST->setValue('foo');
         $tests['simple eq'] = array('eq(name,foo)', $eqAST);
 
@@ -153,5 +163,19 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $tests['boolean false in AST'] = array('eq(name,false)', $booleanFalseAST);
 
         return $tests;
+    }
+
+    /**
+     * Test parser exception handling
+     *
+     * @return void
+     */
+    public function testParserExpectingException()
+    {
+        $sut = \Graviton\Rql\Parser::createParser("eq(name,'\"12\"')");
+
+        $this->setExpectedException('\\LogicException', 'no string found');
+
+        $sut->getAST();
     }
 }

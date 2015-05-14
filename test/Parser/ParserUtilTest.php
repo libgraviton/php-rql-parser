@@ -64,4 +64,82 @@ class ParserUtilTest extends \PHPUnit_Framework_TestCase
 
         ParserUtil::getString($lexer);
     }
+
+    /**
+     * Verify identification of the closing parenthesis
+     *
+     * @return void
+     */
+    public function testParseEnd()
+    {
+        $lexer = new Lexer();
+        $lexer->setInput('(jon,doe)');
+        $lexer->moveNext();
+        $lexer->moveNext();
+        $lexer->moveNext();
+        $lexer->moveNext();
+
+        ParserUtil::parseEnd($lexer);
+    }
+
+    /**
+     * Verify exception handling of parseEnd
+     *
+     * @return void
+     */
+    public function testParseEndExpectingException()
+    {
+        $lexer = new Lexer();
+        $lexer->setInput('(jon,doe)');
+
+        $this->setExpectedException('\LogicException');
+
+        ParserUtil::parseEnd($lexer);
+    }
+
+    /**
+     * Validates the behavior of parseArgument
+     *
+     * @dataProvider rqlStringProvider
+     *
+     * @return void
+     */
+    public function testParseArgument($expected, $rql)
+    {
+        $lexer = new Lexer();
+        $lexer->setInput($rql);
+
+        ParserUtil::parseStart($lexer);
+
+        $this->assertEquals($expected, ParserUtil::parseArgument($lexer));
+    }
+
+    /**
+     * @return array
+     */
+    public function rqlStringProvider()
+    {
+        return array(
+            'string' => array('jon', '(jon, doe)'),
+            'numeric' => array('12', '(12, doe)'),
+            'quotation' => array('"12"', '("12", doe)'),
+            'boolean (true)' => array(true, '(true, doe)'),
+            'boolean (false)' => array(false, '(false, doe)'),
+        );
+    }
+
+    /**
+     * Validates the exception handling of parseArgument
+     *
+     * @return void
+     */
+    public function testParseArgumentExpectingException()
+    {
+        $lexer = new Lexer();
+        $lexer->setInput('()');
+
+        $this->setExpectedException('\LogicException');
+
+        ParserUtil::parseArgument($lexer);
+    }
 }
