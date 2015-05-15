@@ -39,7 +39,9 @@ class LexerTest extends \PHPUnit_Framework_TestCase
     public function lexerProvider()
     {
         return array(
-            'simple eq' => array('eq(name,foo bar)', array(
+            'simple eq' => array(
+                'eq(name,foo bar)',
+                array(
                     'eq' => Lexer::T_EQ,
                     '(' => Lexer::T_OPEN_PARENTHESIS,
                     'name' => Lexer::T_STRING,
@@ -217,7 +219,7 @@ class LexerTest extends \PHPUnit_Framework_TestCase
      *
      * @dataProvider quotationCharProvider
      *
-     * @param string  $quotationChar Character representing a string quotationChar.
+     * @param string $quotationChar Character representing a string quotationChar.
      *
      * @return void
      */

@@ -127,7 +127,8 @@ class ParserUtilTest extends \PHPUnit_Framework_TestCase
             'boolean (false)' => array(false, 'false'),
             'multiple, encapsulated quotation' => array("\"Hans 'Housi' Wale-Sepp\"", "\"Hans 'Housi' Wale-Sepp\""),
             'apostrophe quotation' => array("it's a cake!!", "it's a cake!!"),
-            'multiple quotation with apostrophe' => array("it's a \"cake\" \"blaster\"!!", "it's a \"cake\" \"blaster\"!!"),
+            'multiple quotation with apostrophe' =>
+                array("it's a \"cake\" \"blaster\"!!", "it's a \"cake\" \"blaster\"!!"),
         );
     }
 

@@ -62,11 +62,10 @@ class ParserUtil
             $string = $lexer->lookahead['value'];
             $glimpse = $lexer->glimpse();
             if (Lexer::isFieldConcatenationChar($glimpse['type'])) {
-
                 $lexer->moveNext();
                 $string = $string . $lexer->lookahead['value'] . self::getString($lexer);
-                }
-            } else {
+            }
+        } else {
             self::syntaxError('no string found');
         }
 
@@ -85,14 +84,12 @@ class ParserUtil
         $move && $lexer->moveNext();
 
         if (empty($lexer->lookahead)) {
-
             return $string;
         }
 
         if ($lexer->lookahead['type'] !== Lexer::T_CLOSE_PARENTHESIS) {
             $glimpse = $lexer->glimpse();
             if ($glimpse['type'] === Lexer::T_CLOSE_PARENTHESIS) {
-
                 return $lexer->lookahead['value'];
             }
             $string = $lexer->lookahead['value'] . self::parse($lexer);
