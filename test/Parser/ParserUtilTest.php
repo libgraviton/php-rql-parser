@@ -60,7 +60,7 @@ class ParserUtilTest extends \PHPUnit_Framework_TestCase
     /**
      * get started parser/lexer
      *
-     * @param string $rql
+     * @param string $rql rql to seed lexer with
      *
      * @return Lexer
      */
