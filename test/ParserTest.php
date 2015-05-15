@@ -205,7 +205,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     {
         $sut = Parser::createParser("eq(name,)");
 
-        $this->setExpectedException('\\LogicException');
+        $this->setExpectedException('\Graviton\Rql\Exceptions\SyntaxErrorException');
 
         $sut->getAST();
     }
