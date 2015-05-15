@@ -53,10 +53,8 @@ class ParserUtilTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetStringLogicExpectingException()
     {
-        $typeNotString = '([],foo)';
-
         $lexer = new Lexer();
-        $lexer->setInput($typeNotString);
+        $lexer->setInput('([],foo)');
 
         ParserUtil::parseStart($lexer);
 
@@ -73,7 +71,8 @@ class ParserUtilTest extends \PHPUnit_Framework_TestCase
     public function testParseEnd()
     {
         $lexer = new Lexer();
-        $lexer->setInput('(jon,doe)');
+        $lexer->setInput('eq(jon,doe)');
+        $lexer->moveNext();
         $lexer->moveNext();
         $lexer->moveNext();
         $lexer->moveNext();
@@ -90,7 +89,7 @@ class ParserUtilTest extends \PHPUnit_Framework_TestCase
     public function testParseEndExpectingException()
     {
         $lexer = new Lexer();
-        $lexer->setInput('(jon,doe)');
+        $lexer->setInput('eq(jon,doe)');
 
         $this->setExpectedException('\LogicException');
 
@@ -112,8 +111,6 @@ class ParserUtilTest extends \PHPUnit_Framework_TestCase
         $lexer = new Lexer();
         $lexer->setInput($rql);
 
-        ParserUtil::parseStart($lexer);
-
         $this->assertEquals($expected, ParserUtil::parseArgument($lexer));
     }
 
@@ -123,11 +120,14 @@ class ParserUtilTest extends \PHPUnit_Framework_TestCase
     public function rqlStringProvider()
     {
         return array(
-            'string' => array('jon', '(jon, doe)'),
-            'numeric' => array('12', '(12, doe)'),
-            'quotation' => array('"12"', '("12", doe)'),
-            'boolean (true)' => array(true, '(true, doe)'),
-            'boolean (false)' => array(false, '(false, doe)'),
+            'string' => array('jon', 'jon'),
+            'numeric' => array('12', '12'),
+            'quotation' => array('"12"', '"12"'),
+            'boolean (true)' => array(true, 'true'),
+            'boolean (false)' => array(false, 'false'),
+            'multiple, encapsulated quotation' => array("\"Hans 'Housi' Wale-Sepp\"", "\"Hans 'Housi' Wale-Sepp\""),
+            'apostrophe quotation' => array("it's a cake!!", "it's a cake!!"),
+            'multiple quotation with apostrophe' => array("it's a \"cake\" \"blaster\"!!", "it's a \"cake\" \"blaster\"!!"),
         );
     }
 

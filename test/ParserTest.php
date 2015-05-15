@@ -6,6 +6,7 @@
 namespace Graviton\Rql;
 
 use Graviton\Rql\AST;
+use Graviton\Rql\Parser;
 
 /**
  * @author  List of contributors <https://github.com/libgraviton/php-rql-parser/graphs/contributors>
@@ -26,7 +27,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function testParser($rql, $expected)
     {
-        $sut = \Graviton\Rql\Parser::createParser($rql);
+        $sut = Parser::createParser($rql);
 
         $AST = $sut->getAST();
         $this->assertEquals($expected, $AST);
@@ -51,6 +52,26 @@ class ParserTest extends \PHPUnit_Framework_TestCase
 
         $eqAST = new AST\EqOperation;
         $eqAST->setProperty('name');
+        $eqAST->setValue("\"Hans 'Housi' Wale-Sepp\"");
+        $tests['simple eq with mixed quotes'] = array("eq(name,\"Hans 'Housi' Wale-Sepp\")", $eqAST);
+
+        $eqAST = new AST\EqOperation;
+        $eqAST->setProperty('shout');
+        $eqAST->setValue("it's a cake!!");
+        $tests['simple eq single quote'] = array("eq(shout,it's a cake!!)", $eqAST);
+
+        $eqAST = new AST\EqOperation;
+        $eqAST->setProperty('shout');
+        $eqAST->setValue("it's a \"cake\" \"blaster\"!!");
+        $tests['simple eq single quote'] = array("eq(shout,it's a \"cake\" \"blaster\"!!)", $eqAST);
+
+        $eqAST = new AST\EqOperation;
+        $eqAST->setProperty('noText');
+        $eqAST->setValue("''");
+        $tests['simple eq single quotes only'] = array("eq(noText,'')", $eqAST);
+
+        $eqAST = new AST\EqOperation;
+        $eqAST->setProperty('name');
         $eqAST->setValue('foo');
         $tests['simple eq'] = array('eq(name,foo)', $eqAST);
 
@@ -62,7 +83,17 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $eqASTchars = new AST\EqOperation;
         $eqASTchars->setProperty('name-part+test');
         $eqASTchars->setValue('foo+bar-baz');
-        $tests['simple eq with special chars'] = array('eq(name-part+test,foo+bar-baz)', $eqASTchars);
+        $tests['simple eq with concatecators'] = array('eq(name-part+test,foo+bar-baz)', $eqASTchars);
+
+        $eqASTchars = new AST\EqOperation;
+        $eqASTchars->setProperty('name-part+test');
+        $eqASTchars->setValue('foo+bar-');
+        $tests['simple eq with ending concatenator'] = array('eq(name-part+test,foo+bar-)', $eqASTchars);
+
+        $eqASTchars = new AST\EqOperation;
+        $eqASTchars->setProperty('name-part+test');
+        $eqASTchars->setValue('+foo-bar');
+        $tests['simple eq with starting concatenator'] = array('eq(name-part+test,+foo-bar)', $eqASTchars);
 
         $neAST = new AST\NeOperation;
         $neAST->setProperty('name');
@@ -172,10 +203,24 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function testParserExpectingException()
     {
-        $sut = \Graviton\Rql\Parser::createParser("eq(name,'\"12\"')");
+        $sut = Parser::createParser("eq(name,)");
 
-        $this->setExpectedException('\\LogicException', 'no string found');
+        $this->setExpectedException('\\LogicException');
 
+        $sut->getAST();
+    }
+
+    /**
+     * Test resourceQuery exception handling
+     *
+     * @return void
+     */
+    public function testResourceQueryExpectingException()
+    {
+        $sut = new Parser('eq(foo,bar)');
+
+
+        $this->setExpectedException('\RuntimeException');
         $sut->getAST();
     }
 }

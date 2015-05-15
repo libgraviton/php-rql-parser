@@ -55,8 +55,9 @@ class ParserUtil
      */
     public static function getString(Lexer &$lexer, $move = true)
     {
+        $string = '';
         $move && $lexer->moveNext();
-        $string = null;
+
         if ($lexer->lookahead['type'] == Lexer::T_STRING) {
             $string = $lexer->lookahead['value'];
             $glimpse = $lexer->glimpse();
@@ -64,27 +65,37 @@ class ParserUtil
 
                 $lexer->moveNext();
                 $string = $string . $lexer->lookahead['value'] . self::getString($lexer);
-
-            } elseif (Lexer::isFieldQuotationChar($glimpse['type'])) {
-                $lexer->moveNext();
-
-                if (true === Lexer::isOpeningQuotation($lexer->lookahead['type'])) {
-                    $lexer->moveNext();
-                    $string .= $lexer->lookahead['value'] . self::getString($lexer);
-                } else {
-                    $string .= $lexer->lookahead['value'];
                 }
-            }
-        } elseif (Lexer::isFieldQuotationChar($lexer->lookahead['type'])) {
-            $string = $lexer->lookahead['value'];
-
-            if (true === Lexer::isOpeningQuotation($lexer->lookahead['type'])) {
-                $lexer->moveNext();
-                $string .= $lexer->lookahead['value'] . self::getString($lexer);
             } else {
-                $string .= self::getString($lexer);
-            }
+            self::syntaxError('no string found');
+        }
 
+        return $string;
+    }
+
+    /**
+     * @param Lexer $lexer doctrine/lexer
+     * @param bool  $move  should i moveNext before getting a string?
+     *
+     * @return string
+     */
+    private static function parse(Lexer &$lexer, $move = true)
+    {
+        $string = '';
+        $move && $lexer->moveNext();
+
+        if (empty($lexer->lookahead)) {
+
+            return $string;
+        }
+
+        if ($lexer->lookahead['type'] !== Lexer::T_CLOSE_PARENTHESIS) {
+            $glimpse = $lexer->glimpse();
+            if ($glimpse['type'] === Lexer::T_CLOSE_PARENTHESIS) {
+
+                return $lexer->lookahead['value'];
+            }
+            $string = $lexer->lookahead['value'] . self::parse($lexer);
         } else {
             self::syntaxError('no string found');
         }
@@ -99,14 +110,16 @@ class ParserUtil
      */
     public static function parseArgument(Lexer &$lexer)
     {
+        $string = '';
         $lexer->moveNext();
-        $string = null;
-        if ($lexer->lookahead['type'] == Lexer::T_STRING) {
-            $string = self::getString($lexer, false);
+
+        if ($lexer->lookahead['type'] == Lexer::T_STRING
+            || Lexer::isFieldQuotationChar($lexer->lookahead['type'])
+            || Lexer::isFieldConcatenationChar($lexer->lookahead['type'])
+        ) {
+            $string = self::parse($lexer, false);
         } elseif ($lexer->lookahead['type'] == Lexer::T_INTEGER) {
             $string = (int) $lexer->lookahead['value'];
-        } elseif (Lexer::isFieldQuotationChar($lexer->lookahead['type'])) {
-            $string = self::getString($lexer, false);
         } else {
             self::syntaxError('no valid argument found');
         }
@@ -137,6 +150,7 @@ class ParserUtil
      * @param string $message error message
      *
      * @return void
+     * @throws \LogicException
      */
     public static function syntaxError($message)
     {
