@@ -39,62 +39,7 @@ class LexerTest extends \PHPUnit_Framework_TestCase
     public function lexerProvider()
     {
         return array(
-            'complex eq search numeric argument field' => array(
-                'eq(size,12)',
-                array(
-                    'eq' => Lexer::T_EQ,
-                    '(' => Lexer::T_OPEN_PARENTHESIS,
-                    'size' => Lexer::T_STRING,
-                    ',' => Lexer::T_COMMA,
-                    '12' => Lexer::T_INTEGER,
-                    ')' => Lexer::T_CLOSE_PARENTHESIS,
-                )
-            ),
-            'eq search quoted argument field' => array(
-                'eq(size,"12")',
-                array(
-                    'eq' => Lexer::T_EQ,
-                    '(' => Lexer::T_OPEN_PARENTHESIS,
-                    'size' => Lexer::T_STRING,
-                    ',' => Lexer::T_COMMA,
-                    '"' => Lexer::T_DOUBLE_QUOTE,
-                    '12' => Lexer::T_INTEGER,
-                    '"' => Lexer::T_DOUBLE_QUOTE,
-                )
-            ),
-            'complex eq search concatenated field value' => array(
-                'eq(name,foo-bar+baz)',
-                array(
-                    'eq' => Lexer::T_EQ,
-                    '(' => Lexer::T_OPEN_PARENTHESIS,
-                    'name' => Lexer::T_STRING,
-                    ',' => Lexer::T_COMMA,
-                    'foo' => Lexer::T_STRING,
-                    '-' => Lexer::T_MINUS,
-                    'bar' => Lexer::T_STRING,
-                    '+' => Lexer::T_PLUS,
-                    'baz' => Lexer::T_STRING,
-                    ')' => Lexer::T_CLOSE_PARENTHESIS,
-                )
-            ),
-            'simple eq search in array field' => array(
-                'eq(metadata.mime,text/plain)',
-                array(
-                    'eq' => Lexer::T_EQ,
-                    '(' => Lexer::T_OPEN_PARENTHESIS,
-                    'metadata' => Lexer::T_STRING,
-                    '.' => Lexer::T_DOT,
-                    'mime' => Lexer::T_STRING,
-                    ',' => Lexer::T_COMMA,
-                    'text' => Lexer::T_STRING,
-                    '/' => Lexer::T_SLASH,
-                    'plain' => Lexer::T_STRING,
-                    ')' => Lexer::T_CLOSE_PARENTHESIS,
-                )
-            ),
-            'simple eq' => array(
-                'eq(name,foo bar)',
-                array(
+            'simple eq' => array('eq(name,foo bar)', array(
                     'eq' => Lexer::T_EQ,
                     '(' => Lexer::T_OPEN_PARENTHESIS,
                     'name' => Lexer::T_STRING,
