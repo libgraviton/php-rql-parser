@@ -60,7 +60,7 @@ class ParserUtilTest extends \PHPUnit_Framework_TestCase
 
         ParserUtil::parseStart($lexer);
 
-        $this->setExpectedException('\LogicException');
+        $this->setExpectedException('\Graviton\Rql\Exceptions\SyntaxErrorException');
 
         ParserUtil::getString($lexer);
     }

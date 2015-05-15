@@ -8,6 +8,7 @@
 namespace Graviton\Rql\Parser;
 
 use Graviton\Rql\Lexer;
+use Graviton\Rql\Exceptions\SyntaxErrorException;
 
 /**
  * @author  List of contributors <https://github.com/libgraviton/php-rql-parser/graphs/contributors>
@@ -117,6 +118,6 @@ class ParserUtil
      */
     public static function syntaxError($message)
     {
-        throw new \LogicException($message);
+        throw new SyntaxErrorException($message);
     }
 }
