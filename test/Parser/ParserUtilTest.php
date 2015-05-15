@@ -19,17 +19,14 @@ class ParserUtilTest extends \PHPUnit_Framework_TestCase
      *
      * @dataProvider stringProvider
      *
-     * @param string $expectedString String expected to be returned by the sut
-     * @param string $rqlAttribs     String representing the query parameters of a rql-string
+     * @param string $expectedString expected to be returned by the sut
+     * @param string $rqlAttributes  representing the query parameters of a rql-string
      *
      * @return void
      */
-    public function testGetString($expectedString, $rqlAttribs)
+    public function testGetString($expectedString, $rqlAttributes)
     {
-        $lexer = new Lexer();
-        $lexer->setInput($rqlAttribs);
-
-        ParserUtil::parseStart($lexer);
+        $lexer = $this->getStartedLexer($rqlAttributes);
 
         $this->assertEquals($expectedString, ParserUtil::getString($lexer));
     }
@@ -53,15 +50,26 @@ class ParserUtilTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetStringLogicExpectingException()
     {
-        $typeNotString = '([],foo)';
-
-        $lexer = new Lexer();
-        $lexer->setInput($typeNotString);
-
-        ParserUtil::parseStart($lexer);
+        $lexer = $this->getStartedLexer('([],foo)');
 
         $this->setExpectedException('\LogicException');
 
         ParserUtil::getString($lexer);
+    }
+
+    /**
+     * get started parser/lexer
+     *
+     * @param string $rql
+     *
+     * @return Lexer
+     */
+    private function getStartedLexer($rql)
+    {
+        $lexer = new Lexer();
+        $lexer->setInput($rql);
+        ParserUtil::parseStart($lexer);
+
+        return $lexer;
     }
 }
