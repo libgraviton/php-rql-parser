@@ -61,8 +61,19 @@ class ParserUtil
             $string = $lexer->lookahead['value'];
             $glimpse = $lexer->glimpse();
             if (Lexer::isFieldConcatenationChar($glimpse['type'])) {
+
                 $lexer->moveNext();
                 $string = $string . $lexer->lookahead['value'] . self::getString($lexer);
+
+            } elseif (Lexer::isFieldQuotationChar($glimpse['type'])) {
+                $lexer->moveNext();
+
+                if (true === Lexer::isOpeningQuotation($lexer->lookahead['type'])) {
+                    $lexer->moveNext();
+                    $string .= $lexer->lookahead['value'] . self::getString($lexer);
+                } else {
+                    $string .= $lexer->lookahead['value'];
+                }
             }
         } elseif (Lexer::isFieldQuotationChar($lexer->lookahead['type'])) {
             $string = $lexer->lookahead['value'];
@@ -70,7 +81,10 @@ class ParserUtil
             if (true === Lexer::isOpeningQuotation($lexer->lookahead['type'])) {
                 $lexer->moveNext();
                 $string .= $lexer->lookahead['value'] . self::getString($lexer);
+            } else {
+                $string .= self::getString($lexer);
             }
+
         } else {
             self::syntaxError('no string found');
         }
