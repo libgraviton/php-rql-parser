@@ -189,12 +189,12 @@ class LexerTest extends \PHPUnit_Framework_TestCase
      *
      * @dataProvider quotationCharProvider
      *
-     * @param string $expected      Expected outcome
      * @param string $quotationChar quotation character (' || ")
+     * @param string $expected      Expected outcome
      *
      * @return void
      */
-    public function testIsOpeningQuotation($expected, $quotationChar)
+    public function testIsOpeningQuotation($quotationChar, $expected)
     {
         $this->assertSame($expected, Lexer::isOpeningQuotation($quotationChar));
     }
@@ -205,10 +205,10 @@ class LexerTest extends \PHPUnit_Framework_TestCase
     public function quotationCharProvider()
     {
         return array(
-            '1st single' => array(true, Lexer::T_SINGLE_QUOTE),
-            '2nd single' => array(false, Lexer::T_SINGLE_QUOTE),
-            '1st double' => array(true, Lexer::T_DOUBLE_QUOTE),
-            '2nd double' => array(false, Lexer::T_DOUBLE_QUOTE),
+            '1st single' => array(Lexer::T_SINGLE_QUOTE, true),
+            '2nd single' => array(Lexer::T_SINGLE_QUOTE, false),
+            '1st double' => array(Lexer::T_DOUBLE_QUOTE, true),
+            '2nd double' => array(Lexer::T_DOUBLE_QUOTE, false),
         );
     }
 
@@ -217,12 +217,11 @@ class LexerTest extends \PHPUnit_Framework_TestCase
      *
      * @dataProvider quotationCharProvider
      *
-     * @param boolean $tmp           not used
      * @param string  $quotationChar Character representing a string quotationChar.
      *
      * @return void
      */
-    public function testIsFieldQuotationChar($tmp, $quotationChar)
+    public function testIsFieldQuotationChar($quotationChar)
     {
         $this->assertTrue(Lexer::isFieldQuotationChar($quotationChar));
     }
