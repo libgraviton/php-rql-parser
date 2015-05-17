@@ -56,8 +56,9 @@ class ParserUtil
      */
     public static function getString(Lexer &$lexer, $move = true)
     {
+        $string = '';
         $move && $lexer->moveNext();
-        $string = null;
+
         if ($lexer->lookahead['type'] == Lexer::T_STRING) {
             $string = $lexer->lookahead['value'];
             $glimpse = $lexer->glimpse();
@@ -74,15 +75,47 @@ class ParserUtil
 
     /**
      * @param Lexer $lexer doctrine/lexer
+     * @param bool  $move  should i moveNext before getting a string?
+     *
+     * @return string
+     */
+    private static function parse(Lexer &$lexer, $move = true)
+    {
+        $string = '';
+        $move && $lexer->moveNext();
+
+        if (empty($lexer->lookahead)) {
+            return $string;
+        }
+
+        if ($lexer->lookahead['type'] !== Lexer::T_CLOSE_PARENTHESIS) {
+            $glimpse = $lexer->glimpse();
+            if ($glimpse['type'] === Lexer::T_CLOSE_PARENTHESIS) {
+                return $lexer->lookahead['value'];
+            }
+            $string = $lexer->lookahead['value'] . self::parse($lexer);
+        } else {
+            self::syntaxError('no string found');
+        }
+
+        return $string;
+    }
+
+    /**
+     * @param Lexer $lexer doctrine/lexer
      *
      * @return string
      */
     public static function parseArgument(Lexer &$lexer)
     {
+        $string = '';
         $lexer->moveNext();
-        $string = null;
-        if ($lexer->lookahead['type'] == Lexer::T_STRING) {
-            $string = self::getString($lexer, false);
+
+        if ($lexer->lookahead['type'] == Lexer::T_STRING
+            || Lexer::isFieldQuotationChar($lexer->lookahead['type'])
+            || Lexer::isFieldConcatenationChar($lexer->lookahead['type'])
+        ) {
+            $string = self::parse($lexer, false);
         } elseif ($lexer->lookahead['type'] == Lexer::T_INTEGER) {
             $string = (int) $lexer->lookahead['value'];
         } else {
@@ -115,6 +148,7 @@ class ParserUtil
      * @param string $message error message
      *
      * @return void
+     * @throws \LogicException
      */
     public static function syntaxError($message)
     {

@@ -22,6 +22,8 @@ class Lexer extends \Doctrine\Common\Lexer
     const T_COMMA             = 8;
     const T_DOT               = 9;
     const T_SLASH             = 10;
+    const T_SINGLE_QUOTE      = 11;
+    const T_DOUBLE_QUOTE      = 12;
 
     const T_EQ    = 100;
     const T_NE    = 101;
@@ -62,6 +64,14 @@ class Lexer extends \Doctrine\Common\Lexer
         '-' => self::T_MINUS,
         '.' => self::T_DOT,
         '/' => self::T_SLASH,
+    );
+
+    /**
+     * @var array<string>
+     */
+    protected static $fieldQuotesMap = array(
+        "'" => self::T_SINGLE_QUOTE,
+        '"' => self::T_DOUBLE_QUOTE,
     );
 
     /**
@@ -124,6 +134,9 @@ class Lexer extends \Doctrine\Common\Lexer
         } elseif (in_array($value, array_keys($this->primitiveMap))) {
             $type = $this->primitiveMap[$value];
 
+        } elseif (in_array($value, array_keys(static::$fieldQuotesMap))) {
+            $type = static::$fieldQuotesMap[$value];
+
         } else {
             $type = self::T_STRING;
         }
@@ -170,5 +183,37 @@ class Lexer extends \Doctrine\Common\Lexer
     public static function isFieldConcatenationChar($typeId)
     {
         return in_array($typeId, static::$fieldConcatenatorMap);
+    }
+
+    /**
+     * Determines that the provided type identifier is part of the field concatenator list.
+     *
+     * @param string $typeId Identifier of the character type
+     *
+     * @return bool
+     */
+    public static function isFieldQuotationChar($typeId)
+    {
+        return in_array($typeId, static::$fieldQuotesMap);
+    }
+
+    /**
+     * @param string $quotationChar Quoting character, like " (double quote)
+     *
+     * @return bool
+     */
+    public static function isOpeningQuotation($quotationChar)
+    {
+        static $quotes = array();
+
+        if (empty($quotes[$quotationChar])) {
+            $quotes[$quotationChar] = 0;
+        }
+
+        ++$quotes[$quotationChar];
+
+        // true : it's the first appearance of the quote
+        // false  : it's the closing quote
+        return 1 === $quotes[$quotationChar]%2;
     }
 }
