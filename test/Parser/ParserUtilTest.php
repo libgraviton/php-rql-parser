@@ -19,17 +19,14 @@ class ParserUtilTest extends \PHPUnit_Framework_TestCase
      *
      * @dataProvider stringProvider
      *
-     * @param string $expectedString String expected to be returned by the sut
-     * @param string $rqlAttribs     String representing the query parameters of a rql-string
+     * @param string $expectedString expected to be returned by the sut
+     * @param string $rqlAttributes  representing the query parameters of a rql-string
      *
      * @return void
      */
-    public function testGetString($expectedString, $rqlAttribs)
+    public function testGetString($expectedString, $rqlAttributes)
     {
-        $lexer = new Lexer();
-        $lexer->setInput($rqlAttribs);
-
-        ParserUtil::parseStart($lexer);
+        $lexer = $this->getStartedLexer($rqlAttributes);
 
         $this->assertEquals($expectedString, ParserUtil::getString($lexer));
     }
@@ -53,15 +50,110 @@ class ParserUtilTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetStringLogicExpectingException()
     {
-        $typeNotString = '([],foo)';
+        $lexer = $this->getStartedLexer('([],foo)');
 
-        $lexer = new Lexer();
-        $lexer->setInput($typeNotString);
-
-        ParserUtil::parseStart($lexer);
-
-        $this->setExpectedException('\LogicException');
+        $this->setExpectedException('\Graviton\Rql\Exceptions\SyntaxErrorException');
 
         ParserUtil::getString($lexer);
+    }
+
+    /**
+     * get started parser/lexer
+     *
+     * @param string $rql rql to seed lexer with
+     *
+     * @return Lexer
+     */
+    private function getStartedLexer($rql)
+    {
+        $lexer = new Lexer();
+        $lexer->setInput($rql);
+        ParserUtil::parseStart($lexer);
+
+        return $lexer;
+    }
+
+    /**
+     * Verify identification of the closing parenthesis
+     *
+     * @return void
+     */
+    public function testParseEnd()
+    {
+        $lexer = new Lexer();
+        $lexer->setInput('eq(jon,doe)');
+        $lexer->moveNext();
+        $lexer->moveNext();
+        $lexer->moveNext();
+        $lexer->moveNext();
+        $lexer->moveNext();
+
+        ParserUtil::parseEnd($lexer);
+    }
+
+    /**
+     * Verify exception handling of parseEnd
+     *
+     * @return void
+     */
+    public function testParseEndExpectingException()
+    {
+        $lexer = new Lexer();
+        $lexer->setInput('eq(jon,doe)');
+
+        $this->setExpectedException('\Graviton\Rql\Exceptions\SyntaxErrorException');
+
+        ParserUtil::parseEnd($lexer);
+    }
+
+    /**
+     * Validates the behavior of parseArgument
+     *
+     * @dataProvider rqlStringProvider
+     *
+     * @param string $expected Expected outcome
+     * @param string $rql      RQL-Query string
+     *
+     * @return void
+     */
+    public function testParseArgument($expected, $rql)
+    {
+        $lexer = new Lexer();
+        $lexer->setInput($rql);
+
+        $this->assertEquals($expected, ParserUtil::parseArgument($lexer));
+    }
+
+    /**
+     * @return array
+     */
+    public function rqlStringProvider()
+    {
+        return array(
+            'string' => array('jon', 'jon'),
+            'numeric' => array('12', '12'),
+            'quotation' => array('"12"', '"12"'),
+            'boolean (true)' => array(true, 'true'),
+            'boolean (false)' => array(false, 'false'),
+            'multiple, encapsulated quotation' => array("\"Hans 'Housi' Wale-Sepp\"", "\"Hans 'Housi' Wale-Sepp\""),
+            'apostrophe quotation' => array("it's a cake!!", "it's a cake!!"),
+            'multiple quotation with apostrophe' =>
+                array("it's a \"cake\" \"blaster\"!!", "it's a \"cake\" \"blaster\"!!"),
+        );
+    }
+
+    /**
+     * Validates the exception handling of parseArgument
+     *
+     * @return void
+     */
+    public function testParseArgumentExpectingException()
+    {
+        $lexer = new Lexer();
+        $lexer->setInput('()');
+
+        $this->setExpectedException('\Graviton\Rql\Exceptions\SyntaxErrorException');
+
+        ParserUtil::parseArgument($lexer);
     }
 }
