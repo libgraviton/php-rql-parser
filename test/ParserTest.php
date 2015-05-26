@@ -193,6 +193,11 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $booleanFalseAST->setValue(false);
         $tests['boolean false in AST'] = array('eq(name,false)', $booleanFalseAST);
 
+        $colonAST = new AST\EqOperation;
+        $colonAST->setProperty('foo');
+        $colonAST->setValue('bar:baz');
+        $tests['colon in string'] = array('eq(foo,bar:baz)', $colonAST);
+
         return $tests;
     }
 
