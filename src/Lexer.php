@@ -40,6 +40,7 @@ class Lexer extends \Doctrine\Common\Lexer
     const T_LIMIT = 112;
     const T_IN    = 113;
     const T_OUT   = 114;
+    const T_COLON = 115;
 
     /**
      * @var array<string>
@@ -64,6 +65,7 @@ class Lexer extends \Doctrine\Common\Lexer
         '-' => self::T_MINUS,
         '.' => self::T_DOT,
         '/' => self::T_SLASH,
+        ':' => self::T_COLON,
     );
 
     /**

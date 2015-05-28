@@ -183,6 +183,7 @@ class LexerTest extends \PHPUnit_Framework_TestCase
             'minus' => array(Lexer::T_MINUS),
             'dot' => array(Lexer::T_DOT),
             'slash' => array(Lexer::T_SLASH),
+            'colon' => array(Lexer::T_COLON),
         );
     }
 
