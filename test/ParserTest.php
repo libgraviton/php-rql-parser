@@ -198,6 +198,14 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $colonAST->setValue('bar:baz');
         $tests['colon in string'] = array('eq(foo,bar:baz)', $colonAST);
 
+
+        $specialInAST = new AST\InOperation;
+        $specialInAST->setProperty('id');
+        $specialInAST->addValue('a-1');
+        $specialInAST->addValue('b+2');
+        $specialInAST->addValue('c:3');
+        $tests['special char in in()'] = array('in(id,[a-1,b+2,c:3])', $specialInAST);
+
         return $tests;
     }
 
