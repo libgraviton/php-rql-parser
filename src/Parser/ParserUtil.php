@@ -59,7 +59,7 @@ class ParserUtil
         $string = '';
         $move && $lexer->moveNext();
 
-        if ($lexer->lookahead['type'] == Lexer::T_STRING) {
+        if ($lexer->lookahead['type'] == Lexer::T_STRING || $lexer->lookahead['type'] == Lexer::T_INTEGER) {
             $string = $lexer->lookahead['value'];
             $glimpse = $lexer->glimpse();
             if (Lexer::isFieldConcatenationChar($glimpse['type'])) {

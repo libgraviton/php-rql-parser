@@ -55,6 +55,7 @@ class Lexer extends \Doctrine\Common\Lexer
         '-' => self::T_MINUS,
         '.' => self::T_DOT,
         '/' => self::T_SLASH,
+        ':' => self::T_COLON,
     );
 
     /**
