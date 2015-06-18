@@ -120,6 +120,7 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
                 'ne(name,My First Sprocket)', array(
                     array('name' => 'The Third Wheel'),
                     array('name' => 'A Simple Widget'),
+                    array('name' => 'A special("Value")')
                 )
             ),
             'eq AND search' => array(
@@ -134,13 +135,15 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
             ),
             'gt 10 search' => array(
                 'gt(count,10)', array(
-                    array('name' => 'A Simple Widget', 'count' => 100)
+                    array('name' => 'A Simple Widget', 'count' => 100),
+                    array('name' => 'A special("Value")', 'count' => 200)
                 )
             ),
             'gte 10 search' => array(
                 'gte(count,10)', array(
                     array('name' => 'My First Sprocket'),
-                    array('name' => 'A Simple Widget', 'count' => 100)
+                    array('name' => 'A Simple Widget', 'count' => 100),
+                    array('name' => 'A special("Value")', 'count' => 200)
                 )
             ),
             'lt 10 search' => array(
@@ -159,6 +162,7 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
                     array('count' => 3),
                     array('count' => 10),
                     array('count' => 100),
+                    array('count' => 200),
                 )
             ),
             'sort by int explicit' => array(
@@ -166,10 +170,12 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
                     array('count' => 3),
                     array('count' => 10),
                     array('count' => 100),
+                    array('count' => 200),
                 )
             ),
             'reverse sort by int' => array(
                 'sort(-count)', array(
+                    array('count' => 200),
                     array('count' => 100),
                     array('count' => 10),
                     array('count' => 3),
@@ -178,6 +184,7 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
             'string sort' => array(
                 'sort(name)', array(
                     array('name' => 'A Simple Widget', 'count' => 100),
+                    array('name' => 'A special("Value")', 'count' => 200),
                     array('name' => 'My First Sprocket', 'count' => 10),
                     array('name' => 'The Third Wheel', 'count' => 3),
                 )
@@ -185,6 +192,7 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
             'string sort explicit ' => array(
                 'sort(+name)', array(
                     array('name' => 'A Simple Widget', 'count' => 100),
+                    array('name' => 'A special("Value")', 'count' => 200),
                     array('name' => 'My First Sprocket', 'count' => 10),
                     array('name' => 'The Third Wheel', 'count' => 3),
                 )
@@ -193,7 +201,8 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
                 'sort(-name)', array(
                     array('name' => 'The Third Wheel', 'count' => 3),
                     array('name' => 'My First Sprocket', 'count' => 10),
-                    array('name' => 'A Simple Widget', 'count' => 100),
+                    array('name' => 'A special("Value")', 'count' => 200),
+                    array('name' => 'A Simple Widget', 'count' => 100)
                 )
             ),
             'like search' => array(
@@ -217,13 +226,18 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
                 )
             ),
             'out() search' => array(
-                'out(name,[A Simple Widget,My First Sprocket])', array(
+                'out(name,[A Simple Widget,My First Sprocket,A special("Value")])', array(
                     array('name' => 'The Third Wheel')
                 )
             ),
             'like and limit search' => array(
                 'like(name,*et),limit(1)', array(
                     array('name' => 'My First Sprocket')
+                )
+            ),
+            'like special char field' => array(
+                'like(name,*special(*),limit(1)', array(
+                    array('name' => 'A special("Value")')
                 )
             ),
             'complex example from #6 without sugar' => array(
