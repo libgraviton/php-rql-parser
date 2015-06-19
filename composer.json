@@ -25,7 +25,8 @@
     },
     "require": {
         "php": "~5.4",
-        "doctrine/lexer": "~1.0"
+        "xiag/rql-command": "^1.0",
+        "xiag/rql-parser": "^1.0"
     },
     "scripts": {
         "check": [

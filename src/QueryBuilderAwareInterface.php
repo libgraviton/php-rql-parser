@@ -18,11 +18,4 @@ interface QueryBuilderAwareInterface
      * @return \Doctrine\ODM\MongoDB\Query\Builder
      */
     public function getBuilder();
-
-    /**
-     * Provides the Doctrine Query object to execute.
-     *
-     * @return \Doctrine\ODM\MongoDB\Query\Query
-     */
-    public function getQuery();
 }
