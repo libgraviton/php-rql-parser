@@ -114,10 +114,10 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
                 )
             ),
             'eq OR search with sugar' => array(
-                'eq(name,'.rawurlencode('My First Sprocket').')|eq(name,'.rawurlencode('The Third Wheel').')', array(
+                '(eq(name,'.rawurlencode('My First Sprocket').')|eq(name,'.rawurlencode('The Third Wheel').'))', array(
                     array('name' => 'My First Sprocket'),
                     array('name' => 'The Third Wheel')
-                ), true
+                ),
             ),
             'ne search' => array(
                 'ne(name,'.rawurlencode('My First Sprocket').')', array(
@@ -220,9 +220,9 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
                 )
             ),
             'out() search' => array(
-                'out(name,('.rawurlencode('A Simple Widget,My First Sprocket').'))', array(
+                'out(name,('.rawurlencode('A Simple Widget').','.rawurlencode('My First Sprocket').'))', array(
                     array('name' => 'The Third Wheel')
-                ), true
+                ),
             ),
             'like and limit search' => array(
                 'like(name,*'.rawurlencode('et').')&limit(1)', array(

@@ -49,7 +49,7 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      */
     private $arrayMap = [
         'Xiag\Rql\Parser\Node\Query\ArrayOperator\InNode' => 'in',
-        'Xiag\Rql\Parser\Node\Query\ArrayOperator\OutNode' => 'out',
+        'Xiag\Rql\Parser\Node\Query\ArrayOperator\OutNode' => 'notIn',
     ];
 
     /**
