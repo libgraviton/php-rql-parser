@@ -7,6 +7,7 @@ namespace Graviton\Rql;
 
 use Xiag\Rql\Parser\Lexer;
 use Xiag\Rql\Parser\Parser as BaseParser;
+use Xiag\Rql\Parser\Query;
 use Graviton\Rql\Visitor\VisitorInterface;
 
 /**
@@ -34,6 +35,11 @@ class Parser
     private $visitor;
 
     /**
+     * @var Query
+     */
+    private $query;
+
+    /**
      * @param Lexer            $lexer   lexer
      * @param BaseParser       $parser  parser
      * @param VisitorInterface $visitor visitor
@@ -48,7 +54,7 @@ class Parser
     /**
      * @param string $rql rql expression
      *
-     * @return
+     * @return Query
      */
     public function parse($rql)
     {
@@ -63,6 +69,11 @@ class Parser
      */
     public function buildQuery()
     {
+        if (empty($this->ast)) {
+            throw new \RuntimeException(
+                "Missing query from parser, please call 'parser()' before calling 'buildQuery()'."
+            );
+        }
         return $this->visitor->visit($this->ast);
     }
 }
