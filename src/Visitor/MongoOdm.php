@@ -229,7 +229,11 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      */
     protected function visitLike(\Xiag\Rql\Parser\Node\Query\ScalarOperator\LikeNode $node)
     {
-        $this->builder->field($node->getField())->equals(new \MongoRegex($node->getValue()->toRegex()));
+        $query = $node->getValue();
+        if ($query instanceof \Xiag\Rql\Parser\DataType\Glob) {
+            $query = new \MongoRegex($node->getValue()->toRegex());
+        }
+        $this->builder->field($node->getField())->equals($query);
     }
 
     /**

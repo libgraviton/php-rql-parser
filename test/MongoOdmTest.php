@@ -225,9 +225,14 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
                 ), true
             ),
             'like and limit search' => array(
-                'like(name,'.rawurlencode('*et').'),limit(1)', array(
+                'like(name,*'.rawurlencode('et').')&limit(1)', array(
                     array('name' => 'My First Sprocket')
-                ), true
+                ),
+            ),
+            'like without glob' => array(
+                'like(name,'.rawurlencode('The Third Wheel').')', array(
+                    array('name' => 'The Third Wheel')
+                )
             ),
             'complex example from #6 without sugar' => array(
                 'or(and(eq(name,'.rawurlencode('The Third Wheel').'),lt(count,10)),eq(count,100))', array(
