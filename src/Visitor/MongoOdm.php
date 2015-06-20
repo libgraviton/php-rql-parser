@@ -91,7 +91,7 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
     /**
      * @param Query $query query from parser
      *
-     * @return Builder|Doctrine\ODM\MongoDB\Query\Expr
+     * @return Builder|Expr
      */
     public function visit(Query $query)
     {
@@ -104,7 +104,7 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      * @param Query|Node $query or node
      * @param bool       $expr  wrap in expr?
      *
-     * @return Builder|Doctrine\ODM\MongoDB\Query\Expr
+     * @return Builder|Expr
      */
     private function recurse($query, $expr = false)
     {
@@ -144,7 +144,7 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      * @param AbstractScalarOperatorNode $node scalar node
      * @param bool                       $expr should i wrap this in expr()
      *
-     * @return mixed
+     * @return Builder|Expr
      */
     protected function visitScalar($node, $expr = false)
     {
@@ -158,7 +158,7 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      * @param AbstractArrayOperatorNode $node array node
      * @param bool                      $expr should i wrap this in expr()
      *
-     * @return Builder|Doctrine\ODM\MongoDB\Query\Expr
+     * @return Builder|Expr
      */
     protected function visitArray(AbstractArrayOperatorNode $node, $expr = false)
     {
@@ -189,7 +189,7 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      * @param AbstractLogicOperatorNode $node      AST representation of query operator
      * @param bool                      $expr      should i wrap this in expr()
      *
-     * @return Builder|Doctrine\ODM\MongoDB\Query\Expr
+     * @return Builder|Expr
      */
     protected function visitLogic($addMethod, AbstractLogicOperatorNode $node, $expr = false)
     {
@@ -221,7 +221,7 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
     }
 
     /**
-     * @param \Xiag\Rql\Parser\Node\Query\ScalarOperator\LikeNodeobject $node like node
+     * @param \Xiag\Rql\Parser\Node\Query\ScalarOperator\LikeNode $node like node
      *
      * @return void
      */

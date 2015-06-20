@@ -98,7 +98,6 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function testBuildQuery($rql, $lexerDouble, $parserDouble, $visitorDouble, $astDouble)
     {
-        $builderDouble = new \StdClass;
         $visitorDouble
             ->expects($this->once())
             ->method('visit')

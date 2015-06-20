@@ -58,10 +58,10 @@ class Parser
      */
     public function parse($rql)
     {
-        $this->ast = $this->parser->parse(
+        $this->query = $this->parser->parse(
             $this->lexer->tokenize($rql)
         );
-        return $this->ast;
+        return $this->query;
     }
 
     /**
@@ -69,11 +69,11 @@ class Parser
      */
     public function buildQuery()
     {
-        if (empty($this->ast)) {
+        if (empty($this->query)) {
             throw new \RuntimeException(
                 "Missing query from parser, please call 'parser()' before calling 'buildQuery()'."
             );
         }
-        return $this->visitor->visit($this->ast);
+        return $this->visitor->visit($this->query);
     }
 }
