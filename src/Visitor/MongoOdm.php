@@ -60,7 +60,6 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
     private $queryMap = [
         'Xiag\Rql\Parser\Node\Query\LogicOperator\AndNode' => 'addAnd',
         'Xiag\Rql\Parser\Node\Query\LogicOperator\OrNode' => 'addOr',
-        'Graviton\Rql\AST\QueryOperation' => false,
     ];
 
     /**
@@ -219,10 +218,6 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
     protected function visitSort(\Xiag\Rql\Parser\Node\SortNode $node)
     {
         foreach ($node->getFields() as $name => $order) {
-            $order = 'asc';
-            if ($order == -1) {
-                $order = 'desc';
-            }
             $this->builder->sort($name, $order);
         }
     }
@@ -234,7 +229,7 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      */
     protected function visitLike(\Xiag\Rql\Parser\Node\Query\ScalarOperator\LikeNode $node)
     {
-        $this->builder->field($node->getField())->equals($node->getValue()->toRegex());
+        $this->builder->field($node->getField())->equals(new \MongoRegex($node->getValue()->toRegex()));
     }
 
     /**
