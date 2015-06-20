@@ -17,10 +17,9 @@ interface VisitorInterface
     /**
      * Acts on the operation defined.
      *
-     * @param Query  $query   abstract representation of query
-     * @param object $builder builder as needed by implementation
+     * @param Query $query abstract representation of query
      *
      * @return mixed
      */
-    public function visit(Query $query, $builder);
+    public function visit(Query $query);
 }

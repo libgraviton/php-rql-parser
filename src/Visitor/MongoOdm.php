@@ -7,10 +7,14 @@
 
 namespace Graviton\Rql\Visitor;
 
-use Graviton\Rql\QueryBuilderAwareInterface;
-use Graviton\Rql\AST;
-use Doctrine\ODM\MongoDB\Query\Builder as QueryBuilder;
+use Xiag\Rql\Parser\Query;
+use Xiag\Rql\Parser\Lexer;
+use Doctrine\ODM\MongoDB\Query\Builder;
 use Doctrine\ODM\MongoDB\Query\Expr;
+use Graviton\Rql\QueryBuilderAwareInterface;
+use Xiag\Rql\Parser\Node\Query\AbstractScalarOperatorNode;
+use Xiag\Rql\Parser\Node\Query\AbstractLogicOperatorNode;
+use Xiag\Rql\Parser\Node\Query\AbstractArrayOperatorNode;
 
 /**
  * @author  List of contributors <https://github.com/libgraviton/php-rql-parser/graphs/contributors>
@@ -22,62 +26,60 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
     /**
      * @var QueryBuilder
      */
-    private $queryBuilder;
+    private $builder;
 
     /**
      * map classes to querybuilder methods
      *
      * @var string<string>
      */
-    private $propertyMap = array(
-        'Graviton\Rql\AST\EqOperation' => 'equals',
-        'Graviton\Rql\AST\NeOperation' => 'notEqual',
-        'Graviton\Rql\AST\LtOperation' => 'lt',
-        'Graviton\Rql\AST\GtOperation' => 'gt',
-        'Graviton\Rql\AST\LteOperation' => 'lte',
-        'Graviton\Rql\AST\GteOperation' => 'gte',
-    );
+    private $scalarMap = [
+        'Xiag\Rql\Parser\Node\Query\ScalarOperator\EqNode' => 'equals',
+        'Xiag\Rql\Parser\Node\Query\ScalarOperator\NeNode' => 'notEqual',
+        'Xiag\Rql\Parser\Node\Query\ScalarOperator\LtNode' => 'lt',
+        'Xiag\Rql\Parser\Node\Query\ScalarOperator\GtNode' => 'gt',
+        'Xiag\Rql\Parser\Node\Query\ScalarOperator\LeNode' => 'lte',
+        'Xiag\Rql\Parser\Node\Query\ScalarOperator\GeNode' => 'gte',
+    ];
 
     /**
      * map classes to array style methods of querybuilder
      *
      * @var string<string>
      */
-    private $arrayMap = array(
-        'Graviton\Rql\AST\InOperation' => 'in',
-        'Graviton\Rql\AST\OutOperation' => 'notIn',
-    );
+    private $arrayMap = [
+        'Xiag\Rql\Parser\Node\Query\ArrayOperator\InNode' => 'in',
+        'Xiag\Rql\Parser\Node\Query\ArrayOperator\OutNode' => 'out',
+    ];
 
     /**
      * map classes of query style operations to builder
      *
      * @var string<string>|bool
      */
-    private $queryMap = array(
-        'Graviton\Rql\AST\AndOperation' => 'addAnd',
-        'Graviton\Rql\AST\OrOperation' => 'addOr',
+    private $queryMap = [
+        'Xiag\Rql\Parser\Node\Query\LogicOperator\AndNode' => 'addAnd',
+        'Xiag\Rql\Parser\Node\Query\LogicOperator\OrNode' => 'addOr',
         'Graviton\Rql\AST\QueryOperation' => false,
-    );
+    ];
 
     /**
      * map classes with an internal implementation to methods
      *
      * @var string<string>
      */
-    private $internalMap = array(
-        'Graviton\Rql\AST\SortOperation' => 'visitSort',
-        'Graviton\Rql\AST\LimitOperation' => 'visitLimit',
-        'Graviton\Rql\AST\LikeOperation' => 'visitLike',
-    );
+    private $internalMap = [
+        'Xiag\Rql\Parser\Node\Query\ScalarOperator\LikeNode' => 'visitLike',
+    ];
 
     /**
      * create new visitor
      *
-     * @param QueryBuilder $queryBuilder MongoDB-ODM querybuilder
+     * @param Builder $builder MongoDB-ODM querybuilder
      */
-    public function __construct(QueryBuilder $queryBuilder)
+    public function __construct(Builder $builder)
     {
-        $this->queryBuilder = $queryBuilder;
+        $this->builder = $builder;
     }
 
     /**
@@ -85,71 +87,86 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      */
     public function getBuilder()
     {
-        return $this->queryBuilder;
+        return $this->builder;
+    }
+
+    /**
+     * @param Query $query query from parser
+     *
+     * @return Builder|Doctrine\ODM\MongoDB\Query\Expr
+     */
+    public function visit(Query $query)
+    {
+        return $this->recurse($query);
     }
 
     /**
      * build a querybuilder from the AST
      *
-     * @param AST\OperationInterface $operation AST representation of query
-     * @param bool                   $expr      should i wrap this in expr()
+     * @param Query|Node $query or node
+     * @param bool  $expr  wrap in expr? (internal use only)
      *
-     * @return QueryBuilder|Doctrine\ODM\MongoDB\Query\Expr
+     * @return Builder|Doctrine\ODM\MongoDB\Query\Expr
      */
-    public function visit(AST\OperationInterface $operation, $expr = false)
+    private function recurse($query, $expr = false)
     {
-        if (in_array(get_class($operation), array_keys($this->internalMap))) {
-            $method = $this->internalMap[get_class($operation)];
-            $this->$method($operation);
-
-        } elseif ($operation instanceof AST\PropertyOperationInterface) {
-            return $this->visitProperty($operation, $expr);
-
-        } elseif ($operation instanceof AST\ArrayOperationInterface) {
-            return $this->visitArray($operation, $expr);
-
-        } elseif ($operation instanceof AST\QueryOperationInterface) {
-            $method = $this->queryMap[get_class($operation)];
-            return $this->visitQuery($method, $operation, $expr);
+        if ($expr) {
+            $node = $query;
+        } else {
+            $node = $query->getQuery();
         }
-    }
+        var_dump($query, $node);
 
-    /**
-     * Provides the Doctrine Query object to execute.
-     *
-     * @return \Doctrine\ODM\MongoDB\Query\Query
-     */
-    public function getQuery()
-    {
-        return $this->getBuilder()->getQuery();
+        if (in_array(get_class($node), array_keys($this->internalMap))) {
+            $method = $this->internalMap[get_class($node)];
+            $this->$method($node);
+
+        } elseif ($node instanceof AbstractScalarOperatorNode) {
+            return $this->visitScalar($node, $expr);
+
+        } elseif ($node instanceof AbstractArrayOperatorNode) {
+            return $this->visitArray($node, $expr);
+
+        } elseif ($node instanceof AbstractLogicOperatorNode) {
+            $method = $this->queryMap[get_class($node)];
+            return $this->visitLogic($method, $node, $expr);
+        }
+
+        if ($query->getSort()) {
+            $this->visitSort($query->getSort());
+        }
+        if ($query->getLimit()) {
+            $this->visitLimit($query->getLimit());
+        }
+        return $this->builder;
     }
 
     /**
      * add a property based condition to the querybuilder
      *
-     * @param AST\PropertyOperationInterface $operation AST representation of query
-     * @param bool                           $expr      should i wrap this in expr()
+     * @param object $node scalar node
+     * @param bool   $expr should i wrap this in expr()
      *
      * @return mixed
      */
-    protected function visitProperty(AST\PropertyOperationInterface $operation, $expr)
+    protected function visitScalar($node, $expr = false)
     {
-        $method = $this->propertyMap[get_class($operation)];
-        return $this->getField($operation->getProperty(), $expr)->$method($operation->getValue());
+        $method = $this->scalarMap[get_class($node)];
+        return $this->getField($node->getField(), $expr)->$method($node->getValue());
     }
 
     /**
      * add a array based condition to the querybuilder
      *
-     * @param AST\ArrayOperationInterface $operation AST representation of query
-     * @param bool                        $expr      should i wrap this in expr()
+     * @param AbstractArrayOperatorNode $node array node
+     * @param bool                      $expr should i wrap this in expr()
      *
      * @return QueryBuilder|Doctrine\ODM\MongoDB\Query\Expr
      */
-    protected function visitArray(AST\ArrayOperationInterface $operation, $expr)
+    protected function visitArray(AbstractArrayOperatorNode $node, $expr = false)
     {
-        $method = $this->arrayMap[get_class($operation)];
-        return $this->getField($operation->getProperty(), $expr)->$method($operation->getArray());
+        $method = $this->arrayMap[get_class($node)];
+        return $this->getField($node->getField(), $expr)->$method($node->getValues());
     }
 
     /**
@@ -163,28 +180,28 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
     protected function getField($field, $expr)
     {
         if ($expr) {
-            return $this->queryBuilder->expr()->field($field);
+            return $this->builder->expr()->field($field);
         }
-        return $this->queryBuilder->field($field);
+        return $this->builder->field($field);
     }
 
     /**
      * add query (like and or or) to the querybuilder
      *
-     * @param string|boolean              $addMethod name of method we will be calling or false if no method is needed
-     * @param AST\QueryOperationInterface $operation AST representation of query operator
-     * @param bool                        $expr      should i wrap this in expr()
+     * @param string|boolean            $addMethod name of method we will be calling or false if no method is needed
+     * @param AbstractLogicOperatorNode $operation AST representation of query operator
+     * @param bool                      $expr      should i wrap this in expr()
      *
      * @return QueryBuilder|Doctrine\ODM\MongoDB\Query\Expr
      */
-    protected function visitQuery($addMethod, AST\QueryOperationInterface $operation, $expr = false)
+    protected function visitLogic($addMethod, AbstractLogicOperatorNode $node, $expr = false)
     {
-        $builder = $this->queryBuilder;
+        $builder = $this->builder;
         if ($expr) {
-            $builder = $this->queryBuilder->expr();
+            $builder = $this->builder->expr();
         }
-        foreach ($operation->getQueries() as $query) {
-            $expr = $this->visit($query, $addMethod !== false);
+        foreach ($node->getQueries() as $query) {
+            $expr = $this->recurse($query, $addMethod !== false);
             if ($addMethod !== false) {
                 $builder->$addMethod($expr);
             }
@@ -195,44 +212,40 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
     /**
      * add a sort condition to querybuilder
      *
-     * @param AST\SortOperationInterface $operation sort operation
+     * @param Xiag\Rql\Parser\Node\SortNode $node sort node
      *
      * @return void
      */
-    protected function visitSort(AST\SortOperationInterface $operation)
+    protected function visitSort(\Xiag\Rql\Parser\Node\SortNode $node)
     {
-        foreach ($operation->getFields() as $field) {
-            $name = $field[0];
+        foreach ($node->getFields() as $name => $order) {
             $order = 'asc';
-            if (!empty($field[1])) {
-                $order = $field[1];
+            if ($order == -1) {
+                $order = 'desc';
             }
-            $this->queryBuilder->sort($name, $order);
+            $this->builder->sort($name, $order);
         }
     }
 
     /**
-     * add like operation to querybuilder
-     *
-     * @param AST\Operation $operation like operation
+     * @param Xiag\Rql\Parser\Node\Query\ScalarOperator\LikeNodeobject $node like node
      *
      * @return void
      */
-    protected function visitLike(AST\LikeOperation $operation)
+    protected function visitLike(\Xiag\Rql\Parser\Node\Query\ScalarOperator\LikeNode $node)
     {
-        $regex = new \MongoRegex(sprintf('/%s/', str_replace('*', '.*', $operation->getValue())));
-        $this->queryBuilder->field($operation->getProperty())->equals($regex);
+        $this->builder->field($node->getField())->equals($node->getValue()->toRegex());
     }
 
     /**
-     * add limit condition to querybuilder
+     * add limit condition to builder
      *
-     * @param AST\LimitOperationInterface $operation limit operation
+     * @param Xiag\Rql\Parser\Node\LimitNode $node limit node
      *
      * @return void
      */
-    protected function visitLimit(AST\LimitOperationInterface $operation)
+    protected function visitLimit(\Xiag\Rql\Parser\Node\LimitNode $node)
     {
-        $this->queryBuilder->limit($operation->getLimit())->skip($operation->getSkip());
+        $this->builder->limit($node->getLimit())->skip($node->getOffset());
     }
 }
