@@ -8,7 +8,6 @@
 namespace Graviton\Rql\Visitor;
 
 use Xiag\Rql\Parser\Query;
-use Xiag\Rql\Parser\Lexer;
 use Doctrine\ODM\MongoDB\Query\Builder;
 use Doctrine\ODM\MongoDB\Query\Expr;
 use Graviton\Rql\QueryBuilderAwareInterface;
@@ -24,7 +23,7 @@ use Xiag\Rql\Parser\Node\Query\AbstractArrayOperatorNode;
 final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
 {
     /**
-     * @var QueryBuilder
+     * @var Builder
      */
     private $builder;
 
@@ -82,7 +81,7 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
     }
 
     /**
-     * @return QueryBuilder
+     * @return Builder
      */
     public function getBuilder()
     {
@@ -114,7 +113,6 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
         } else {
             $node = $query->getQuery();
         }
-        var_dump($query, $node);
 
         if (in_array(get_class($node), array_keys($this->internalMap))) {
             $method = $this->internalMap[get_class($node)];
@@ -143,8 +141,8 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
     /**
      * add a property based condition to the querybuilder
      *
-     * @param object $node scalar node
-     * @param bool   $expr should i wrap this in expr()
+     * @param AbstractScalarOperatorNode $node scalar node
+     * @param bool                       $expr should i wrap this in expr()
      *
      * @return mixed
      */
@@ -160,7 +158,7 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      * @param AbstractArrayOperatorNode $node array node
      * @param bool                      $expr should i wrap this in expr()
      *
-     * @return QueryBuilder|Doctrine\ODM\MongoDB\Query\Expr
+     * @return Builder|Doctrine\ODM\MongoDB\Query\Expr
      */
     protected function visitArray(AbstractArrayOperatorNode $node, $expr = false)
     {
@@ -174,7 +172,7 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      * @param string $field name of field to get
      * @param bool   $expr  should i wrap this in expr()
      *
-     * @return QueryBuilder|Expr
+     * @return Builder|Expr
      */
     protected function getField($field, $expr)
     {
@@ -191,7 +189,7 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      * @param AbstractLogicOperatorNode $node      AST representation of query operator
      * @param bool                      $expr      should i wrap this in expr()
      *
-     * @return QueryBuilder|Doctrine\ODM\MongoDB\Query\Expr
+     * @return Builder|Doctrine\ODM\MongoDB\Query\Expr
      */
     protected function visitLogic($addMethod, AbstractLogicOperatorNode $node, $expr = false)
     {
@@ -211,7 +209,7 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
     /**
      * add a sort condition to querybuilder
      *
-     * @param Xiag\Rql\Parser\Node\SortNode $node sort node
+     * @param \Xiag\Rql\Parser\Node\SortNode $node sort node
      *
      * @return void
      */
@@ -223,7 +221,7 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
     }
 
     /**
-     * @param Xiag\Rql\Parser\Node\Query\ScalarOperator\LikeNodeobject $node like node
+     * @param \Xiag\Rql\Parser\Node\Query\ScalarOperator\LikeNodeobject $node like node
      *
      * @return void
      */
@@ -239,7 +237,7 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
     /**
      * add limit condition to builder
      *
-     * @param Xiag\Rql\Parser\Node\LimitNode $node limit node
+     * @param \Xiag\Rql\Parser\Node\LimitNode $node limit node
      *
      * @return void
      */

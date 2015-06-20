@@ -107,6 +107,6 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $sut = new Parser($lexerDouble, $parserDouble, $visitorDouble);
         $sut->parse($rql);
 
-        $sut->buildQuery($builderDouble);
+        $sut->buildQuery();
     }
 }
