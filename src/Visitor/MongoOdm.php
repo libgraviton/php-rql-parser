@@ -103,7 +103,7 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      * build a querybuilder from the AST
      *
      * @param Query|Node $query or node
-     * @param bool  $expr  wrap in expr? (internal use only)
+     * @param bool       $expr  wrap in expr?
      *
      * @return Builder|Doctrine\ODM\MongoDB\Query\Expr
      */
@@ -188,7 +188,7 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      * add query (like and or or) to the querybuilder
      *
      * @param string|boolean            $addMethod name of method we will be calling or false if no method is needed
-     * @param AbstractLogicOperatorNode $operation AST representation of query operator
+     * @param AbstractLogicOperatorNode $node      AST representation of query operator
      * @param bool                      $expr      should i wrap this in expr()
      *
      * @return QueryBuilder|Doctrine\ODM\MongoDB\Query\Expr

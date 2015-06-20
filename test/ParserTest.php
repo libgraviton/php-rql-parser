@@ -6,6 +6,10 @@
 namespace Graviton\Rql;
 
 use Graviton\Rql\Parser;
+use Graviton\Rql\Visitor\VisitorInterface as Visitor;
+use Xiag\Rql\Parser\Lexer;
+use Xiag\Rql\Parser\Parser as BaseParser;
+use Xiag\Rql\Parser\Query;
 
 /**
  * @author  List of contributors <https://github.com/libgraviton/php-rql-parser/graphs/contributors>
@@ -66,6 +70,11 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      *
      * @dataProvider doubleData
      *
+     * @param string     $rql           rql string
+     * @param Lexer      $lexerDouble   lexer mock
+     * @param BaseParser $parserDouble  parser mock
+     * @param Visitor    $visitorDouble visitor mock
+     *
      * @return void
      */
     public function testParse($rql, $lexerDouble, $parserDouble, $visitorDouble)
@@ -78,6 +87,12 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      * Run AST through query builder
      *
      * @dataProvider doubleData
+     *
+     * @param string     $rql           rql string
+     * @param Lexer      $lexerDouble   lexer mock
+     * @param BaseParser $parserDouble  parser mock
+     * @param Visitor    $visitorDouble visitor mock
+     * @param Query      $astDouble     ast mock
      *
      * @return void
      */

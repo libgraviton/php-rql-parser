@@ -108,7 +108,8 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
                 )
             ),
             'eq OR search' => array(
-                'or(eq(name,'.rawurlencode('My First Sprocket').'),eq(name,'.rawurlencode('The Third Wheel').'))', array(
+                'or(eq(name,'.rawurlencode('My First Sprocket').'),eq(name,'.rawurlencode('The Third Wheel').'))',
+                array(
                     array('name' => 'My First Sprocket'),
                     array('name' => 'The Third Wheel')
                 )
