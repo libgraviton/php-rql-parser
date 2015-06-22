@@ -5,7 +5,7 @@
 
 namespace Graviton\Rql\Visitor;
 
-use Graviton\Rql\AST\OperationInterface;
+use Xiag\Rql\Parser\Query;
 
 /**
  * @author  List of contributors <https://github.com/libgraviton/php-rql-parser/graphs/contributors>
@@ -17,9 +17,9 @@ interface VisitorInterface
     /**
      * Acts on the operation defined.
      *
-     * @param OperationInterface $operation AST representation of query
+     * @param Query $query abstract representation of query
      *
      * @return mixed
      */
-    public function visit(OperationInterface $operation);
+    public function visit(Query $query);
 }

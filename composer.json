@@ -1,8 +1,8 @@
 {
     "name": "graviton/php-rql-parser",
     "homepage": "https://github.com/libgraviton/php-rql-parser",
-    "description": "A standalone RQL (Resource Query Language) Parser with flexible usage possibilities",
-    "keywords": ["rest", "rql", "resource", "query", "language", "parser"],
+    "description": "doctrine-odm query building wrapper to xiag-ag/rql-parser",
+    "keywords": ["rest", "rql", "resource", "query", "language", "parser", "mongodb", "mongo"],
     "license": "GPL",
     "authors": [
         {
@@ -19,13 +19,14 @@
     "require-dev": {
         "phpunit/phpunit": "*",
         "squizlabs/php_codesniffer": "~2.2",
-        "doctrine/mongodb-odm": "~1.0@beta",
         "doctrine/data-fixtures": "~1.0",
-        "libgraviton/codesniffer": "~1.3"
+        "libgraviton/codesniffer": "~1.3",
+        "xiag/rql-command": "^1.0"
     },
     "require": {
         "php": "~5.4",
-        "doctrine/lexer": "~1.0"
+        "doctrine/mongodb-odm": "~1.0@beta",
+        "xiag/rql-parser": "^1.0"
     },
     "scripts": {
         "check": [
@@ -34,9 +35,6 @@
             "./vendor/bin/phpcs --standard=PSR2 --ignore='*.css' --ignore='*.js' src/ test/",
             "./vendor/bin/phpcs --standard=ENTB --ignore='*.css' --ignore='*.js' src/ test/"
         ]
-    },
-    "suggest": {
-        "doctrine/mongodb-odm": "Needs ~1.0 if you want to use Graviton\\Rql\\Visitor\\MongoOdm."
     },
     "minimum-stability": "stable"
 }

@@ -5,9 +5,10 @@
 
 namespace Graviton\Rql;
 
-use Graviton\Rql\Parser\Strategy;
-use Graviton\Rql\Parser\Strategy\ParsingStrategyInterface;
-use Graviton\Rql\AST;
+use Xiag\Rql\Parser\Lexer;
+use Xiag\Rql\Parser\Parser as BaseParser;
+use Xiag\Rql\Parser\Query;
+use Graviton\Rql\Visitor\VisitorInterface;
 
 /**
  * RQL Parser
@@ -24,106 +25,55 @@ class Parser
     private $lexer;
 
     /**
-     * @var ParsingStrategyInterface[]
+     * @var BaseParser
      */
-    private $strategies = array();
+    private $parser;
 
     /**
-     * craete a new parser
-     *
-     * @param string $rql rql query string
-     *
-     * @return Parser
+     * @var VisitorInterface
      */
-    public static function createParser($rql)
+    private $visitor;
+
+    /**
+     * @var Query
+     */
+    private $query;
+
+    /**
+     * @param Lexer            $lexer   lexer
+     * @param BaseParser       $parser  parser
+     * @param VisitorInterface $visitor visitor
+     */
+    public function __construct(Lexer $lexer, BaseParser $parser, VisitorInterface $visitor)
     {
-        $parser = new Parser($rql);
-
-        $parser->addStrategy(new Strategy\PropertyOperationStrategy);
-        $parser->addStrategy(new Strategy\QueryOperationStrategy);
-        $parser->addStrategy(new Strategy\ArrayOperationStrategy);
-        $parser->addStrategy(new Strategy\SortOperationStrategy);
-        $parser->addStrategy(new Strategy\LimitOperationStrategy);
-
-        return $parser;
+        $this->lexer = $lexer;
+        $this->parser = $parser;
+        $this->visitor = $visitor;
     }
 
     /**
-     * create parser and lex input
+     * @param string $rql rql expression
      *
-     * @param string $rql rql to lex
+     * @return Query
      */
-    public function __construct($rql)
+    public function parse($rql)
     {
-        $this->lexer = new Lexer;
-        $this->lexer->setInput($rql);
+        $this->query = $this->parser->parse(
+            $this->lexer->tokenize($rql)
+        );
+        return $this->query;
     }
 
     /**
-     * @param ParsingStrategyInterface $strategy strategy to add to parser
-     *
-     * @return void
+     * @return mixed
      */
-    public function addStrategy(ParsingStrategyInterface $strategy)
+    public function buildQuery()
     {
-        $strategy->setParser($this);
-        $strategy->setLexer($this->lexer);
-        $this->strategies[] = $strategy;
-    }
-
-    /**
-     * return abstract syntax tree
-     *
-     * @return AST\OperationInterface
-     */
-    public function getAST()
-    {
-        return $this->resourceQuery(true);
-    }
-
-    /**
-     * @param bool $first is this the first operation we are parsing
-     *
-     * @return AST\OperationInterface
-     */
-    public function resourceQuery($first = false)
-    {
-        $operation = false;
-        $this->lexer->moveNext();
-        $type = $this->lexer->lookahead['type'];
-
-        foreach ($this->strategies as $strategy) {
-            if ($strategy->accepts($type)) {
-                $operation = $strategy->parse();
-                $glimpse = $this->lexer->glimpse();
-                if ($first && $glimpse['type'] == Lexer::T_COMMA) {
-                    $this->lexer->moveNext();
-                    $operation = $this->wrapperOperation($operation);
-                }
-            }
-        }
-        if (!$operation) {
+        if (empty($this->query)) {
             throw new \RuntimeException(
-                sprintf(
-                    'No strategies matched the type %s (%s). Did you load all strategies?',
-                    $type,
-                    $this->lexer->lookahead['value']
-                )
+                "Missing query from parser, please call 'parser()' before calling 'buildQuery()'."
             );
         }
-        return $operation;
-    }
-
-    /**
-     * @param AST\OperationInterface $operation operation that needs to be wrapped
-     *
-     * @return AST\OperationInterface
-     */
-    protected function wrapperOperation(AST\OperationInterface $operation)
-    {
-        $wrapper = new AST\QueryOperation();
-        $wrapper->addQuery($operation);
-        $wrapper->addQuery($this->resourceQuery());
-        return $wrapper;
+        return $this->visitor->visit($this->query);
     }
 }

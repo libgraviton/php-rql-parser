@@ -9,8 +9,9 @@ use Doctrine\MongoDB\Connection;
 use Doctrine\ODM\MongoDB\Configuration;
 use Doctrine\Common\DataFixtures\Loader;
 use Doctrine\ODM\MongoDB\DocumentManager;
-use Graviton\Rql\Parser;
-use Graviton\Rql\Parser\Strategy;
+use Xiag\Rql\Parser\Query;
+use Xiag\Rql\Parser\Lexer;
+use Xiag\Rql\Parser\Parser as RqlParser;
 use Graviton\Rql\Visitor\MongoOdm;
 use Graviton\Rql\DataFixtures\MongoOdm as MongoOdmFixtures;
 use Doctrine\Common\DataFixtures\Executor\MongoDBExecutor;
@@ -67,17 +68,20 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
     public function testBasicQueries($query, $expected, $skip = false)
     {
         if ($skip) {
-            $this->markTestSkipped(sprintf('Please unskip the test when you add support for %s', $query));
+            $this->markTestSkipped();
         }
-        $parser = Parser::createParser($query);
-        $mongo = new MongoOdm($this->builder);
-        $ast = $parser->getAST();
-        $results = array();
-        if ($ast != null) {
-            $ast->accept($mongo);
-            foreach ($mongo->getBuilder()->getQuery()->execute() as $doc) {
-                $results[] = $doc;
-            }
+        $parser = new Parser(
+            new Lexer,
+            RqlParser::createDefault(),
+            new MongoOdm($this->builder)
+        );
+
+        $parser->parse($query);
+        $builder = $parser->buildQuery();
+
+        $results = [];
+        foreach ($builder->getQuery()->execute() as $doc) {
+            $results[] = $doc;
         }
 
         $this->assertEquals(count($expected), count($results), 'record count mismatch');
@@ -96,39 +100,39 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
     {
         return array(
             'eq search for non existant document' => array(
-                'eq(name,Not My Sprocket)', array()
+                'eq(name,'.rawurlencode('Not My Sprocket').')', array()
             ),
             'eq search for document by name' => array(
-                'eq(name,My First Sprocket)', array(
+                'eq(name,'.rawurlencode('My First Sprocket').')', array(
                     array('name' => 'My First Sprocket')
                 )
             ),
             'eq OR search' => array(
-                'or(eq(name,My First Sprocket),eq(name,The Third Wheel))', array(
+                'or(eq(name,'.rawurlencode('My First Sprocket').'),eq(name,'.rawurlencode('The Third Wheel').'))',
+                array(
                     array('name' => 'My First Sprocket'),
                     array('name' => 'The Third Wheel')
                 )
             ),
             'eq OR search with sugar' => array(
-                'eq(name,My First Sprocket)|eq(name,The Third Wheel)', array(
+                '(eq(name,'.rawurlencode('My First Sprocket').')|eq(name,'.rawurlencode('The Third Wheel').'))', array(
                     array('name' => 'My First Sprocket'),
                     array('name' => 'The Third Wheel')
                 ),
-                true // markTestSkipped
             ),
             'ne search' => array(
-                'ne(name,My First Sprocket)', array(
+                'ne(name,'.rawurlencode('My First Sprocket').')', array(
                     array('name' => 'The Third Wheel'),
                     array('name' => 'A Simple Widget'),
                 )
             ),
             'eq AND search' => array(
-                'and(eq(name,My First Sprocket),eq(count,10))', array(
+                'and(eq(name,'.rawurlencode('My First Sprocket').'),eq(count,10))', array(
                     array('name' => 'My First Sprocket'),
                 )
             ),
             'eq AND search with sugar' => array(
-                'eq(name,My First Sprocket)&eq(count,10)', array(
+                'eq(name,'.rawurlencode('My First Sprocket').')&eq(count,10)', array(
                     array('name' => 'My First Sprocket'),
                 )
             ),
@@ -137,8 +141,8 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
                     array('name' => 'A Simple Widget', 'count' => 100)
                 )
             ),
-            'gte 10 search' => array(
-                'gte(count,10)', array(
+            'ge 10 search' => array(
+                'ge(count,10)', array(
                     array('name' => 'My First Sprocket'),
                     array('name' => 'A Simple Widget', 'count' => 100)
                 )
@@ -148,8 +152,8 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
                     array('name' => 'The Third Wheel', 'count' => 3)
                 )
             ),
-            'lte 10 search' => array(
-                'lte(count,10)', array(
+            'le 10 search' => array(
+                'le(count,10)', array(
                     array('name' => 'My First Sprocket', 'count' => 10),
                     array('name' => 'The Third Wheel', 'count' => 3)
                 )
@@ -159,7 +163,7 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
                     array('count' => 3),
                     array('count' => 10),
                     array('count' => 100),
-                )
+                ), true
             ),
             'sort by int explicit' => array(
                 'sort(+count)', array(
@@ -180,7 +184,7 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
                     array('name' => 'A Simple Widget', 'count' => 100),
                     array('name' => 'My First Sprocket', 'count' => 10),
                     array('name' => 'The Third Wheel', 'count' => 3),
-                )
+                ), true
             ),
             'string sort explicit ' => array(
                 'sort(+name)', array(
@@ -212,22 +216,27 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
                 )
             ),
             'in() search' => array(
-                'in(name,[The Third Wheel])', array(
+                'in(name,('.rawurlencode('The Third Wheel').'))', array(
                     array('name' => 'The Third Wheel')
                 )
             ),
             'out() search' => array(
-                'out(name,[A Simple Widget,My First Sprocket])', array(
+                'out(name,('.rawurlencode('A Simple Widget').','.rawurlencode('My First Sprocket').'))', array(
+                    array('name' => 'The Third Wheel')
+                ),
+            ),
+            'like and limit search' => array(
+                'like(name,*'.rawurlencode('et').')&limit(1)', array(
+                    array('name' => 'My First Sprocket')
+                ),
+            ),
+            'like without glob' => array(
+                'like(name,'.rawurlencode('The Third Wheel').')', array(
                     array('name' => 'The Third Wheel')
                 )
             ),
-            'like and limit search' => array(
-                'like(name,*et),limit(1)', array(
-                    array('name' => 'My First Sprocket')
-                )
-            ),
             'complex example from #6 without sugar' => array(
-                'or(and(eq(name,The Third Wheel),lt(count,10)),eq(count,100))', array(
+                'or(and(eq(name,'.rawurlencode('The Third Wheel').'),lt(count,10)),eq(count,100))', array(
                     array('name' => 'The Third Wheel', 'count' => 3),
                     array('name' => 'A Simple Widget', 'count' => 100),
                 )
