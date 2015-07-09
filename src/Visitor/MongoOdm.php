@@ -114,9 +114,13 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
             $node = $query->getQuery();
         }
 
+        if ($query instanceof Query) {
+            $this->visitQuery($query);
+        }
+
         if (in_array(get_class($node), array_keys($this->internalMap))) {
             $method = $this->internalMap[get_class($node)];
-            $this->$method($node);
+            return $this->$method($node, $expr);
 
         } elseif ($node instanceof AbstractScalarOperatorNode) {
             return $this->visitScalar($node, $expr);
@@ -129,13 +133,22 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
             return $this->visitLogic($method, $node, $expr);
         }
 
+        return $this->builder;
+    }
+
+    /**
+     * @param Query $query top level query that needs visiting
+     *
+     * @return void
+     */
+    public function visitQuery(Query $query)
+    {
         if ($query->getSort()) {
             $this->visitSort($query->getSort());
         }
         if ($query->getLimit()) {
             $this->visitLimit($query->getLimit());
         }
-        return $this->builder;
     }
 
     /**
@@ -222,16 +235,17 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
 
     /**
      * @param \Xiag\Rql\Parser\Node\Query\ScalarOperator\LikeNode $node like node
+     * @param boolean                                             $expr should i wrap this in expr
      *
      * @return void
      */
-    protected function visitLike(\Xiag\Rql\Parser\Node\Query\ScalarOperator\LikeNode $node)
+    protected function visitLike(\Xiag\Rql\Parser\Node\Query\ScalarOperator\LikeNode $node, $expr = false)
     {
         $query = $node->getValue();
         if ($query instanceof \Xiag\Rql\Parser\DataType\Glob) {
             $query = new \MongoRegex($node->getValue()->toRegex());
         }
-        $this->builder->field($node->getField())->equals($query);
+        return $this->getField($node->getField(), $expr)->equals($query);
     }
 
     /**

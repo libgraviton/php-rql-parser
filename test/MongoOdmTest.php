@@ -120,6 +120,13 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
                     array('name' => 'The Third Wheel')
                 ),
             ),
+            'like OR search' => array(
+                'or(like(name,*'.rawurlencode('First').'),like(name,*'.rawurlencode('Wheel').'))',
+                array(
+                    array('name' => 'My First Sprocket'),
+                    array('name' => 'The Third Wheel')
+                )
+            ),
             'ne search' => array(
                 'ne(name,'.rawurlencode('My First Sprocket').')', array(
                     array('name' => 'The Third Wheel'),
