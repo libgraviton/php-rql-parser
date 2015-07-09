@@ -129,11 +129,13 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
             return $this->visitLogic($method, $node, $expr);
         }
 
-        if ($query->getSort()) {
-            $this->visitSort($query->getSort());
-        }
-        if ($query->getLimit()) {
-            $this->visitLimit($query->getLimit());
+        if ($query instanceof Query) {
+            if ($query->getSort()) {
+               $this->visitSort($query->getSort());
+            }
+            if ($query->getLimit()) {
+                $this->visitLimit($query->getLimit());
+            }
         }
         return $this->builder;
     }
