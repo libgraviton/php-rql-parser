@@ -115,7 +115,7 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
         }
         if ($query instanceof Query) {
             if ($query->getSort()) {
-               $this->visitSort($query->getSort());
+                $this->visitSort($query->getSort());
             }
             if ($query->getLimit()) {
                 $this->visitLimit($query->getLimit());
@@ -224,6 +224,7 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
 
     /**
      * @param \Xiag\Rql\Parser\Node\Query\ScalarOperator\LikeNode $node like node
+     * @param boolean                                             $expr should i wrap this in expr
      *
      * @return void
      */
