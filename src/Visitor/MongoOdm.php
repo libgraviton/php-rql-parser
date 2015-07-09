@@ -137,11 +137,11 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
     }
 
     /**
-     * @param Query|Node $query top level query that needs visiting
+     * @param Query $query top level query that needs visiting
      *
      * @return void
      */
-    public function visitQuery($query)
+    public function visitQuery(Query $query)
     {
         if ($query->getSort()) {
             $this->visitSort($query->getSort());
