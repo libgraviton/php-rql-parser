@@ -113,13 +113,9 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
         } else {
             $node = $query->getQuery();
         }
+
         if ($query instanceof Query) {
-            if ($query->getSort()) {
-                $this->visitSort($query->getSort());
-            }
-            if ($query->getLimit()) {
-                $this->visitLimit($query->getLimit());
-            }
+            $this->visitQuery($query);
         }
 
         if (in_array(get_class($node), array_keys($this->internalMap))) {
@@ -138,6 +134,21 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
         }
 
         return $this->builder;
+    }
+
+    /**
+     * @param Query|Node $query top level query that needs visiting
+     *
+     * @return void
+     */
+    public function visitQuery($query)
+    {
+        if ($query->getSort()) {
+            $this->visitSort($query->getSort());
+        }
+        if ($query->getLimit()) {
+            $this->visitLimit($query->getLimit());
+        }
     }
 
     /**
