@@ -31,18 +31,14 @@ $rql = 'or(eq(name,foo)&eq(name,bar))';
 
 /** @var \Doctrine\ODM\MongoDB\Query\Builder $builder */
 $visitor = new \Graviton\Rql\Visitor\MongoOdm($builder);
-
-$parser = new \Graviton\Rql\Parser(
-    new \Xiag\Rql\Parser\Lexer,
-    \Xiag\Rql\Parser\Parser::createDefault(),
-    $visitor
-);
+$lexer = new \Xiag\Rql\Parser\Lexer;
+$parser = \Xiag\Rql\Parser\Parser::createDefault();
 
 // parse some Resource Query Language 
-$parser->parse($rql);
+$rqlQuery = $parser->parse($lexer->tokenize($rql));
 
 // get query
-$query = $parser->buildQuery()->getQuery();
+$query = $visitor->visit($rqlQuery)->getQuery();
 
 // ...
 ```
