@@ -70,14 +70,12 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
         if ($skip) {
             $this->markTestSkipped();
         }
-        $parser = new Parser(
-            new Lexer,
-            RqlParser::createDefault(),
-            new MongoOdm($this->builder)
-        );
+        $lexer = new Lexer;
+        $parser = RqlParser::createDefault();
+        $visitor =new MongoOdm($this->builder);
 
-        $parser->parse($query);
-        $builder = $parser->buildQuery();
+        $rqlQuery = $parser->parse($lexer->tokenize($query));
+        $builder = $visitor->visit($rqlQuery);
 
         $results = [];
         foreach ($builder->getQuery()->execute() as $doc) {
