@@ -72,7 +72,7 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
         }
         $lexer = new Lexer;
         $parser = RqlParser::createDefault();
-        $visitor =new MongoOdm($this->builder);
+        $visitor = new MongoOdm($this->builder);
 
         $rqlQuery = $parser->parse($lexer->tokenize($query));
         $builder = $visitor->visit($rqlQuery);
