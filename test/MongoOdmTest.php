@@ -227,6 +227,68 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
                     array('name' => 'A Simple Widget', 'count' => 100),
                 )
             ),
+
+            'lt() with asc sort() by count' => [
+                'lt(count,50)&sort(+count)',
+                [
+                    ['name' => 'The Third Wheel', 'count' => 3],
+                    ['name' => 'My First Sprocket', 'count' => 10],
+                ],
+            ],
+            'lt() with desc sort() by count' => [
+                'lt(count,50)&sort(-count)',
+                [
+                    ['name' => 'My First Sprocket', 'count' => 10],
+                    ['name' => 'The Third Wheel', 'count' => 3],
+                ],
+            ],
+
+            'lt() with asc sort() by name' => [
+                sprintf('lt(name,%s)&sort(+name)', $this->encodeString('The Third Wheel')),
+                [
+                    ['name' => 'A Simple Widget', 'count' => 100],
+                    ['name' => 'My First Sprocket', 'count' => 10],
+                ],
+            ],
+            'lt() with desc sort() by name' => [
+                sprintf('lt(name,%s)&sort(-name)', $this->encodeString('The Third Wheel')),
+                [
+                    ['name' => 'My First Sprocket', 'count' => 10],
+                    ['name' => 'A Simple Widget', 'count' => 100],
+                ],
+            ],
+
+            'lt() by count with asc sort() by name' => [
+                'lt(count,50)&sort(+name)',
+                [
+                    ['name' => 'My First Sprocket', 'count' => 10],
+                    ['name' => 'The Third Wheel', 'count' => 3],
+                ],
+            ],
+            'lt() by count with desc sort() by name' => [
+                'lt(count,50)&sort(-name)',
+                [
+                    ['name' => 'The Third Wheel', 'count' => 3],
+                    ['name' => 'My First Sprocket', 'count' => 10],
+                ],
+            ],
+
+            'lt() by name & count with asc sort() by name & count' => [
+                sprintf('or(lt(count,50),lt(name,%s))&sort(+name,+count)', $this->encodeString('My')),
+                [
+                    ['name' => 'A Simple Widget', 'count' => 100],
+                    ['name' => 'My First Sprocket', 'count' => 10],
+                    ['name' => 'The Third Wheel', 'count' => 3],
+                ],
+            ],
+            'lt() by name & count with desc sort() by name & count' => [
+                sprintf('or(lt(count,50),lt(name,%s))&sort(+count,-name)', $this->encodeString('My')),
+                [
+                    ['name' => 'The Third Wheel', 'count' => 3],
+                    ['name' => 'My First Sprocket', 'count' => 10],
+                    ['name' => 'A Simple Widget', 'count' => 100],
+                ],
+            ],
         );
     }
 
