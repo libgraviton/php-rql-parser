@@ -9,7 +9,6 @@ use Doctrine\MongoDB\Connection;
 use Doctrine\ODM\MongoDB\Configuration;
 use Doctrine\Common\DataFixtures\Loader;
 use Doctrine\ODM\MongoDB\DocumentManager;
-use Xiag\Rql\Parser\Query;
 use Xiag\Rql\Parser\Lexer;
 use Xiag\Rql\Parser\Parser as RqlParser;
 use Graviton\Rql\Visitor\MongoOdm;
@@ -61,15 +60,11 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
      *
      * @param string  $query    rql query string
      * @param array[] $expected structure of expected return value
-     * @param boolean $skip     skip test
      *
      * @return void
      */
-    public function testBasicQueries($query, $expected, $skip = false)
+    public function testBasicQueries($query, $expected)
     {
-        if ($skip) {
-            $this->markTestSkipped();
-        }
         $lexer = new Lexer;
         $parser = RqlParser::createDefault();
         $visitor = new MongoOdm($this->builder);
@@ -163,13 +158,6 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
                     array('name' => 'The Third Wheel', 'count' => 3)
                 )
             ),
-            'sort by int' => array(
-                'sort(count)', array(
-                    array('count' => 3),
-                    array('count' => 10),
-                    array('count' => 100),
-                ), true
-            ),
             'sort by int explicit' => array(
                 'sort(+count)', array(
                     array('count' => 3),
@@ -183,13 +171,6 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
                     array('count' => 10),
                     array('count' => 3),
                 )
-            ),
-            'string sort' => array(
-                'sort(name)', array(
-                    array('name' => 'A Simple Widget', 'count' => 100),
-                    array('name' => 'My First Sprocket', 'count' => 10),
-                    array('name' => 'The Third Wheel', 'count' => 3),
-                ), true
             ),
             'string sort explicit ' => array(
                 'sort(+name)', array(
@@ -248,6 +229,41 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
             ),
         );
     }
+
+    /**
+     * @dataProvider errorQueryProvider
+     *
+     * @param string $query        rql query string
+     * @param string $errorMessage structure of expected return value
+     *
+     * @return void
+     */
+    public function testErrorQueries($query, $errorMessage)
+    {
+        $this->setExpectedException('Xiag\Rql\Parser\Exception\SyntaxErrorException', $errorMessage);
+
+        RqlParser::createDefault()->parse(
+            (new Lexer())
+                ->tokenize($query)
+        );
+    }
+    /**
+     * @return array<string>
+     */
+    public function errorQueryProvider()
+    {
+        return [
+            'sort by int' => [
+                'sort(count)',
+                'Unexpected token "count" (T_STRING) (expected T_PLUS|T_MINUS)'
+            ],
+            'string sort' => [
+                'sort(name)',
+                'Unexpected token "name" (T_STRING) (expected T_PLUS|T_MINUS)'
+            ],
+        ];
+    }
+
 
     /**
      * Proper string encoding
