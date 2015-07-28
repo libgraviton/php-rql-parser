@@ -98,46 +98,46 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
     {
         return array(
             'eq search for non existant document' => array(
-                'eq(name,'.rawurlencode('Not My Sprocket').')', array()
+                'eq(name,'.$this->encodeString('Not My Sprocket').')', array()
             ),
             'eq search for document by name' => array(
-                'eq(name,'.rawurlencode('My First Sprocket').')', array(
+                'eq(name,'.$this->encodeString('My First Sprocket').')', array(
                     array('name' => 'My First Sprocket')
                 )
             ),
             'eq OR search' => array(
-                'or(eq(name,'.rawurlencode('My First Sprocket').'),eq(name,'.rawurlencode('The Third Wheel').'))',
+                'or(eq(name,'.$this->encodeString('My First Sprocket').'),eq(name,'.$this->encodeString('The Third Wheel').'))',
                 array(
                     array('name' => 'My First Sprocket'),
                     array('name' => 'The Third Wheel')
                 )
             ),
             'eq OR search with sugar' => array(
-                '(eq(name,'.rawurlencode('My First Sprocket').')|eq(name,'.rawurlencode('The Third Wheel').'))', array(
+                '(eq(name,'.$this->encodeString('My First Sprocket').')|eq(name,'.$this->encodeString('The Third Wheel').'))', array(
                     array('name' => 'My First Sprocket'),
                     array('name' => 'The Third Wheel')
                 ),
             ),
             'like OR search' => array(
-                'or(like(name,*'.rawurlencode('First').'),like(name,*'.rawurlencode('Wheel').'))',
+                'or(like(name,*'.$this->encodeString('First').'),like(name,*'.$this->encodeString('Wheel').'))',
                 array(
                     array('name' => 'My First Sprocket'),
                     array('name' => 'The Third Wheel')
                 )
             ),
             'ne search' => array(
-                'ne(name,'.rawurlencode('My First Sprocket').')', array(
+                'ne(name,'.$this->encodeString('My First Sprocket').')', array(
                     array('name' => 'The Third Wheel'),
                     array('name' => 'A Simple Widget'),
                 )
             ),
             'eq AND search' => array(
-                'and(eq(name,'.rawurlencode('My First Sprocket').'),eq(count,10))', array(
+                'and(eq(name,'.$this->encodeString('My First Sprocket').'),eq(count,10))', array(
                     array('name' => 'My First Sprocket'),
                 )
             ),
             'eq AND search with sugar' => array(
-                'eq(name,'.rawurlencode('My First Sprocket').')&eq(count,10)', array(
+                'eq(name,'.$this->encodeString('My First Sprocket').')&eq(count,10)', array(
                     array('name' => 'My First Sprocket'),
                 )
             ),
@@ -221,31 +221,47 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
                 )
             ),
             'in() search' => array(
-                'in(name,('.rawurlencode('The Third Wheel').'))', array(
+                'in(name,('.$this->encodeString('The Third Wheel').'))', array(
                     array('name' => 'The Third Wheel')
                 )
             ),
             'out() search' => array(
-                'out(name,('.rawurlencode('A Simple Widget').','.rawurlencode('My First Sprocket').'))', array(
+                'out(name,('.$this->encodeString('A Simple Widget').','.$this->encodeString('My First Sprocket').'))', array(
                     array('name' => 'The Third Wheel')
                 ),
             ),
             'like and limit search' => array(
-                'like(name,*'.rawurlencode('et').')&limit(1)', array(
+                'like(name,*'.$this->encodeString('et').')&limit(1)', array(
                     array('name' => 'My First Sprocket')
                 ),
             ),
             'like without glob' => array(
-                'like(name,'.rawurlencode('The Third Wheel').')', array(
+                'like(name,'.$this->encodeString('The Third Wheel').')', array(
                     array('name' => 'The Third Wheel')
                 )
             ),
             'complex example from #6 without sugar' => array(
-                'or(and(eq(name,'.rawurlencode('The Third Wheel').'),lt(count,10)),eq(count,100))', array(
+                'or(and(eq(name,'.$this->encodeString('The Third Wheel').'),lt(count,10)),eq(count,100))', array(
                     array('name' => 'The Third Wheel', 'count' => 3),
                     array('name' => 'A Simple Widget', 'count' => 100),
                 )
             ),
         );
+    }
+
+    /**
+     * Proper string encoding
+     *
+     * @param string $value String value
+     * @return string
+     */
+    private function encodeString($value)
+    {
+        return strtr(rawurlencode($value), [
+            '-' => '%2D',
+            '_' => '%5F',
+            '.' => '%2E',
+            '~' => '%7E',
+        ]);
     }
 }
