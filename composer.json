@@ -36,5 +36,6 @@
             "./vendor/bin/phpcs --standard=ENTB --ignore='*.css' --ignore='*.js' src/ test/"
         ]
     },
-    "minimum-stability": "stable"
+    "minimum-stability": "stable",
+    "non-feature-branches": ["master", "develop", "support/*"]
 }
