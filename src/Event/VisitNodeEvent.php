@@ -6,6 +6,7 @@
 namespace Graviton\Rql\Event;
 
 use Symfony\Component\EventDispatcher\Event;
+use Doctrine\ODM\MongoDB\Query\Builder;
 use Xiag\Rql\Parser\AbstractNode;
 
 /**
@@ -21,11 +22,18 @@ final class VisitNodeEvent extends Event
     private $node;
 
     /**
-     * @param AbstracNode $node any type of node we are visiting
+     * @var Builder
      */
-    public function __construct(AbstractNode $node)
+    private $builder;
+
+    /**
+     * @param AbstracNode $node    any type of node we are visiting
+     * @param Builder     $builder doctrine query builder
+     */
+    public function __construct(AbstractNode $node, Builder $builder)
     {
         $this->node = $node;
+        $this->builder = $builder;
     }
 
     /**
@@ -44,5 +52,13 @@ final class VisitNodeEvent extends Event
     public function setNode(AbstractNode $node)
     {
         $this->node = $node;
+    }
+
+    /**
+     * @return Builder
+     */
+    public function getBuilder()
+    {
+        return $this->builder;
     }
 }
