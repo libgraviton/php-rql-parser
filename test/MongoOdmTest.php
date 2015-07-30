@@ -70,17 +70,10 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
         if ($skip) {
             $this->markTestSkipped();
         }
-        $lexer = new Lexer;
-        $parser = RqlParser::createDefault();
+
         $visitor = new MongoOdm($this->builder);
 
-        $rqlQuery = $parser->parse($lexer->tokenize($query));
-        $builder = $visitor->visit($rqlQuery);
-
-        $results = [];
-        foreach ($builder->getQuery()->execute() as $doc) {
-            $results[] = $doc;
-        }
+        $results = $this->runTestQuery($query, $visitor);
 
         $this->assertEquals(count($expected), count($results), 'record count mismatch');
 
@@ -247,5 +240,56 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
                 )
             ),
         );
+    }
+
+    /**
+     * validate that we can interact with the visit process using an eventlistener
+     *
+     * @return void
+     */
+    public function testThrowsEvent()
+    {
+        $query = 'eq(name,replaceme)';
+
+        $dispatcher = new \Symfony\Component\EventDispatcher\EventDispatcher;
+
+        $dispatcher->addListener(
+            'rql.visit.node',
+            [
+                new \Graviton\Rql\Listener\TestListener,
+                'onVisitNode'
+            ]
+        );
+
+        $visitor = new MongoOdm($this->builder);
+        $visitor->setDispatcher($dispatcher);
+
+        $results = $this->runTestQuery($query, $visitor);
+
+        $this->assertCount(1, $results);
+        $this->assertEquals('My First Sprocket', $results[0]->name);
+    }
+
+    /**
+     * execute a query againts the test db
+     *
+     * @param string   $query   query to execute
+     * @param MongoOdm $visitor visitor we are testing
+     *
+     * @return array
+     */
+    private function runTestQuery($query, $visitor)
+    {
+        $lexer = new Lexer;
+        $parser = RqlParser::createDefault();
+
+        $rqlQuery = $parser->parse($lexer->tokenize($query));
+        $builder = $visitor->visit($rqlQuery);
+
+        $results = [];
+        foreach ($builder->getQuery()->execute() as $doc) {
+            $results[] = $doc;
+        }
+        return $results;
     }
 }

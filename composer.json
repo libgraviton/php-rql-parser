@@ -26,7 +26,8 @@
     "require": {
         "php": "~5.4",
         "doctrine/mongodb-odm": "~1.0@beta",
-        "xiag/rql-parser": "^1.0"
+        "xiag/rql-parser": "^1.0",
+        "symfony/event-dispatcher": "^2.6"
     },
     "scripts": {
         "check": [
