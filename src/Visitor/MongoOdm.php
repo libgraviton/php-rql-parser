@@ -138,11 +138,13 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
         }
 
         if ($this->dispatcher) {
-            $node = $this->dispatcher
+            $event = $this->dispatcher
                 ->dispatch(
                     Events::VISIT_NODE,
-                    new VisitNodeEvent($node)
-                )->getNode();
+                    new VisitNodeEvent($node, $this->builder)
+                );
+            $node = $event->getNode();
+            $this->builder = $event->getBuilder();
         }
 
         if ($query instanceof Query) {
