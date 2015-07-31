@@ -7,6 +7,7 @@
 
 namespace Graviton\Rql\Visitor;
 
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Xiag\Rql\Parser\Query;
 use Doctrine\ODM\MongoDB\Query\Builder;
 use Doctrine\ODM\MongoDB\Query\Expr;
@@ -16,7 +17,6 @@ use Graviton\Rql\Event\VisitNodeEvent;
 use Xiag\Rql\Parser\Node\Query\AbstractScalarOperatorNode;
 use Xiag\Rql\Parser\Node\Query\AbstractLogicOperatorNode;
 use Xiag\Rql\Parser\Node\Query\AbstractArrayOperatorNode;
-use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
  * @author  List of contributors <https://github.com/libgraviton/php-rql-parser/graphs/contributors>
@@ -31,7 +31,7 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
     private $builder;
 
     /**
-     * @var EventDispatcher
+     * @var EventDispatcherInterface
      */
     private $dispatcher = null;
 
@@ -94,11 +94,11 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      * If injected this is used to dispatch some lifecycle events that you may use
      * to hook into query visitation
      *
-     * @param EventDispatcher $dispatcher event dispatcher to dispatch events on
+     * @param EventDispatcherInterface $dispatcher event dispatcher to dispatch events on
      *
      * @return void
      */
-    public function setDispatcher(EventDispatcher $dispatcher)
+    public function setDispatcher(EventDispatcherInterface $dispatcher)
     {
         $this->dispatcher = $dispatcher;
     }
