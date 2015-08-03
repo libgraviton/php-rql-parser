@@ -250,7 +250,7 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
      */
     public function testThrowsEvent()
     {
-        $query = 'eq(name,replaceme)';
+        $query = 'eq(name,replaceme)&limit(10)';
 
         $dispatcher = new \Symfony\Component\EventDispatcher\EventDispatcher;
 
