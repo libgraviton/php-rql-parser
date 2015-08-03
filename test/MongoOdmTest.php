@@ -65,9 +65,7 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
      */
     public function testBasicQueries($query, $expected)
     {
-        $lexer = new Lexer;
-        $parser = RqlParser::createDefault();
-        $visitor = new MongoOdm($this->builder);
+        $visitor = new MongoOdm;
         $visitor->setBuilder($this->builder);
 
         $results = $this->runTestQuery($query, $visitor);
