@@ -14,6 +14,7 @@ use Doctrine\ODM\MongoDB\Query\Expr;
 use Graviton\Rql\QueryBuilderAwareInterface;
 use Graviton\Rql\Events;
 use Graviton\Rql\Event\VisitNodeEvent;
+use Xiag\Rql\Parser\Node\AbstractQueryNode;
 use Xiag\Rql\Parser\Node\Query\AbstractScalarOperatorNode;
 use Xiag\Rql\Parser\Node\Query\AbstractLogicOperatorNode;
 use Xiag\Rql\Parser\Node\Query\AbstractArrayOperatorNode;
@@ -137,7 +138,7 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
             $node = $query->getQuery();
         }
 
-        if ($this->dispatcher) {
+        if (!empty($this->dispatcher) && $node instanceof AbstractQueryNode) {
             $event = $this->dispatcher
                 ->dispatch(
                     Events::VISIT_NODE,
