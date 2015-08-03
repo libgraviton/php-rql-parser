@@ -101,14 +101,17 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
                 )
             ),
             'eq OR search' => array(
-                'or(eq(name,'.$this->encodeString('My First Sprocket').'),eq(name,'.$this->encodeString('The Third Wheel').'))',
+                'or(eq(name,'.$this->encodeString('My First Sprocket')
+                    .'),eq(name,'.$this->encodeString('The Third Wheel').'))',
                 array(
                     array('name' => 'My First Sprocket'),
                     array('name' => 'The Third Wheel')
                 )
             ),
             'eq OR search with sugar' => array(
-                '(eq(name,'.$this->encodeString('My First Sprocket').')|eq(name,'.$this->encodeString('The Third Wheel').'))', array(
+                '(eq(name,'.$this->encodeString('My First Sprocket')
+                    .')|eq(name,'.$this->encodeString('The Third Wheel').'))'
+                , array(
                     array('name' => 'My First Sprocket'),
                     array('name' => 'The Third Wheel')
                 ),
@@ -207,9 +210,9 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
                 )
             ),
             'out() search' => array(
-                'out(name,('.$this->encodeString('A Simple Widget').','.$this->encodeString('My First Sprocket').'))', array(
+                'out(name,('.$this->encodeString('A Simple Widget').','.$this->encodeString('My First Sprocket').'))', [
                     array('name' => 'The Third Wheel')
-                ),
+                ],
             ),
             'like and limit search' => array(
                 'like(name,*'.$this->encodeString('et').')&limit(1)', array(
@@ -335,11 +338,14 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
      */
     private function encodeString($value)
     {
-        return strtr(rawurlencode($value), [
-            '-' => '%2D',
-            '_' => '%5F',
-            '.' => '%2E',
-            '~' => '%7E',
-        ]);
+        return strtr(
+            rawurlencode($value),
+            [
+                '-' => '%2D',
+                '_' => '%5F',
+                '.' => '%2E',
+                '~' => '%7E',
+            ]
+        );
     }
 }
