@@ -79,16 +79,6 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
     ];
 
     /**
-     * create new visitor
-     *
-     * @param Builder $builder MongoDB-ODM querybuilder
-     */
-    public function __construct(Builder $builder)
-    {
-        $this->builder = $builder;
-    }
-
-    /**
      * inject an optional event dispatcher
      *
      * If injected this is used to dispatch some lifecycle events that you may use
@@ -101,6 +91,16 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
     public function setDispatcher(EventDispatcherInterface $dispatcher)
     {
         $this->dispatcher = $dispatcher;
+    }
+
+    /**
+     * @param Builder $builder query builder
+     *
+     * @return void
+     */
+    public function setBuilder(Builder $builder)
+    {
+        $this->builder = $builder;
     }
 
     /**
