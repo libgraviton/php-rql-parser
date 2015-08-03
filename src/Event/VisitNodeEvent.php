@@ -67,7 +67,9 @@ final class VisitNodeEvent extends Event
     /**
      * replace builder as needed
      *
-     * @param Builder builder buidler
+     * @param Builder $builder replacement query builder
+     *
+     * @return void
      */
     public function setBuilder(Builder $builder)
     {
