@@ -71,7 +71,8 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
             $this->markTestSkipped();
         }
 
-        $visitor = new MongoOdm($this->builder);
+        $visitor = new MongoOdm;
+        $visitor->setBuilder($this->builder);
 
         $results = $this->runTestQuery($query, $visitor);
 
@@ -261,7 +262,8 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
             ]
         );
 
-        $visitor = new MongoOdm($this->builder);
+        $visitor = new MongoOdm;
+        $visitor->setBuilder($this->builder);
         $visitor->setDispatcher($dispatcher);
 
         $results = $this->runTestQuery($query, $visitor);
