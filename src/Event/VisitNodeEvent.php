@@ -45,11 +45,13 @@ final class VisitNodeEvent extends Event
     }
 
     /**
-     * @param AbstractNode $node replacement node
+     * set the current node (or remove it altogether with null)
+     *
+     * @param AbstractNode|null $node replacement node
      *
      * @return void
      */
-    public function setNode(AbstractNode $node)
+    public function setNode(AbstractNode $node = null)
     {
         $this->node = $node;
     }
@@ -60,5 +62,15 @@ final class VisitNodeEvent extends Event
     public function getBuilder()
     {
         return $this->builder;
+    }
+
+    /**
+     * replace builder as needed
+     *
+     * @param Builder builder buidler
+     */
+    public function setBuilder(Builder $builder)
+    {
+        $this->builder = $builder;
     }
 }
