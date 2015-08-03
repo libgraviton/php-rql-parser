@@ -7,10 +7,13 @@
 
 namespace Graviton\Rql\Visitor;
 
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Xiag\Rql\Parser\Query;
 use Doctrine\ODM\MongoDB\Query\Builder;
 use Doctrine\ODM\MongoDB\Query\Expr;
 use Graviton\Rql\QueryBuilderAwareInterface;
+use Graviton\Rql\Events;
+use Graviton\Rql\Event\VisitNodeEvent;
 use Xiag\Rql\Parser\Node\Query\AbstractScalarOperatorNode;
 use Xiag\Rql\Parser\Node\Query\AbstractLogicOperatorNode;
 use Xiag\Rql\Parser\Node\Query\AbstractArrayOperatorNode;
@@ -26,6 +29,11 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      * @var Builder
      */
     private $builder;
+
+    /**
+     * @var EventDispatcherInterface
+     */
+    private $dispatcher = null;
 
     /**
      * map classes to querybuilder methods
@@ -71,11 +79,26 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
     ];
 
     /**
-     * create new visitor
+     * inject an optional event dispatcher
      *
-     * @param Builder $builder MongoDB-ODM querybuilder
+     * If injected this is used to dispatch some lifecycle events that you may use
+     * to hook into query visitation
+     *
+     * @param EventDispatcherInterface $dispatcher event dispatcher to dispatch events on
+     *
+     * @return void
      */
-    public function __construct(Builder $builder)
+    public function setDispatcher(EventDispatcherInterface $dispatcher)
+    {
+        $this->dispatcher = $dispatcher;
+    }
+
+    /**
+     * @param Builder $builder query builder
+     *
+     * @return void
+     */
+    public function setBuilder(Builder $builder)
     {
         $this->builder = $builder;
     }
@@ -112,6 +135,16 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
             $node = $query;
         } else {
             $node = $query->getQuery();
+        }
+
+        if ($this->dispatcher) {
+            $event = $this->dispatcher
+                ->dispatch(
+                    Events::VISIT_NODE,
+                    new VisitNodeEvent($node, $this->builder)
+                );
+            $node = $event->getNode();
+            $this->builder = $event->getBuilder();
         }
 
         if ($query instanceof Query) {
