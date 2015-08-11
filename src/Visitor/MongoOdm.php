@@ -14,6 +14,7 @@ use Doctrine\ODM\MongoDB\Query\Expr;
 use Graviton\Rql\QueryBuilderAwareInterface;
 use Graviton\Rql\Events;
 use Graviton\Rql\Event\VisitNodeEvent;
+use Xiag\Rql\Parser\AbstractNode;
 use Xiag\Rql\Parser\Node\AbstractQueryNode;
 use Xiag\Rql\Parser\Node\Query\AbstractScalarOperatorNode;
 use Xiag\Rql\Parser\Node\Query\AbstractLogicOperatorNode;
@@ -138,15 +139,7 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
             $node = $query->getQuery();
         }
 
-        if (!empty($this->dispatcher) && $node instanceof AbstractQueryNode) {
-            $event = $this->dispatcher
-                ->dispatch(
-                    Events::VISIT_NODE,
-                    new VisitNodeEvent($node, $this->builder)
-                );
-            $node = $event->getNode();
-            $this->builder = $event->getBuilder();
-        }
+        list($node, $this->builder) = $this->dispatchNodeEvent($node);
 
         if ($query instanceof Query) {
             $this->visitQuery($query);
@@ -168,6 +161,26 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
         }
 
         return $this->builder;
+    }
+
+    /**
+     * @param AbstractNode|null $node node at the center of the event
+     *
+     * @return array
+     */
+    private function dispatchNodeEvent(AbstractNode $node = null)
+    {
+        $builder = $this->builder;
+        if (!empty($this->dispatcher) && $node instanceof AbstractQueryNode) {
+            $event = $this->dispatcher
+                ->dispatch(
+                    Events::VISIT_NODE,
+                    new VisitNodeEvent($node, $this->builder)
+                );
+            $node = $event->getNode();
+            $builder = $event->getBuilder();
+        }
+        return [$node, $builder];
     }
 
     /**
