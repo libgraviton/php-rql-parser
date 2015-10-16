@@ -126,8 +126,8 @@ class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
     /**
      * build a querybuilder from the AST
      *
-     * @param Query|Node $query or node
-     * @param bool       $expr  wrap in expr?
+     * @param Query|AbstractNode $query or node
+     * @param bool               $expr  wrap in expr?
      *
      * @return Builder|Expr
      */
