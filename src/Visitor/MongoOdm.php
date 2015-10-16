@@ -131,7 +131,7 @@ class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      *
      * @return Builder|Expr
      */
-    private function recurse($query, $expr = false)
+    protected function recurse($query, $expr = false)
     {
         if ($expr) {
             $node = $query;
