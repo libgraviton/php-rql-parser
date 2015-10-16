@@ -36,6 +36,10 @@ class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      * @var EventDispatcherInterface
      */
     private $dispatcher = null;
+    /**
+     * @var \SplStack
+     */
+    private $context;
 
     /**
      * map classes to querybuilder methods
@@ -120,6 +124,7 @@ class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      */
     public function visit(Query $query)
     {
+        $this->context = new \SplStack();
         return $this->recurse($query);
     }
 
@@ -172,11 +177,14 @@ class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
     {
         $builder = $this->builder;
         if (!empty($this->dispatcher) && $node instanceof AbstractQueryNode) {
+            $this->context->push($node);
             $event = $this->dispatcher
                 ->dispatch(
                     Events::VISIT_NODE,
-                    new VisitNodeEvent($node, $this->builder)
+                    new VisitNodeEvent($node, $this->builder, $this->context)
                 );
+            $this->context->pop();
+
             $node = $event->getNode();
             $builder = $event->getBuilder();
         }
