@@ -150,22 +150,23 @@ class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
             $this->visitQuery($query);
         }
 
+        $this->context->push($node);
         if (in_array(get_class($node), array_keys($this->internalMap))) {
             $method = $this->internalMap[get_class($node)];
-            return $this->$method($node, $expr);
-
+            $builder = $this->$method($node, $expr);
         } elseif ($node instanceof AbstractScalarOperatorNode) {
-            return $this->visitScalar($node, $expr);
-
+            $builder = $this->visitScalar($node, $expr);
         } elseif ($node instanceof AbstractArrayOperatorNode) {
-            return $this->visitArray($node, $expr);
-
+            $builder = $this->visitArray($node, $expr);
         } elseif ($node instanceof AbstractLogicOperatorNode) {
             $method = $this->queryMap[get_class($node)];
-            return $this->visitLogic($method, $node, $expr);
+            $builder = $this->visitLogic($method, $node, $expr);
+        } else {
+            $builder = $this->builder;
         }
+        $this->context->pop();
 
-        return $this->builder;
+        return $builder;
     }
 
     /**
@@ -177,14 +178,11 @@ class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
     {
         $builder = $this->builder;
         if (!empty($this->dispatcher) && $node instanceof AbstractQueryNode) {
-            $this->context->push($node);
             $event = $this->dispatcher
                 ->dispatch(
                     Events::VISIT_NODE,
                     new VisitNodeEvent($node, $this->builder, $this->context)
                 );
-            $this->context->pop();
-
             $node = $event->getNode();
             $builder = $event->getBuilder();
         }
