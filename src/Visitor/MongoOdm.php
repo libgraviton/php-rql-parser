@@ -25,7 +25,7 @@ use Xiag\Rql\Parser\Node\Query\AbstractArrayOperatorNode;
  * @license  http://opensource.org/licenses/gpl-license.php GNU Public License
  * @link     http://swisscom.ch
  */
-final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
+class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
 {
     /**
      * @var Builder
