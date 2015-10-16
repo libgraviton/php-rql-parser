@@ -39,6 +39,7 @@ final class VisitNodeEvent extends Event
     {
         $this->node = $node;
         $this->builder = $builder;
+        $this->context = $context;
     }
 
     /**
