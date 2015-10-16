@@ -188,7 +188,7 @@ class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      *
      * @return void
      */
-    public function visitQuery(Query $query)
+    protected function visitQuery(Query $query)
     {
         if ($query->getSort()) {
             $this->visitSort($query->getSort());
