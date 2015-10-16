@@ -292,7 +292,7 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
         if ($query instanceof \Xiag\Rql\Parser\DataType\Glob) {
             $query = new \MongoRegex($node->getValue()->toRegex());
         }
-        return $this->getField($node->getField(), $expr)->equals($query);
+        $this->getField($node->getField(), $expr)->equals($query);
     }
 
     /**
