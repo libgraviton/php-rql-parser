@@ -42,7 +42,7 @@ class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      *
      * @var string<string>
      */
-    private $scalarMap = [
+    protected $scalarMap = [
         'Xiag\Rql\Parser\Node\Query\ScalarOperator\EqNode' => 'equals',
         'Xiag\Rql\Parser\Node\Query\ScalarOperator\NeNode' => 'notEqual',
         'Xiag\Rql\Parser\Node\Query\ScalarOperator\LtNode' => 'lt',
@@ -56,7 +56,7 @@ class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      *
      * @var string<string>
      */
-    private $arrayMap = [
+    protected $arrayMap = [
         'Xiag\Rql\Parser\Node\Query\ArrayOperator\InNode' => 'in',
         'Xiag\Rql\Parser\Node\Query\ArrayOperator\OutNode' => 'notIn',
     ];
@@ -66,7 +66,7 @@ class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      *
      * @var string<string>|bool
      */
-    private $queryMap = [
+    protected $queryMap = [
         'Xiag\Rql\Parser\Node\Query\LogicOperator\AndNode' => 'addAnd',
         'Xiag\Rql\Parser\Node\Query\LogicOperator\OrNode' => 'addOr',
     ];
@@ -76,7 +76,7 @@ class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      *
      * @var string<string>
      */
-    private $internalMap = [
+    protected $internalMap = [
         'Xiag\Rql\Parser\Node\Query\ScalarOperator\LikeNode' => 'visitLike',
     ];
 
