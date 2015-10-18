@@ -144,13 +144,14 @@ class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
             $node = $query->getQuery();
         }
 
+        $originalNode = $node;
         list($node, $this->builder) = $this->dispatchNodeEvent($node);
 
         if ($query instanceof Query) {
             $this->visitQuery($query);
         }
 
-        $this->context->push($node);
+        $this->context->push($originalNode);
         if (in_array(get_class($node), array_keys($this->internalMap))) {
             $method = $this->internalMap[get_class($node)];
             $builder = $this->$method($node, $expr);
