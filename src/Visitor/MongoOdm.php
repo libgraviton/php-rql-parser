@@ -291,7 +291,7 @@ class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      * @param \Xiag\Rql\Parser\Node\Query\ScalarOperator\LikeNode $node like node
      * @param boolean                                             $expr should i wrap this in expr
      *
-     * @return void
+     * @return Builder|Expr
      */
     protected function visitLike(\Xiag\Rql\Parser\Node\Query\ScalarOperator\LikeNode $node, $expr = false)
     {
@@ -299,7 +299,7 @@ class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
         if ($query instanceof \Xiag\Rql\Parser\DataType\Glob) {
             $query = new \MongoRegex($node->getValue()->toRegex());
         }
-        $this->getField($node->getField(), $expr)->equals($query);
+        return $this->getField($node->getField(), $expr)->equals($query);
     }
 
     /**
