@@ -83,7 +83,7 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      */
     private $internalMap = [
         'Xiag\Rql\Parser\Node\Query\ScalarOperator\LikeNode' => 'visitLike',
-        'Graviton\RestBundle\Rql\Node\ElemMatchNode' => 'visitElemMatch',
+        'Graviton\Rql\Node\ElemMatchNode' => 'visitElemMatch',
     ];
 
     /**
