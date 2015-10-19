@@ -8,24 +8,25 @@
 namespace Graviton\Rql\Visitor;
 
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Xiag\Rql\Parser\Query;
 use Doctrine\ODM\MongoDB\Query\Builder;
 use Doctrine\ODM\MongoDB\Query\Expr;
 use Graviton\Rql\QueryBuilderAwareInterface;
 use Graviton\Rql\Events;
 use Graviton\Rql\Event\VisitNodeEvent;
+use Graviton\Rql\Node\ElemMatchNode;
 use Xiag\Rql\Parser\AbstractNode;
 use Xiag\Rql\Parser\Node\AbstractQueryNode;
 use Xiag\Rql\Parser\Node\Query\AbstractScalarOperatorNode;
 use Xiag\Rql\Parser\Node\Query\AbstractLogicOperatorNode;
 use Xiag\Rql\Parser\Node\Query\AbstractArrayOperatorNode;
+use Xiag\Rql\Parser\Query;
 
 /**
  * @author  List of contributors <https://github.com/libgraviton/php-rql-parser/graphs/contributors>
  * @license  http://opensource.org/licenses/gpl-license.php GNU Public License
  * @link     http://swisscom.ch
  */
-class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
+final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
 {
     /**
      * @var Builder
@@ -46,7 +47,7 @@ class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      *
      * @var string<string>
      */
-    protected $scalarMap = [
+    private $scalarMap = [
         'Xiag\Rql\Parser\Node\Query\ScalarOperator\EqNode' => 'equals',
         'Xiag\Rql\Parser\Node\Query\ScalarOperator\NeNode' => 'notEqual',
         'Xiag\Rql\Parser\Node\Query\ScalarOperator\LtNode' => 'lt',
@@ -60,7 +61,7 @@ class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      *
      * @var string<string>
      */
-    protected $arrayMap = [
+    private $arrayMap = [
         'Xiag\Rql\Parser\Node\Query\ArrayOperator\InNode' => 'in',
         'Xiag\Rql\Parser\Node\Query\ArrayOperator\OutNode' => 'notIn',
     ];
@@ -70,7 +71,7 @@ class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      *
      * @var string<string>|bool
      */
-    protected $queryMap = [
+    private $queryMap = [
         'Xiag\Rql\Parser\Node\Query\LogicOperator\AndNode' => 'addAnd',
         'Xiag\Rql\Parser\Node\Query\LogicOperator\OrNode' => 'addOr',
     ];
@@ -80,7 +81,7 @@ class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      *
      * @var string<string>
      */
-    protected $internalMap = [
+    private $internalMap = [
         'Xiag\Rql\Parser\Node\Query\ScalarOperator\LikeNode' => 'visitLike',
         'Graviton\RestBundle\Rql\Node\ElemMatchNode' => 'visitElemMatch',
     ];
@@ -137,7 +138,7 @@ class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      *
      * @return Builder|Expr
      */
-    protected function recurse($query, $expr = false)
+    private function recurse($query, $expr = false)
     {
         if ($expr) {
             $node = $query;
@@ -196,7 +197,7 @@ class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      *
      * @return void
      */
-    protected function visitQuery(Query $query)
+    private function visitQuery(Query $query)
     {
         if ($query->getSort()) {
             $this->visitSort($query->getSort());
@@ -214,7 +215,7 @@ class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      *
      * @return Builder|Expr
      */
-    protected function visitScalar($node, $expr = false)
+    private function visitScalar($node, $expr = false)
     {
         $method = $this->scalarMap[get_class($node)];
         return $this->getField($node->getField(), $expr)->$method($node->getValue());
@@ -228,7 +229,7 @@ class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      *
      * @return Builder|Expr
      */
-    protected function visitArray(AbstractArrayOperatorNode $node, $expr = false)
+    private function visitArray(AbstractArrayOperatorNode $node, $expr = false)
     {
         $method = $this->arrayMap[get_class($node)];
         return $this->getField($node->getField(), $expr)->$method($node->getValues());
@@ -242,7 +243,7 @@ class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      *
      * @return Builder|Expr
      */
-    protected function getField($field, $expr)
+    private function getField($field, $expr)
     {
         if ($expr) {
             return $this->builder->expr()->field($field);
@@ -259,7 +260,7 @@ class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      *
      * @return Builder|Expr
      */
-    protected function visitLogic($addMethod, AbstractLogicOperatorNode $node, $expr = false)
+    private function visitLogic($addMethod, AbstractLogicOperatorNode $node, $expr = false)
     {
         $builder = $this->builder;
         if ($expr) {
@@ -281,7 +282,7 @@ class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      *
      * @return void
      */
-    protected function visitSort(\Xiag\Rql\Parser\Node\SortNode $node)
+    private function visitSort(\Xiag\Rql\Parser\Node\SortNode $node)
     {
         foreach ($node->getFields() as $name => $order) {
             $this->builder->sort($name, $order);
@@ -294,7 +295,7 @@ class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      *
      * @return Builder|Expr
      */
-    protected function visitLike(\Xiag\Rql\Parser\Node\Query\ScalarOperator\LikeNode $node, $expr = false)
+    private function visitLike(\Xiag\Rql\Parser\Node\Query\ScalarOperator\LikeNode $node, $expr = false)
     {
         $query = $node->getValue();
         if ($query instanceof \Xiag\Rql\Parser\DataType\Glob) {
@@ -310,7 +311,7 @@ class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      * @param bool          $expr should i wrap this in expr()
      * @return Builder|Expr
      */
-    protected function visitElemMatch(ElemMatchNode $node, $expr = false)
+    private function visitElemMatch(ElemMatchNode $node, $expr = false)
     {
         return $this
             ->getField($node->getField(), $expr)
@@ -324,7 +325,7 @@ class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      *
      * @return void
      */
-    protected function visitLimit(\Xiag\Rql\Parser\Node\LimitNode $node)
+    private function visitLimit(\Xiag\Rql\Parser\Node\LimitNode $node)
     {
         $this->builder->limit($node->getLimit())->skip($node->getOffset());
     }
