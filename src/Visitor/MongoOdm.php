@@ -82,6 +82,7 @@ class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      */
     protected $internalMap = [
         'Xiag\Rql\Parser\Node\Query\ScalarOperator\LikeNode' => 'visitLike',
+        'Graviton\RestBundle\Rql\Node\ElemMatchNode' => 'visitElemMatch',
     ];
 
     /**
@@ -300,6 +301,20 @@ class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
             $query = new \MongoRegex($node->getValue()->toRegex());
         }
         return $this->getField($node->getField(), $expr)->equals($query);
+    }
+
+    /**
+     * Visit elemMatch() node
+     *
+     * @param ElemMatchNode $node elemMatch() node
+     * @param bool          $expr should i wrap this in expr()
+     * @return Builder|Expr
+     */
+    protected function visitElemMatch(ElemMatchNode $node, $expr = false)
+    {
+        return $this
+            ->getField($node->getField(), $expr)
+            ->elemMatch($this->recurse($node->getQuery(), true));
     }
 
     /**
