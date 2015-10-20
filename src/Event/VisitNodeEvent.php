@@ -25,15 +25,21 @@ final class VisitNodeEvent extends Event
      * @var Builder
      */
     private $builder;
+    /**
+     * @var \SplStack
+     */
+    private $context;
 
     /**
-     * @param AbstracNode $node    any type of node we are visiting
-     * @param Builder     $builder doctrine query builder
+     * @param AbstractNode $node    any type of node we are visiting
+     * @param Builder      $builder doctrine query builder
+     * @param \SplStack    $context context
      */
-    public function __construct(AbstractNode $node, Builder $builder)
+    public function __construct(AbstractNode $node, Builder $builder, \SplStack $context)
     {
         $this->node = $node;
         $this->builder = $builder;
+        $this->context = $context;
     }
 
     /**
@@ -74,5 +80,15 @@ final class VisitNodeEvent extends Event
     public function setBuilder(Builder $builder)
     {
         $this->builder = $builder;
+    }
+
+    /**
+     * get current context (list of parent nodes)
+     *
+     * @return \SplStack
+     */
+    public function getContext()
+    {
+        return $this->context;
     }
 }
