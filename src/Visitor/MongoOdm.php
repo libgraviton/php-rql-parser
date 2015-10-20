@@ -8,17 +8,18 @@
 namespace Graviton\Rql\Visitor;
 
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Xiag\Rql\Parser\Query;
 use Doctrine\ODM\MongoDB\Query\Builder;
 use Doctrine\ODM\MongoDB\Query\Expr;
 use Graviton\Rql\QueryBuilderAwareInterface;
 use Graviton\Rql\Events;
 use Graviton\Rql\Event\VisitNodeEvent;
+use Graviton\Rql\Node\ElemMatchNode;
 use Xiag\Rql\Parser\AbstractNode;
 use Xiag\Rql\Parser\Node\AbstractQueryNode;
 use Xiag\Rql\Parser\Node\Query\AbstractScalarOperatorNode;
 use Xiag\Rql\Parser\Node\Query\AbstractLogicOperatorNode;
 use Xiag\Rql\Parser\Node\Query\AbstractArrayOperatorNode;
+use Xiag\Rql\Parser\Query;
 
 /**
  * @author  List of contributors <https://github.com/libgraviton/php-rql-parser/graphs/contributors>
@@ -36,6 +37,10 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      * @var EventDispatcherInterface
      */
     private $dispatcher = null;
+    /**
+     * @var \SplStack
+     */
+    private $context;
 
     /**
      * map classes to querybuilder methods
@@ -78,6 +83,7 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      */
     private $internalMap = [
         'Xiag\Rql\Parser\Node\Query\ScalarOperator\LikeNode' => 'visitLike',
+        'Graviton\Rql\Node\ElemMatchNode' => 'visitElemMatch',
     ];
 
     /**
@@ -120,14 +126,15 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      */
     public function visit(Query $query)
     {
+        $this->context = new \SplStack();
         return $this->recurse($query);
     }
 
     /**
      * build a querybuilder from the AST
      *
-     * @param Query|Node $query or node
-     * @param bool       $expr  wrap in expr?
+     * @param Query|AbstractNode $query or node
+     * @param bool               $expr  wrap in expr?
      *
      * @return Builder|Expr
      */
@@ -139,28 +146,30 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
             $node = $query->getQuery();
         }
 
+        $originalNode = $node;
         list($node, $this->builder) = $this->dispatchNodeEvent($node);
 
         if ($query instanceof Query) {
             $this->visitQuery($query);
         }
 
+        $this->context->push($originalNode);
         if (in_array(get_class($node), array_keys($this->internalMap))) {
             $method = $this->internalMap[get_class($node)];
-            return $this->$method($node, $expr);
-
+            $builder = $this->$method($node, $expr);
         } elseif ($node instanceof AbstractScalarOperatorNode) {
-            return $this->visitScalar($node, $expr);
-
+            $builder = $this->visitScalar($node, $expr);
         } elseif ($node instanceof AbstractArrayOperatorNode) {
-            return $this->visitArray($node, $expr);
-
+            $builder = $this->visitArray($node, $expr);
         } elseif ($node instanceof AbstractLogicOperatorNode) {
             $method = $this->queryMap[get_class($node)];
-            return $this->visitLogic($method, $node, $expr);
+            $builder = $this->visitLogic($method, $node, $expr);
+        } else {
+            $builder = $this->builder;
         }
+        $this->context->pop();
 
-        return $this->builder;
+        return $builder;
     }
 
     /**
@@ -175,7 +184,7 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
             $event = $this->dispatcher
                 ->dispatch(
                     Events::VISIT_NODE,
-                    new VisitNodeEvent($node, $this->builder)
+                    new VisitNodeEvent($node, $this->builder, $this->context)
                 );
             $node = $event->getNode();
             $builder = $event->getBuilder();
@@ -188,7 +197,7 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      *
      * @return void
      */
-    public function visitQuery(Query $query)
+    private function visitQuery(Query $query)
     {
         if ($query->getSort()) {
             $this->visitSort($query->getSort());
@@ -206,7 +215,7 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      *
      * @return Builder|Expr
      */
-    protected function visitScalar($node, $expr = false)
+    private function visitScalar($node, $expr = false)
     {
         $method = $this->scalarMap[get_class($node)];
         return $this->getField($node->getField(), $expr)->$method($node->getValue());
@@ -220,7 +229,7 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      *
      * @return Builder|Expr
      */
-    protected function visitArray(AbstractArrayOperatorNode $node, $expr = false)
+    private function visitArray(AbstractArrayOperatorNode $node, $expr = false)
     {
         $method = $this->arrayMap[get_class($node)];
         return $this->getField($node->getField(), $expr)->$method($node->getValues());
@@ -234,7 +243,7 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      *
      * @return Builder|Expr
      */
-    protected function getField($field, $expr)
+    private function getField($field, $expr)
     {
         if ($expr) {
             return $this->builder->expr()->field($field);
@@ -251,7 +260,7 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      *
      * @return Builder|Expr
      */
-    protected function visitLogic($addMethod, AbstractLogicOperatorNode $node, $expr = false)
+    private function visitLogic($addMethod, AbstractLogicOperatorNode $node, $expr = false)
     {
         $builder = $this->builder;
         if ($expr) {
@@ -273,7 +282,7 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      *
      * @return void
      */
-    protected function visitSort(\Xiag\Rql\Parser\Node\SortNode $node)
+    private function visitSort(\Xiag\Rql\Parser\Node\SortNode $node)
     {
         foreach ($node->getFields() as $name => $order) {
             $this->builder->sort($name, $order);
@@ -284,9 +293,9 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      * @param \Xiag\Rql\Parser\Node\Query\ScalarOperator\LikeNode $node like node
      * @param boolean                                             $expr should i wrap this in expr
      *
-     * @return void
+     * @return Builder|Expr
      */
-    protected function visitLike(\Xiag\Rql\Parser\Node\Query\ScalarOperator\LikeNode $node, $expr = false)
+    private function visitLike(\Xiag\Rql\Parser\Node\Query\ScalarOperator\LikeNode $node, $expr = false)
     {
         $query = $node->getValue();
         if ($query instanceof \Xiag\Rql\Parser\DataType\Glob) {
@@ -296,13 +305,27 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
     }
 
     /**
+     * Visit elemMatch() node
+     *
+     * @param ElemMatchNode $node elemMatch() node
+     * @param bool          $expr should i wrap this in expr()
+     * @return Builder|Expr
+     */
+    private function visitElemMatch(ElemMatchNode $node, $expr = false)
+    {
+        return $this
+            ->getField($node->getField(), $expr)
+            ->elemMatch($this->recurse($node->getQuery(), true));
+    }
+
+    /**
      * add limit condition to builder
      *
      * @param \Xiag\Rql\Parser\Node\LimitNode $node limit node
      *
      * @return void
      */
-    protected function visitLimit(\Xiag\Rql\Parser\Node\LimitNode $node)
+    private function visitLimit(\Xiag\Rql\Parser\Node\LimitNode $node)
     {
         $this->builder->limit($node->getLimit())->skip($node->getOffset());
     }
