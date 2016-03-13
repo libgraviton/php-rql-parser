@@ -6,8 +6,9 @@ use Xiag\Rql\Parser\AbstractNode;
 use Xiag\Rql\Parser\Node\AbstractQueryNode;
 
 /**
- * Class SearchNode
- * @package Xiag\Rql\Parser\Node
+ * @author  List of contributors <https://github.com/libgraviton/GravitonRqlParserBundle/graphs/contributors>
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ * @link    http://swisscom.ch
  */
 class SearchNode extends AbstractQueryNode
 {
