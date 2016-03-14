@@ -6,6 +6,7 @@
 namespace Graviton\Rql;
 
 use Graviton\Rql\TokenParser\ElemMatchTokenParser;
+use Graviton\Rql\TokenParser\SearchTokenParser;
 use Xiag\Rql\Parser\Parser as BaseParser;
 use Xiag\Rql\Parser\TokenParserInterface;
 use Xiag\Rql\Parser\TypeCaster;
@@ -16,7 +17,7 @@ use Xiag\Rql\Parser\TokenParser;
 /**
  * RQL parser
  *
- * @author  List of contributors <https://github.com/libgraviton/GravitonRqlParserBundle/graphs/contributors>
+ * @author  List of contributors <https://github.com/libgraviton/php-rql-parser/graphs/contributors>
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  * @link    http://swisscom.ch
  */
@@ -39,7 +40,8 @@ class Parser extends BaseParser
             ->addTokenParser(new TokenParser\SelectTokenParser())
             ->addTokenParser(static::createQueryTokenParser())
             ->addTokenParser(new TokenParser\SortTokenParser())
-            ->addTokenParser(new TokenParser\LimitTokenParser());
+            ->addTokenParser(new TokenParser\LimitTokenParser())
+            ->addTokenParser(new SearchTokenParser());
     }
 
     /**
