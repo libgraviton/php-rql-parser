@@ -1,6 +1,9 @@
 <?php
+/**
+ * node implementation for search
+ */
 
-namespace Graviton\Rql\Node;;
+namespace Graviton\Rql\Node;
 
 use Xiag\Rql\Parser\AbstractNode;
 use Xiag\Rql\Parser\Node\AbstractQueryNode;
@@ -18,7 +21,7 @@ class SearchNode extends AbstractQueryNode
     protected $searchTerms;
 
     /**
-     * @param array $searchTerms
+     * @param array $searchTerms What search parameters should be added on custurction
      */
     public function __construct(array $searchTerms = [])
     {
@@ -27,6 +30,8 @@ class SearchNode extends AbstractQueryNode
 
     /**
      * @inheritdoc
+     *
+     * @return string
      */
     public function getNodeName()
     {
@@ -34,7 +39,7 @@ class SearchNode extends AbstractQueryNode
     }
 
     /**
-     * @param string $searchTerm
+     * @param string $searchTerm Search term as a string
      * @return void
      */
     public function addSearchTerm($searchTerm)
@@ -49,6 +54,4 @@ class SearchNode extends AbstractQueryNode
     {
         return $this->searchTerms;
     }
-
-
 }

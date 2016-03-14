@@ -21,7 +21,6 @@ class SearchTokenParserTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Test SearchTokenParser::parse()
-
      * @return void
      */
     public function testMultiParse()
@@ -43,7 +42,6 @@ class SearchTokenParserTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Test SearchTokenParser::parse()
-
      * @return void
      */
     public function testSingleParse()
@@ -62,5 +60,4 @@ class SearchTokenParserTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($expectedNode->getSearchTerms(), $searchNode->getSearchTerms());
     }
-
 }

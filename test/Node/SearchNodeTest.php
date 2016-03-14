@@ -40,5 +40,4 @@ class SearchNodeTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($expectedResult, array_values($sut->getSearchTerms()));
     }
-
 }
