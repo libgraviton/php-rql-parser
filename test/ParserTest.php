@@ -6,7 +6,7 @@
 namespace Graviton\Rql;
 
 use Graviton\Rql\Node\ElemMatchNode;
-use Xiag\Rql\Parser\Lexer;
+use Graviton\Rql\Lexer;
 use Xiag\Rql\Parser\Node;
 use Xiag\Rql\Parser\Query;
 use Xiag\Rql\Parser\QueryBuilder;
