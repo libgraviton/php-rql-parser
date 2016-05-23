@@ -6,7 +6,7 @@
 namespace Graviton\Rql;
 
 use Graviton\Rql\Node\ElemMatchNode;
-use Graviton\Rql\Lexer;
+use Graviton\Rql\Lexer as GrvLexer;
 use Xiag\Rql\Parser\Node;
 use Xiag\Rql\Parser\Query;
 use Xiag\Rql\Parser\QueryBuilder;
@@ -31,7 +31,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals(
             $expectedQuery,
-            Parser::createDefault()->parse((new Lexer())->tokenize($rql))
+            Parser::createDefault()->parse((new GrvLexer())->tokenize($rql))
         );
     }
 
@@ -63,6 +63,29 @@ class ParserTest extends \PHPUnit_Framework_TestCase
                                         [
                                             new Node\Query\ScalarOperator\EqNode('c', 3),
                                             new Node\Query\ScalarOperator\EqNode('d', 4),
+                                        ]
+                                    )
+                                ),
+                            ]
+                        )
+                    )
+                    ->addLimit(new Node\LimitNode(1, 2))
+                    ->getQuery(),
+            ],
+            'with logic with dashed' => [
+                'a=1&(b=2|elemMatch(x,(c=string:3-r|(d=string:4%2Db))))&limit(1,2)',
+                (new QueryBuilder())
+                    ->addQuery(new Node\Query\ScalarOperator\EqNode('a', 1))
+                    ->addQuery(
+                        new Node\Query\LogicOperator\OrNode(
+                            [
+                                new Node\Query\ScalarOperator\EqNode('b', 2),
+                                new ElemMatchNode(
+                                    'x',
+                                    new Node\Query\LogicOperator\OrNode(
+                                        [
+                                            new Node\Query\ScalarOperator\EqNode('c', '3-r'),
+                                            new Node\Query\ScalarOperator\EqNode('d', '4-b'),
                                         ]
                                     )
                                 ),
