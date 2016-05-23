@@ -9,7 +9,7 @@ use Doctrine\MongoDB\Connection;
 use Doctrine\ODM\MongoDB\Configuration;
 use Doctrine\Common\DataFixtures\Loader;
 use Doctrine\ODM\MongoDB\DocumentManager;
-use Xiag\Rql\Parser\Lexer;
+use Graviton\Rql\Lexer as GrvLexer;
 use Xiag\Rql\Parser\Parser as RqlParser;
 use Graviton\Rql\Visitor\MongoOdm;
 use Graviton\Rql\DataFixtures\MongoOdm as MongoOdmFixtures;
@@ -120,6 +120,7 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
                 'ne(name,'.$this->encodeString('My First Sprocket').')', array(
                     array('name' => 'The Third Wheel'),
                     array('name' => 'A Simple Widget'),
+                    array('name' => 'A-Simple-Dashed')
                 )
             ),
             'eq AND search' => array(
@@ -134,13 +135,15 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
             ),
             'gt 10 search' => array(
                 'gt(count,10)', array(
-                    array('name' => 'A Simple Widget', 'count' => 100)
+                    array('name' => 'A Simple Widget', 'count' => 100),
+                    array('name' => 'A-Simple-Dashed', 'count' => 20)
                 )
             ),
             'ge 10 search' => array(
                 'ge(count,10)', array(
                     array('name' => 'My First Sprocket'),
-                    array('name' => 'A Simple Widget', 'count' => 100)
+                    array('name' => 'A Simple Widget', 'count' => 100),
+                    array('name' => 'A-Simple-Dashed', 'count' => 20)
                 )
             ),
             'lt 10 search' => array(
@@ -158,19 +161,22 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
                 'sort(+count)', array(
                     array('count' => 3),
                     array('count' => 10),
-                    array('count' => 100),
+                    array('count' => 20),
+                    array('count' => 100)
                 )
             ),
             'reverse sort by int' => array(
                 'sort(-count)', array(
                     array('count' => 100),
+                    array('count' => 20),
                     array('count' => 10),
-                    array('count' => 3),
+                    array('count' => 3)
                 )
             ),
             'string sort explicit ' => array(
                 'sort(+name)', array(
                     array('name' => 'A Simple Widget', 'count' => 100),
+                    array('name' => 'A-Simple-Dashed', 'count' => 20),
                     array('name' => 'My First Sprocket', 'count' => 10),
                     array('name' => 'The Third Wheel', 'count' => 3),
                 )
@@ -179,7 +185,8 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
                 'sort(-name)', array(
                     array('name' => 'The Third Wheel', 'count' => 3),
                     array('name' => 'My First Sprocket', 'count' => 10),
-                    array('name' => 'A Simple Widget', 'count' => 100),
+                    array('name' => 'A-Simple-Dashed', 'count' => 20),
+                    array('name' => 'A Simple Widget', 'count' => 100)
                 )
             ),
             'like search' => array(
@@ -204,7 +211,8 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
             ),
             'out() search' => array(
                 'out(name,('.$this->encodeString('A Simple Widget').','.$this->encodeString('My First Sprocket').'))', [
-                    array('name' => 'The Third Wheel')
+                    array('name' => 'The Third Wheel'),
+                    array('name' => 'A-Simple-Dashed')
                 ],
             ),
             'like and limit search' => array(
@@ -229,11 +237,13 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
                 [
                     ['name' => 'The Third Wheel', 'count' => 3],
                     ['name' => 'My First Sprocket', 'count' => 10],
+                    ['name' => 'A-Simple-Dashed', 'count' => 20]
                 ],
             ],
             'lt() with desc sort() by count' => [
                 'lt(count,50)&sort(-count)',
                 [
+                    ['name' => 'A-Simple-Dashed', 'count' => 20],
                     ['name' => 'My First Sprocket', 'count' => 10],
                     ['name' => 'The Third Wheel', 'count' => 3],
                 ],
@@ -243,6 +253,7 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
                 sprintf('lt(name,%s)&sort(+name)', $this->encodeString('The Third Wheel')),
                 [
                     ['name' => 'A Simple Widget', 'count' => 100],
+                    ['name' => 'A-Simple-Dashed', 'count' => 20],
                     ['name' => 'My First Sprocket', 'count' => 10],
                 ],
             ],
@@ -250,6 +261,7 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
                 sprintf('lt(name,%s)&sort(-name)', $this->encodeString('The Third Wheel')),
                 [
                     ['name' => 'My First Sprocket', 'count' => 10],
+                    ['name' => 'A-Simple-Dashed', 'count' => 20],
                     ['name' => 'A Simple Widget', 'count' => 100],
                 ],
             ],
@@ -257,6 +269,7 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
             'lt() by count with asc sort() by name' => [
                 'lt(count,50)&sort(+name)',
                 [
+                    ['name' => 'A-Simple-Dashed', 'count' => 20],
                     ['name' => 'My First Sprocket', 'count' => 10],
                     ['name' => 'The Third Wheel', 'count' => 3],
                 ],
@@ -266,6 +279,7 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
                 [
                     ['name' => 'The Third Wheel', 'count' => 3],
                     ['name' => 'My First Sprocket', 'count' => 10],
+                    ['name' => 'A-Simple-Dashed', 'count' => 20]
                 ],
             ],
 
@@ -273,6 +287,7 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
                 sprintf('or(lt(count,50),lt(name,%s))&sort(+name,+count)', $this->encodeString('My')),
                 [
                     ['name' => 'A Simple Widget', 'count' => 100],
+                    ['name' => 'A-Simple-Dashed', 'count' => 20],
                     ['name' => 'My First Sprocket', 'count' => 10],
                     ['name' => 'The Third Wheel', 'count' => 3],
                 ],
@@ -282,9 +297,22 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
                 [
                     ['name' => 'The Third Wheel', 'count' => 3],
                     ['name' => 'My First Sprocket', 'count' => 10],
+                    ['name' => 'A-Simple-Dashed', 'count' => 20],
                     ['name' => 'A Simple Widget', 'count' => 100],
                 ],
             ],
+            'eq string dash value' => [
+                'eq(name,string:A-Simple-Dashed)',
+                [
+                    ['name' => 'A-Simple-Dashed', 'count' => 20]
+                ]
+            ],
+            'eq string dash value back compatible' => [
+                'eq(name,string:A%2DSimple%2DDashed)',
+                [
+                    ['name' => 'A-Simple-Dashed', 'count' => 20]
+                ]
+            ]
         );
     }
 
@@ -301,7 +329,7 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException('Xiag\Rql\Parser\Exception\SyntaxErrorException', $errorMessage);
 
         RqlParser::createDefault()->parse(
-            (new Lexer())
+            (new GrvLexer())
                 ->tokenize($query)
         );
     }
