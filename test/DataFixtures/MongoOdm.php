@@ -45,6 +45,12 @@ class MongoOdm implements FixtureInterface
 
         $manager->persist($widget);
 
+        $widget = new Foo;
+        $widget->name = 'A-Simple-Dashed';
+        $widget->count = 20;
+
+        $manager->persist($widget);
+
         $manager->flush();
     }
 }
