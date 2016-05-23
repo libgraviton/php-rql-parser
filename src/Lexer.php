@@ -27,7 +27,7 @@ class Lexer extends BaseLexer
     {
         // Replace for each string value between (), there can be many rql params.
         if (strpos($code, 'string:') !== false) {
-            preg_match_all('/\bstring:(.*?)[\(\)&,|]/', $code, $matches);
+            preg_match_all('/\bstring:(.*?)[\(\)&,|(\s)]/', $code.' ', $matches);
             if (array_key_exists(1, $matches) && !empty($matches)) {
                 foreach ($matches[1] as $match) {
                     if (strpos($match, '-') !== false) {
