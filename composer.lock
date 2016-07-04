@@ -4,7 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "dad0637fce620610b5be2320b58a9691",
+    "hash": "b72b3d4242d5012947a2ad0b3502fe90",
+    "content-hash": "5996ea4e802bc82a85172d3004b2882b",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -615,12 +616,12 @@
             "version": "v2.7.3",
             "source": {
                 "type": "git",
-                "url": "https://github.com/symfony/Console.git",
+                "url": "https://github.com/symfony/console.git",
                 "reference": "d6cf02fe73634c96677e428f840704bfbcaec29e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Console/zipball/d6cf02fe73634c96677e428f840704bfbcaec29e",
+                "url": "https://api.github.com/repos/symfony/console/zipball/d6cf02fe73634c96677e428f840704bfbcaec29e",
                 "reference": "d6cf02fe73634c96677e428f840704bfbcaec29e",
                 "shasum": ""
             },
@@ -672,12 +673,12 @@
             "version": "v2.7.3",
             "source": {
                 "type": "git",
-                "url": "https://github.com/symfony/EventDispatcher.git",
+                "url": "https://github.com/symfony/event-dispatcher.git",
                 "reference": "9310b5f9a87ec2ea75d20fec0b0017c77c66dac3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/EventDispatcher/zipball/9310b5f9a87ec2ea75d20fec0b0017c77c66dac3",
+                "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/9310b5f9a87ec2ea75d20fec0b0017c77c66dac3",
                 "reference": "9310b5f9a87ec2ea75d20fec0b0017c77c66dac3",
                 "shasum": ""
             },
@@ -727,16 +728,16 @@
         },
         {
             "name": "xiag/rql-parser",
-            "version": "v1.0.1",
+            "version": "v1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/xiag-ag/rql-parser.git",
-                "reference": "92e8245ea52b170998d6b3be538de20d4cddd2a3"
+                "reference": "82eb4155983775b6afec48a9c32f6bc8332161a6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/xiag-ag/rql-parser/zipball/92e8245ea52b170998d6b3be538de20d4cddd2a3",
-                "reference": "92e8245ea52b170998d6b3be538de20d4cddd2a3",
+                "url": "https://api.github.com/repos/xiag-ag/rql-parser/zipball/82eb4155983775b6afec48a9c32f6bc8332161a6",
+                "reference": "82eb4155983775b6afec48a9c32f6bc8332161a6",
                 "shasum": ""
             },
             "require": {
@@ -766,7 +767,7 @@
                 "rest",
                 "rql"
             ],
-            "time": "2015-08-21 11:19:07"
+            "time": "2016-07-03 08:43:00"
         }
     ],
     "packages-dev": [
