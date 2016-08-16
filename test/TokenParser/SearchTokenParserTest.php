@@ -154,7 +154,6 @@ class SearchTokenParserTest extends \PHPUnit_Framework_TestCase
         }
 
         $this->assertEquals($expectedNode, $andNodes);
-
     }
 
 
@@ -191,6 +190,5 @@ class SearchTokenParserTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($expectedNode, $andNodes);
         $this->assertEquals($expectedSortNode, $sortNode);
-
     }
 }
