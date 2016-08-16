@@ -24,10 +24,10 @@
         "xiag/rql-command": "^1.0"
     },
     "require": {
-        "php": "~5.4",
+        "php": "~5.6",
         "doctrine/mongodb-odm": "~1.0@beta",
         "xiag/rql-parser": "^1.0.2",
-        "symfony/event-dispatcher": "^2.6"
+        "symfony/event-dispatcher": "^2.6 || ^3.0"
     },
     "scripts": {
         "check": [
