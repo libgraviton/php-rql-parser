@@ -312,6 +312,15 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
                 [
                     ['name' => 'A-Simple-Dashed', 'count' => 20]
                 ]
+            ],
+            'select name and sorted' => [
+                'select(name)&sort(-name)',
+                [
+                    ['name' => 'The Third Wheel'],
+                    ['name' => 'My First Sprocket'],
+                    ['name' => 'A-Simple-Dashed'],
+                    ['name' => 'A Simple Widget']
+                ]
             ]
         );
     }
