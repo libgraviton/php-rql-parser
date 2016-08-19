@@ -205,6 +205,9 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
         if ($query->getLimit()) {
             $this->visitLimit($query->getLimit());
         }
+        if ($query->getSelect()) {
+            $this->visitSelect($query->getSelect());
+        }
     }
 
     /**
@@ -328,5 +331,24 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
     private function visitLimit(\Xiag\Rql\Parser\Node\LimitNode $node)
     {
         $this->builder->limit($node->getLimit())->skip($node->getOffset());
+    }
+
+    /**
+     * add selects to builder
+     *
+     * @param \Xiag\Rql\Parser\Node\SelectNode $node select node
+     *
+     * @return void
+     */
+    private function visitSelect(\Xiag\Rql\Parser\Node\SelectNode $node)
+    {
+        array_map(
+            function ($field) {
+                // rename '$ref' to 'ref', else we cannot select them..
+                $field = str_replace('$ref', 'ref', $field);
+                $this->builder->select($field);
+            },
+            $node->getFields()
+        );
     }
 }
