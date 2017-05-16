@@ -30,7 +30,8 @@ require 'vendor/autoload.php';
 $rql = 'or(eq(name,foo)&eq(name,bar))';
 
 /** @var \Doctrine\ODM\MongoDB\Query\Builder $builder */
-$visitor = new \Graviton\Rql\Visitor\MongoOdm($builder);
+$visitor = new \Graviton\Rql\Visitor\MongoOdm();
+$visitor->setBuilder($builder);
 $lexer = new \Xiag\Rql\Parser\Lexer;
 $parser = \Xiag\Rql\Parser\Parser::createDefault();
 

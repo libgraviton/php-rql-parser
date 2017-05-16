@@ -8,6 +8,7 @@ namespace Graviton\Rql\TokenParser;
 
 use Graviton\Rql\Node\SearchNode;
 use Xiag\Rql\Parser\AbstractTokenParser;
+use Xiag\Rql\Parser\Exception\UnknownTokenException;
 use Xiag\Rql\Parser\Token;
 use Xiag\Rql\Parser\TokenStream;
 
@@ -21,7 +22,6 @@ use Xiag\Rql\Parser\TokenStream;
  */
 class SearchTokenParser extends AbstractTokenParser
 {
-
     /**
      * @param TokenStream $tokenStream token stream
      * @return SearchNode
@@ -30,13 +30,17 @@ class SearchTokenParser extends AbstractTokenParser
     {
         $tokenStream->expect(Token::T_OPERATOR, 'search');
         $tokenStream->expect(Token::T_OPEN_PARENTHESIS);
-
-        $searchTermsImploded = $this->getParser()->getExpressionParser()->parseScalar($tokenStream);
-        $searchTerms = explode(" ", $searchTermsImploded);
-
+        $searchTerm = $this->getParser()->getExpressionParser()->parseScalar($tokenStream);
+        if (!is_string($searchTerm)) {
+            throw new UnknownTokenException('RQL Search only allows strings');
+        }
         $tokenStream->expect(Token::T_CLOSE_PARENTHESIS);
 
-        return new SearchNode($searchTerms);
+        $searchNode = SearchNode::getInstance();
+        foreach (explode(" ", $searchTerm) as $string) {
+            $searchNode->addSearchTerm($string);
+        }
+        return $searchNode;
     }
 
     /**
