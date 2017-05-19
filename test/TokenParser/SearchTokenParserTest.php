@@ -10,8 +10,6 @@ use Graviton\Rql\Node\SearchNode;
 use Graviton\Rql\Parser as GravitonParser;
 use Xiag\Rql\Parser\Node\Query\LogicOperator\AndNode;
 use Xiag\Rql\Parser\Node\SortNode;
-use Xiag\Rql\Parser\Token;
-use Xiag\Rql\Parser\TokenStream;
 
 /**
  * @author  List of contributors <https://github.com/libgraviton/php-rql-parser/graphs/contributors>
@@ -20,6 +18,14 @@ use Xiag\Rql\Parser\TokenStream;
  */
 class SearchTokenParserTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * Setup, clear search params
+     * @return void
+     */
+    public function setup()
+    {
+        SearchNode::getInstance()->resetSearchTerms();
+    }
 
     /**
      * Test SearchTokenParser::parse()
@@ -136,7 +142,7 @@ class SearchTokenParserTest extends \PHPUnit_Framework_TestCase
 
         $expectedSearchNodes = [];
         foreach ($terms as $item) {
-            $expectedSearchNodes[] = new SearchNode([$item]);
+            $expectedSearchNodes[] = new SearchNode($terms);
         }
         $expectedNode = new AndNode($expectedSearchNodes);
 
@@ -160,6 +166,7 @@ class SearchTokenParserTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Test SearchTokenParser::parse()
+     * Multiple searches should be only one visited
      * @return void
      */
     public function testDashReplaceMultipleAndSortParse()
@@ -170,7 +177,7 @@ class SearchTokenParserTest extends \PHPUnit_Framework_TestCase
 
         $expectedSearchNodes = [];
         foreach ($terms as $item) {
-            $expectedSearchNodes[] = new SearchNode([$item]);
+            $expectedSearchNodes[] = new SearchNode($terms);
         }
         $expectedNode = new AndNode($expectedSearchNodes);
         $expectedSortNode = new SortNode($sort);
