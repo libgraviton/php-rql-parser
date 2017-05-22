@@ -31,9 +31,14 @@ class SearchTokenParser extends AbstractTokenParser
         $tokenStream->expect(Token::T_OPERATOR, 'search');
         $tokenStream->expect(Token::T_OPEN_PARENTHESIS);
         $searchTerm = $this->getParser()->getExpressionParser()->parseScalar($tokenStream);
-        if (!is_string($searchTerm)) {
+
+        // Only Strings or Integers
+        if (is_int($searchTerm) || is_float($searchTerm)) {
+            $searchTerm = (string) $searchTerm;
+        } elseif (!is_string($searchTerm)) {
             throw new UnknownTokenException('RQL Search only allows strings');
         }
+
         $tokenStream->expect(Token::T_CLOSE_PARENTHESIS);
 
         $searchNode = SearchNode::getInstance();
