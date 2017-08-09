@@ -198,4 +198,25 @@ class SearchTokenParserTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedNode, $andNodes);
         $this->assertEquals($expectedSortNode, $sortNode);
     }
+
+    /**
+     * Test Lexer::tokenize()
+     * @return void
+     */
+    public function testStringURLParse()
+    {
+        $terms = array("http://localhost:8000/core/app/admin");
+
+        $expectedNode = new SearchNode($terms);
+
+        $rql = "search(string:http://localhost:8000/core/app/admin)";
+        $result = GravitonParser::createDefault()->parse((new Lexer())->tokenize($rql));
+
+        $this->assertTrue($result->getQuery() instanceof SearchNode);
+
+        /** @var SearchNode $searchNode */
+        $searchNode = $result->getQuery();
+
+        $this->assertEquals($expectedNode->getSearchTerms(), $searchNode->getSearchTerms());
+    }
 }
