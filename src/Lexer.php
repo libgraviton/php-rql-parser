@@ -30,21 +30,20 @@ class Lexer extends BaseLexer
             preg_match_all('/\bstring:(.*?)[\(\)&,|(\s)]/', $code.' ', $matches);
             if (array_key_exists(1, $matches) && !empty($matches)) {
                 foreach ($matches[1] as $match) {
-                    // For easier ID search
-                    if (strpos($match, '-') !== false) {
+                    // For easier URL queries
+                    if (substr($match, 0, 4) == 'http') {
+                        $new = preg_replace('/-/', '%2D', $match);
+                        $new = preg_replace('/:/', '%3A', $new);
+                        $new = preg_replace('/[\/]/', '%2F', $new);
+                        $code = str_replace($match, $new, $code);
+                        // For easier ID queries
+                    } elseif (strpos($match, '-') !== false) {
                         $new = preg_replace('/-/', '%2D', $match);
                         $code = preg_replace('/' . $match . '/', $new, $code, 1);
-                    }
-                    // For easier URL search
-                    if (substr($match, 0, 4) == 'http') {
-                        $code = str_replace('/', '%2F', $code);
-                        $code = str_replace(':', '%3A', $code);
-                        $code = str_replace('string%3A', 'string:', $code);
                     }
                 }
             }
         }
-
         return parent::tokenize($code);
     }
 }
