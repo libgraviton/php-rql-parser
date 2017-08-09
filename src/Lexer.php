@@ -30,9 +30,16 @@ class Lexer extends BaseLexer
             preg_match_all('/\bstring:(.*?)[\(\)&,|(\s)]/', $code.' ', $matches);
             if (array_key_exists(1, $matches) && !empty($matches)) {
                 foreach ($matches[1] as $match) {
+                    // For easier ID search
                     if (strpos($match, '-') !== false) {
                         $new = preg_replace('/-/', '%2D', $match);
                         $code = preg_replace('/' . $match . '/', $new, $code, 1);
+                    }
+                    // For easier URL search
+                    if (substr($match, 0, 4) == 'http') {
+                        $code = str_replace('/', '%2F', $code);
+                        $code = str_replace(':', '%3A', $code);
+                        $code = str_replace('string%3A', 'string:', $code);
                     }
                 }
             }
