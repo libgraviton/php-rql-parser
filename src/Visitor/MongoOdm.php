@@ -161,7 +161,7 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
         }
 
         $this->context->push($originalNode);
-        if (in_array(get_class($node), array_keys($this->internalMap))) {
+        if (is_object($node) && in_array(get_class($node), array_keys($this->internalMap))) {
             $method = $this->internalMap[get_class($node)];
             $builder = $this->$method($node, $expr);
         } elseif ($node instanceof AbstractScalarOperatorNode) {
