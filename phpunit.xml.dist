@@ -10,7 +10,7 @@
     processIsolation            = "false"
     stopOnFailure               = "false"
     syntaxCheck                 = "false"
-    bootstrap                   = "vendor/autoload.php">
+    bootstrap                   = "test/bootstrap.php">
   <testsuites>
     <testsuite name="php-rql-parser Test Suite">
       <directory>test/</directory>
