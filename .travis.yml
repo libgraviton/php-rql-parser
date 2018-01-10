@@ -8,7 +8,7 @@ before_script:
           echo "extension = mongo.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
       fi
   - >
-      if [ [ $(phpenv version-name) = "7.1" ] || [ $(phpenv version-name) = "7.2" ] ; then
+      if [ $(phpenv version-name) = "7.1" ] || [ $(phpenv version-name) = "7.2" ] ; then
           pecl channel-update pecl.php.net
           sleep 5
           printf "\n" | pecl install mongodb
