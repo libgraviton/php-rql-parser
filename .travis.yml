@@ -8,10 +8,10 @@ before_script:
           echo "extension = mongo.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
       fi
   - >
-      if [ $(phpenv version-name) = "7.1" ]; then
+      if [ $(phpenv version-name) = "7.1" ] || [ $(phpenv version-name) = "7.2" ]; then
           pecl channel-update pecl.php.net
           sleep 5
-          printf "\n" | pecl install mongodb
+          printf "\n" | pecl install -f --ignore-errors mongodb
       fi
   - composer install --dev --no-interaction
   - wget https://scrutinizer-ci.com/ocular.phar
