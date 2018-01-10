@@ -1142,16 +1142,16 @@
         },
         {
             "name": "libgraviton/codesniffer",
-            "version": "v2.0.0",
+            "version": "v2.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/libgraviton/codesniffer-ruleset-entb.git",
-                "reference": "b29170ede36cfbcf62ec2366c1b7ad15276057fa"
+                "reference": "4fe6b4a52974e98d8d95a4c1b27efbb49e1e18c3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/libgraviton/codesniffer-ruleset-entb/zipball/b29170ede36cfbcf62ec2366c1b7ad15276057fa",
-                "reference": "b29170ede36cfbcf62ec2366c1b7ad15276057fa",
+                "url": "https://api.github.com/repos/libgraviton/codesniffer-ruleset-entb/zipball/4fe6b4a52974e98d8d95a4c1b27efbb49e1e18c3",
+                "reference": "4fe6b4a52974e98d8d95a4c1b27efbb49e1e18c3",
                 "shasum": ""
             },
             "require-dev": {
@@ -1168,7 +1168,7 @@
                 "graviton",
                 "libgraviton"
             ],
-            "time": "2017-05-05T15:03:26+00:00"
+            "time": "2018-01-10T13:47:51+00:00"
         },
         {
             "name": "myclabs/deep-copy",
