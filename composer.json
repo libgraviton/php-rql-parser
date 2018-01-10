@@ -16,25 +16,27 @@
     "autoload-dev": {
         "psr-4": { "Graviton\\Rql\\": "test/"}
     },
+    "config": {
+        "platform": {"php": "5.6", "ext-mongodb": "1.2.11", "ext-mongo": "1.6.14"}
+    },
     "require-dev": {
         "phpunit/phpunit": "*",
-        "squizlabs/php_codesniffer": "~2.2",
+        "squizlabs/php_codesniffer": "~3",
         "doctrine/data-fixtures": "~1.0",
-        "libgraviton/codesniffer": "~1.3",
+        "libgraviton/codesniffer": "~2",
         "xiag/rql-command": "^1.0"
     },
     "require": {
-        "php": "~5.6",
-        "doctrine/mongodb-odm": "~1.0@beta",
+        "doctrine/mongodb-odm": "*",
         "xiag/rql-parser": "^1.0.2",
-        "symfony/event-dispatcher": "^2.6 || ^3.0"
+        "symfony/event-dispatcher": "^2.6 || ^3.0",
+        "alcaeus/mongo-php-adapter": "^1.1"
     },
     "scripts": {
         "check": [
-            "./vendor/bin/phpcs --config-set installed_paths ../../libgraviton/codesniffer/CodeSniffer/Standards",
-            "./vendor/bin/phpcs --standard=PSR1 --ignore='*.css' --ignore='*.js' src/ test/",
-            "./vendor/bin/phpcs --standard=PSR2 --ignore='*.css' --ignore='*.js' src/ test/",
-            "./vendor/bin/phpcs --standard=ENTB --ignore='*.css' --ignore='*.js' src/ test/"
+            "./vendor/bin/phpcs -p --standard=PSR1 --ignore='*.css' --ignore='*.js' src/ test/",
+            "./vendor/bin/phpcs -p --standard=PSR2 --ignore='*.css' --ignore='*.js' src/ test/",
+            "./vendor/bin/phpcs -p --standard=./vendor/libgraviton/codesniffer --ignore='*.css' --ignore='*.js' src/ test/"
         ]
     },
     "minimum-stability": "stable",

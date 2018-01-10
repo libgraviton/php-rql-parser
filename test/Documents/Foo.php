@@ -5,29 +5,31 @@
 
 namespace Graviton\Rql\Documents;
 
-use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Doctrine\ODM\MongoDB\Mapping\Annotations\Document;
+use Doctrine\ODM\MongoDB\Mapping\Annotations\Field;
+use Doctrine\ODM\MongoDB\Mapping\Annotations\Id;
 
 /**
- * @ODM\Document
- *
  * @author  List of contributors <https://github.com/libgraviton/php-rql-parser/graphs/contributors>
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  * @link    http://swisscom.ch
+ *
+ * @Document
  */
 class Foo
 {
     /**
-     * @ODM\Id
+     * @Id
      */
     private $id;
 
     /**
-     * @ODM\String
+     * @Field(type="string")
      */
     public $name;
 
     /**
-     * @ODM\Int
+     * @Field(type="int")
      */
     public $count;
 }
