@@ -11,7 +11,7 @@ use Xiag\Rql\Parser\AbstractNode;
 
 /**
  * @author  List of contributors <https://github.com/libgraviton/php-rql-parser/graphs/contributors>
- * @license  http://opensource.org/licenses/gpl-license.php GNU Public License
+ * @license  https://opensource.org/licenses/MIT MIT License
  * @link     http://swisscom.ch
  */
 final class VisitNodeEvent extends Event
