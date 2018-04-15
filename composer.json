@@ -3,7 +3,7 @@
     "homepage": "https://github.com/libgraviton/php-rql-parser",
     "description": "doctrine-odm query building wrapper to xiag-ag/rql-parser",
     "keywords": ["rest", "rql", "resource", "query", "language", "parser", "mongodb", "mongo"],
-    "license": "GPL",
+    "license": "MIT",
     "authors": [
         {
             "name": "List of contributors",
@@ -16,9 +16,6 @@
     "autoload-dev": {
         "psr-4": { "Graviton\\Rql\\": "test/"}
     },
-    "config": {
-        "platform": {"php": "5.6", "ext-mongodb": "1.2.11", "ext-mongo": "1.6.14"}
-    },
     "require-dev": {
         "phpunit/phpunit": "*",
         "squizlabs/php_codesniffer": "~3",
@@ -29,8 +26,8 @@
     "require": {
         "doctrine/mongodb-odm": "*",
         "xiag/rql-parser": "^1.0.2",
-        "symfony/event-dispatcher": "^2.6 || ^3.0",
-        "alcaeus/mongo-php-adapter": "^1.1"
+        "symfony/event-dispatcher": "^3.0 || ^4.0",
+        "alcaeus/mongo-php-adapter": "*"
     },
     "scripts": {
         "check": [
