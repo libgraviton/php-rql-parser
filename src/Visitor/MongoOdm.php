@@ -347,6 +347,7 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
                 return $this->builder;
             }
         }
+
         $node->setVisited(true);
         $searchArr = [];
         foreach ($node->getSearchTerms() as $string) {
@@ -354,10 +355,32 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
         }
 
         $this->builder->sortMeta('score', 'textScore');
+
+        /*****
+         * WORKAROUND FOR BAD SEARCH BEHAVIOR AS WANTED IN EVO-13051
+         *
+         * --> please please please let us remove this asap..!
+         */
+
+        $basicTextSearchValue = implode(' ', $searchArr);
+
+        $collectionName = '';
+        if (!is_null($this->builder->getQuery())) {
+            $collectionName = $this->builder->getQuery()->getClass()->getCollection();
+        }
+
+        if ($collectionName == 'Customer') {
+            $firstWord = $node->getSearchTerms()[0];
+            return $this->builder->addOr(
+                $this->builder->expr()->text($basicTextSearchValue),
+                $this->builder->expr()->field('lastName')->equals(new \MongoRegex('/^'.preg_quote($firstWord).'.*$/i'))
+            );
+        }
+
         if ($expr) {
-            return $this->builder->expr()->text(implode(' ', $searchArr));
+            return $this->builder->expr()->text($basicTextSearchValue);
         } else {
-            return $this->builder->addAnd($this->builder->expr()->text(implode(' ', $searchArr)));
+            return $this->builder->addAnd($this->builder->expr()->text($basicTextSearchValue));
         }
     }
 
