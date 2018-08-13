@@ -7,6 +7,7 @@
 
 namespace Graviton\Rql\Visitor;
 
+use Graviton\Rql\Event\VisitPostEvent;
 use Graviton\Rql\Node\SearchNode;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Doctrine\ODM\MongoDB\Query\Builder;
@@ -43,6 +44,7 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      * @var EventDispatcherInterface
      */
     private $dispatcher = null;
+
     /**
      * @var \SplStack
      */
@@ -133,7 +135,13 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
     public function visit(Query $query)
     {
         $this->context = new \SplStack();
-        return $this->recurse($query);
+
+        $this->builder = $this->recurse($query);
+
+        // event after we did all..
+        list($query, $this->builder) = $this->dispatchVisitPostEvent($query);
+
+        return $this->builder;
     }
 
     /**
@@ -153,13 +161,14 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
         }
 
         $originalNode = $node;
-        list($node, $this->builder) = $this->dispatchNodeEvent($node);
+        list($node, $this->builder) = $this->dispatchNodeEvent($node, $expr);
 
         if ($query instanceof Query) {
             $this->visitQuery($query);
         }
 
         $this->context->push($originalNode);
+
         if (is_object($node) && in_array(get_class($node), array_keys($this->internalMap))) {
             $method = $this->internalMap[get_class($node)];
             $builder = $this->$method($node, $expr);
@@ -183,7 +192,7 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      *
      * @return array
      */
-    private function dispatchNodeEvent(AbstractNode $node = null)
+    private function dispatchNodeEvent(AbstractNode $node = null, $expr = false)
     {
         $builder = $this->builder;
         if (!empty($this->dispatcher)) {
@@ -192,13 +201,34 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
                 $event = $this->dispatcher
                     ->dispatch(
                         Events::VISIT_NODE,
-                        new VisitNodeEvent($node, $this->builder, $this->context)
+                        new VisitNodeEvent($node, $this->builder, $this->context, $expr)
                     );
                 $node = $event->getNode();
                 $builder = $event->getBuilder();
             }
         }
         return [$node, $builder];
+    }
+
+    /**
+     * @param Query|null $query the query
+     *
+     * @return array
+     */
+    private function dispatchVisitPostEvent(Query $query = null)
+    {
+        $builder = $this->builder;
+        if (!empty($this->dispatcher)) {
+            /** @var VisitPostEvent $event */
+            $event = $this->dispatcher
+                ->dispatch(
+                    Events::VISIT_POST,
+                    new VisitPostEvent($query, $this->builder)
+                );
+            $query = $event->getQuery();
+            $builder = $event->getBuilder();
+        }
+        return [$query, $builder];
     }
 
     /**

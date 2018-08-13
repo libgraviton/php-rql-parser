@@ -29,17 +29,22 @@ final class VisitNodeEvent extends Event
      * @var \SplStack
      */
     private $context;
+    /**
+     * @var boolean
+     */
+    private $expr;
 
     /**
      * @param AbstractNode $node    any type of node we are visiting
      * @param Builder      $builder doctrine query builder
      * @param \SplStack    $context context
      */
-    public function __construct(AbstractNode $node, Builder $builder, \SplStack $context)
+    public function __construct(AbstractNode $node, Builder $builder, \SplStack $context, $expr = false)
     {
         $this->node = $node;
         $this->builder = $builder;
         $this->context = $context;
+        $this->expr = $expr;
     }
 
     /**
@@ -90,5 +95,13 @@ final class VisitNodeEvent extends Event
     public function getContext()
     {
         return $this->context;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isExpr()
+    {
+        return $this->expr;
     }
 }
