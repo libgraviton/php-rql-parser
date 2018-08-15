@@ -33,18 +33,23 @@ final class VisitNodeEvent extends Event
      * @var boolean
      */
     private $expr;
+    /**
+     * @var string
+     */
+    private $className;
 
     /**
      * @param AbstractNode $node    any type of node we are visiting
      * @param Builder      $builder doctrine query builder
      * @param \SplStack    $context context
      */
-    public function __construct(AbstractNode $node, Builder $builder, \SplStack $context, $expr = false)
+    public function __construct(AbstractNode $node, Builder $builder, \SplStack $context, $expr = false, $className = null)
     {
         $this->node = $node;
         $this->builder = $builder;
         $this->context = $context;
         $this->expr = $expr;
+        $this->className = $className;
     }
 
     /**
@@ -103,5 +108,15 @@ final class VisitNodeEvent extends Event
     public function isExpr()
     {
         return $this->expr;
+    }
+
+    /**
+     * get ClassName
+     *
+     * @return string ClassName
+     */
+    public function getClassName()
+    {
+        return $this->className;
     }
 }

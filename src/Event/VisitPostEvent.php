@@ -28,13 +28,19 @@ final class VisitPostEvent extends Event
     private $builder;
 
     /**
+     * @var string
+     */
+    private $className;
+
+    /**
      * @param AbstractNode $node    any type of node we are visiting
      * @param Builder      $builder doctrine query builder
      */
-    public function __construct(Query $query, Builder $builder)
+    public function __construct(Query $query, Builder $builder, $className = null)
     {
         $this->query = $query;
         $this->builder = $builder;
+        $this->className = $className;
     }
 
     /**
@@ -71,5 +77,15 @@ final class VisitPostEvent extends Event
     public function setBuilder(Builder $builder)
     {
         $this->builder = $builder;
+    }
+
+    /**
+     * get ClassName
+     *
+     * @return string ClassName
+     */
+    public function getClassName()
+    {
+        return $this->className;
     }
 }

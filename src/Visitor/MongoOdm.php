@@ -7,6 +7,7 @@
 
 namespace Graviton\Rql\Visitor;
 
+use Doctrine\ODM\MongoDB\DocumentRepository;
 use Graviton\Rql\Event\VisitPostEvent;
 use Graviton\Rql\Node\SearchNode;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -35,10 +36,16 @@ use Xiag\Rql\Parser\Query;
  */
 final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
 {
+
     /**
      * @var Builder
      */
     private $builder;
+
+    /**
+     * @var DocumentRepository
+     */
+    private $repository;
 
     /**
      * @var EventDispatcherInterface
@@ -128,6 +135,27 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
     }
 
     /**
+     * sets repository
+     *
+     * @param DocumentRepository $repository
+     */
+    public function setRepository(DocumentRepository $repository)
+    {
+        $this->repository = $repository;
+        $this->setBuilder($this->repository->createQueryBuilder());
+    }
+
+    /**
+     * returns repository
+     *
+     * @return DocumentRepository repository
+     */
+    public function getRepository()
+    {
+        return $this->repository;
+    }
+
+    /**
      * @param Query $query query from parser
      *
      * @return Builder|Expr
@@ -201,7 +229,13 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
                 $event = $this->dispatcher
                     ->dispatch(
                         Events::VISIT_NODE,
-                        new VisitNodeEvent($node, $this->builder, $this->context, $expr)
+                        new VisitNodeEvent(
+                            $node,
+                            $this->builder,
+                            $this->context,
+                            $expr,
+                            $this->repository->getClassName()
+                        )
                     );
                 $node = $event->getNode();
                 $builder = $event->getBuilder();
