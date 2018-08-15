@@ -11,7 +11,7 @@ namespace Graviton\Rql\Node;
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  * @link    http://swisscom.ch
  */
-class SearchNodeTest extends \PHPUnit_Framework_TestCase
+class SearchNodeTest extends \PHPUnit\Framework\TestCase
 {
 
     /**

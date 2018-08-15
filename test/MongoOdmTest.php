@@ -6,10 +6,13 @@
 namespace Graviton\Rql;
 
 use Doctrine\MongoDB\Connection;
+use Doctrine\MongoDB\Query\Builder;
 use Doctrine\ODM\MongoDB\Configuration;
 use Doctrine\Common\DataFixtures\Loader;
 use Doctrine\ODM\MongoDB\DocumentManager;
+use Doctrine\ODM\MongoDB\DocumentRepository;
 use Graviton\Rql\Lexer as GrvLexer;
+use Xiag\Rql\Parser\Exception\SyntaxErrorException;
 use Xiag\Rql\Parser\Parser as RqlParser;
 use Graviton\Rql\Visitor\MongoOdm;
 use Graviton\Rql\DataFixtures\MongoOdm as MongoOdmFixtures;
@@ -24,8 +27,16 @@ use Doctrine\ODM\MongoDB\Mapping\Driver\AnnotationDriver;
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  * @link    http://swisscom.ch
  */
-class MongoOdmTest extends \PHPUnit_Framework_TestCase
+class MongoOdmTest extends \PHPUnit\Framework\TestCase
 {
+    /**
+     * @var DocumentRepository
+     */
+    private $repository;
+
+    /**
+     * @var Builder
+     */
     private $builder;
 
     /**
@@ -35,8 +46,6 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        AnnotationDriver::registerAnnotationClasses();
-
         $config = new Configuration();
         $config->setHydratorDir('/tmp/hydrators');
         $config->setHydratorNamespace('Hydrators');
@@ -52,7 +61,8 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
         $executor = new MongoDBExecutor($dm, new MongoDBPurger());
         $executor->execute($loader->getFixtures());
 
-        $this->builder = $dm->createQueryBuilder('Graviton\Rql\Documents\Foo');
+        $this->repository = $dm->getRepository('Graviton\Rql\Documents\Foo');
+        $this->builder = $this->repository->createQueryBuilder();
     }
 
     /**
@@ -328,14 +338,13 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider errorQueryProvider
      *
-     * @param string $query        rql query string
-     * @param string $errorMessage structure of expected return value
+     * @param string $query rql query string
      *
      * @return void
      */
-    public function testErrorQueries($query, $errorMessage)
+    public function testErrorQueries($query)
     {
-        $this->setExpectedException('Xiag\Rql\Parser\Exception\SyntaxErrorException', $errorMessage);
+        $this->expectException(SyntaxErrorException::class);
 
         RqlParser::createDefault()->parse(
             (new GrvLexer())
@@ -349,16 +358,13 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
     {
         return [
             'sort by int' => [
-                'sort(count)',
-                'Unexpected token "count" (T_STRING) (expected T_PLUS|T_MINUS)'
+                'sort(count)'
             ],
             'string sort' => [
-                'sort(name)',
-                'Unexpected token "name" (T_STRING) (expected T_PLUS|T_MINUS)'
+                'sort(name)'
             ],
         ];
     }
-
 
     /**
      * Proper string encoding
@@ -399,7 +405,7 @@ class MongoOdmTest extends \PHPUnit_Framework_TestCase
         );
 
         $visitor = new MongoOdm;
-        $visitor->setBuilder($this->builder);
+        $visitor->setRepository($this->repository);
         $visitor->setDispatcher($dispatcher);
 
         $results = $this->runTestQuery($query, $visitor);

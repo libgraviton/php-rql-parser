@@ -16,7 +16,7 @@ use Xiag\Rql\Parser\Node\SortNode;
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  * @link    http://swisscom.ch
  */
-class SearchTokenParserTest extends \PHPUnit_Framework_TestCase
+class SearchTokenParserTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Setup, clear search params

@@ -16,7 +16,7 @@ use Xiag\Rql\Parser\QueryBuilder;
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  * @link    http://swisscom.ch
  */
-class ParserTest extends \PHPUnit_Framework_TestCase
+class ParserTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Test elemMatch() operator
