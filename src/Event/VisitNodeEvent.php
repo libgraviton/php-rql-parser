@@ -5,6 +5,7 @@
 
 namespace Graviton\Rql\Event;
 
+use Doctrine\MongoDB\Query\Expr;
 use Symfony\Component\EventDispatcher\Event;
 use Doctrine\ODM\MongoDB\Query\Builder;
 use Xiag\Rql\Parser\AbstractNode;
@@ -20,7 +21,6 @@ final class VisitNodeEvent extends Event
      * @var AbstractNode
      */
     private $node;
-
     /**
      * @var Builder
      */
@@ -29,6 +29,10 @@ final class VisitNodeEvent extends Event
      * @var \SplStack
      */
     private $context;
+    /**
+     * @var Expr
+     */
+    private $exprNode;
     /**
      * @var boolean
      */
@@ -73,7 +77,9 @@ final class VisitNodeEvent extends Event
     }
 
     /**
-     * @return Builder
+     * returns the builder
+     *
+     * @return Builder|Expr builder
      */
     public function getBuilder()
     {
@@ -108,6 +114,28 @@ final class VisitNodeEvent extends Event
     public function isExpr()
     {
         return $this->expr;
+    }
+
+    /**
+     * get ExprNode
+     *
+     * @return Expr ExprNode
+     */
+    public function getExprNode()
+    {
+        return $this->exprNode;
+    }
+
+    /**
+     * set ExprNode
+     *
+     * @param Expr $exprNode exprNode
+     *
+     * @return void
+     */
+    public function setExprNode($exprNode)
+    {
+        $this->exprNode = $exprNode;
     }
 
     /**

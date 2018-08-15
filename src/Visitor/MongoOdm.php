@@ -189,7 +189,7 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
         }
 
         $originalNode = $node;
-        list($node, $this->builder) = $this->dispatchNodeEvent($node, $expr);
+        list($node, $this->builder, $exprNode) = $this->dispatchNodeEvent($node, $expr);
 
         if ($query instanceof Query) {
             $this->visitQuery($query);
@@ -197,7 +197,10 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
 
         $this->context->push($originalNode);
 
-        if (is_object($node) && in_array(get_class($node), array_keys($this->internalMap))) {
+        if ($exprNode instanceof Expr) {
+            // make sure that if the event sets an expr node, that it overrides the builder here
+            $builder = $exprNode;
+        } elseif (is_object($node) && in_array(get_class($node), array_keys($this->internalMap))) {
             $method = $this->internalMap[get_class($node)];
             $builder = $this->$method($node, $expr);
         } elseif ($node instanceof AbstractScalarOperatorNode) {
@@ -223,6 +226,7 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
     private function dispatchNodeEvent(AbstractNode $node = null, $expr = false)
     {
         $builder = $this->builder;
+        $exprNode = null;
         if (!empty($this->dispatcher)) {
             if ($node instanceof AbstractQueryNode) {
                 /** @var VisitNodeEvent $event */
@@ -239,9 +243,10 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
                     );
                 $node = $event->getNode();
                 $builder = $event->getBuilder();
+                $exprNode = $event->getExprNode();
             }
         }
-        return [$node, $builder];
+        return [$node, $builder, $exprNode];
     }
 
     /**
