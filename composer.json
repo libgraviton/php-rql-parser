@@ -10,6 +10,9 @@
             "homepage": "https://github.com/libgraviton/php-rql-parser/graphs/contributors"
         }
     ],
+    "config": {
+        "platform": {"ext-mongo": "1.6.14"}
+    },
     "autoload": {
         "psr-4": { "Graviton\\Rql\\": "src/"}
     },
