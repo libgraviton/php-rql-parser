@@ -43,12 +43,19 @@ final class VisitNodeEvent extends Event
     private $className;
 
     /**
-     * @param AbstractNode $node    any type of node we are visiting
-     * @param Builder      $builder doctrine query builder
-     * @param \SplStack    $context context
+     * @param AbstractNode $node      any type of node we are visiting
+     * @param Builder      $builder   doctrine query builder
+     * @param \SplStack    $context   context
+     * @param bool         $expr      if expr is requested or not
+     * @param string       $className class name
      */
-    public function __construct(AbstractNode $node, Builder $builder, \SplStack $context, $expr = false, $className = null)
-    {
+    public function __construct(
+        AbstractNode $node,
+        Builder $builder,
+        \SplStack $context,
+        $expr = false,
+        $className = null
+    ) {
         $this->node = $node;
         $this->builder = $builder;
         $this->context = $context;

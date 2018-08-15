@@ -33,8 +33,9 @@ final class VisitPostEvent extends Event
     private $className;
 
     /**
-     * @param AbstractNode $node    any type of node we are visiting
-     * @param Builder      $builder doctrine query builder
+     * @param Query   $query     query
+     * @param Builder $builder   doctrine query builder
+     * @param string  $className class name
      */
     public function __construct(Query $query, Builder $builder, $className = null)
     {
@@ -44,7 +45,7 @@ final class VisitPostEvent extends Event
     }
 
     /**
-     * @return Query
+     * @return Query query
      */
     public function getQuery()
     {
@@ -52,7 +53,9 @@ final class VisitPostEvent extends Event
     }
 
     /**
-     * @param Query $query
+     * @param Query $query query
+     *
+     * @return void
      */
     public function setQuery($query)
     {
@@ -60,7 +63,7 @@ final class VisitPostEvent extends Event
     }
 
     /**
-     * @return Builder
+     * @return Builder builder
      */
     public function getBuilder()
     {

@@ -137,7 +137,9 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
     /**
      * sets repository
      *
-     * @param DocumentRepository $repository
+     * @param DocumentRepository $repository repository
+     *
+     * @return void
      */
     public function setRepository(DocumentRepository $repository)
     {
@@ -220,6 +222,7 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
 
     /**
      * @param AbstractNode|null $node node at the center of the event
+     * @param boolean           $expr if expr is requested or not
      *
      * @return array
      */
