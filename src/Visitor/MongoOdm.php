@@ -7,6 +7,8 @@
 
 namespace Graviton\Rql\Visitor;
 
+use Doctrine\ODM\MongoDB\DocumentRepository;
+use Graviton\Rql\Event\VisitPostEvent;
 use Graviton\Rql\Node\SearchNode;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Doctrine\ODM\MongoDB\Query\Builder;
@@ -34,15 +36,22 @@ use Xiag\Rql\Parser\Query;
  */
 final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
 {
+
     /**
      * @var Builder
      */
     private $builder;
 
     /**
+     * @var DocumentRepository
+     */
+    private $repository;
+
+    /**
      * @var EventDispatcherInterface
      */
     private $dispatcher = null;
+
     /**
      * @var \SplStack
      */
@@ -89,7 +98,6 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      */
     private $internalMap = [
         'Xiag\Rql\Parser\Node\Query\ScalarOperator\LikeNode' => 'visitLike',
-        'Graviton\Rql\Node\SearchNode' => 'visitSearch',
         'Graviton\Rql\Node\ElemMatchNode' => 'visitElemMatch',
     ];
 
@@ -127,6 +135,29 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
     }
 
     /**
+     * sets repository
+     *
+     * @param DocumentRepository $repository repository
+     *
+     * @return void
+     */
+    public function setRepository(DocumentRepository $repository)
+    {
+        $this->repository = $repository;
+        $this->setBuilder($this->repository->createQueryBuilder());
+    }
+
+    /**
+     * returns repository
+     *
+     * @return DocumentRepository repository
+     */
+    public function getRepository()
+    {
+        return $this->repository;
+    }
+
+    /**
      * @param Query $query query from parser
      *
      * @return Builder|Expr
@@ -134,7 +165,13 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
     public function visit(Query $query)
     {
         $this->context = new \SplStack();
-        return $this->recurse($query);
+
+        $this->builder = $this->recurse($query);
+
+        // event after we did all..
+        list($query, $this->builder) = $this->dispatchVisitPostEvent($query);
+
+        return $this->builder;
     }
 
     /**
@@ -154,14 +191,18 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
         }
 
         $originalNode = $node;
-        list($node, $this->builder) = $this->dispatchNodeEvent($node);
+        list($node, $this->builder, $exprNode) = $this->dispatchNodeEvent($node, $expr);
 
         if ($query instanceof Query) {
             $this->visitQuery($query);
         }
 
         $this->context->push($originalNode);
-        if (is_object($node) && in_array(get_class($node), array_keys($this->internalMap))) {
+
+        if ($exprNode instanceof Expr) {
+            // make sure that if the event sets an expr node, that it overrides the builder here
+            $builder = $exprNode;
+        } elseif (is_object($node) && in_array(get_class($node), array_keys($this->internalMap))) {
             $method = $this->internalMap[get_class($node)];
             $builder = $this->$method($node, $expr);
         } elseif ($node instanceof AbstractScalarOperatorNode) {
@@ -181,25 +222,55 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
 
     /**
      * @param AbstractNode|null $node node at the center of the event
+     * @param boolean           $expr if expr is requested or not
      *
      * @return array
      */
-    private function dispatchNodeEvent(AbstractNode $node = null)
+    private function dispatchNodeEvent(AbstractNode $node = null, $expr = false)
     {
         $builder = $this->builder;
+        $exprNode = null;
         if (!empty($this->dispatcher)) {
             if ($node instanceof AbstractQueryNode) {
                 /** @var VisitNodeEvent $event */
                 $event = $this->dispatcher
                     ->dispatch(
                         Events::VISIT_NODE,
-                        new VisitNodeEvent($node, $this->builder, $this->context)
+                        new VisitNodeEvent(
+                            $node,
+                            $this->builder,
+                            $this->context,
+                            $expr,
+                            $this->repository->getClassName()
+                        )
                     );
                 $node = $event->getNode();
                 $builder = $event->getBuilder();
+                $exprNode = $event->getExprNode();
             }
         }
-        return [$node, $builder];
+        return [$node, $builder, $exprNode];
+    }
+
+    /**
+     * @param Query|null $query the query
+     *
+     * @return array
+     */
+    private function dispatchVisitPostEvent(Query $query = null)
+    {
+        $builder = $this->builder;
+        if (!empty($this->dispatcher)) {
+            /** @var VisitPostEvent $event */
+            $event = $this->dispatcher
+                ->dispatch(
+                    Events::VISIT_POST,
+                    new VisitPostEvent($query, $this->builder)
+                );
+            $query = $event->getQuery();
+            $builder = $event->getBuilder();
+        }
+        return [$query, $builder];
     }
 
     /**
@@ -329,59 +400,6 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
         return $this
             ->getField($node->getField(), $expr)
             ->elemMatch($this->recurse($node->getQuery(), true));
-    }
-
-    /**
-     * Visit visitSearch() node
-     *
-     * @param SearchNode $node elemMatch() node
-     * @param bool       $expr should i wrap this in expr()
-     * @return MongoBuilder|MongoExpr
-     */
-    private function visitSearch(SearchNode $node, $expr = false)
-    {
-        if ($node->isVisited()) {
-            if ($expr) {
-                return $this->builder->expr()->addAnd($this->builder->expr()->field('_id')->exists(true));
-            } else {
-                return $this->builder;
-            }
-        }
-
-        $node->setVisited(true);
-        $searchArr = [];
-        foreach ($node->getSearchTerms() as $string) {
-            $searchArr[] = "\"{$string}\"";
-        }
-
-        $this->builder->sortMeta('score', 'textScore');
-
-        /*****
-         * WORKAROUND FOR BAD SEARCH BEHAVIOR AS WANTED IN EVO-13051
-         *
-         * --> please please please let us remove this asap..!
-         */
-
-        $basicTextSearchValue = implode(' ', $searchArr);
-
-        $collectionName = '';
-        if (!is_null($this->builder->getQuery())) {
-            $collectionName = $this->builder->getQuery()->getClass()->getCollection();
-        }
-
-        if ($collectionName == 'Customer') {
-            $firstWord = $node->getSearchTerms()[0];
-            return $this->builder->addOr(
-                $this->builder->expr()->text($basicTextSearchValue),
-                $this->builder->expr()->field('lastName')->equals(new \MongoRegex('/^'.preg_quote($firstWord).'.*$/i'))
-            );
-        }
-
-        if ($expr) {
-            return $this->builder->expr()->text($basicTextSearchValue);
-        } else {
-            return $this->builder->addAnd($this->builder->expr()->text($basicTextSearchValue));
-        }
     }
 
     /**

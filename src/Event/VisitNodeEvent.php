@@ -5,6 +5,7 @@
 
 namespace Graviton\Rql\Event;
 
+use Doctrine\MongoDB\Query\Expr;
 use Symfony\Component\EventDispatcher\Event;
 use Doctrine\ODM\MongoDB\Query\Builder;
 use Xiag\Rql\Parser\AbstractNode;
@@ -20,7 +21,6 @@ final class VisitNodeEvent extends Event
      * @var AbstractNode
      */
     private $node;
-
     /**
      * @var Builder
      */
@@ -29,17 +29,38 @@ final class VisitNodeEvent extends Event
      * @var \SplStack
      */
     private $context;
+    /**
+     * @var Expr
+     */
+    private $exprNode;
+    /**
+     * @var boolean
+     */
+    private $expr;
+    /**
+     * @var string
+     */
+    private $className;
 
     /**
-     * @param AbstractNode $node    any type of node we are visiting
-     * @param Builder      $builder doctrine query builder
-     * @param \SplStack    $context context
+     * @param AbstractNode $node      any type of node we are visiting
+     * @param Builder      $builder   doctrine query builder
+     * @param \SplStack    $context   context
+     * @param bool         $expr      if expr is requested or not
+     * @param string       $className class name
      */
-    public function __construct(AbstractNode $node, Builder $builder, \SplStack $context)
-    {
+    public function __construct(
+        AbstractNode $node,
+        Builder $builder,
+        \SplStack $context,
+        $expr = false,
+        $className = null
+    ) {
         $this->node = $node;
         $this->builder = $builder;
         $this->context = $context;
+        $this->expr = $expr;
+        $this->className = $className;
     }
 
     /**
@@ -63,7 +84,9 @@ final class VisitNodeEvent extends Event
     }
 
     /**
-     * @return Builder
+     * returns the builder
+     *
+     * @return Builder|Expr builder
      */
     public function getBuilder()
     {
@@ -90,5 +113,45 @@ final class VisitNodeEvent extends Event
     public function getContext()
     {
         return $this->context;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isExpr()
+    {
+        return $this->expr;
+    }
+
+    /**
+     * get ExprNode
+     *
+     * @return Expr ExprNode
+     */
+    public function getExprNode()
+    {
+        return $this->exprNode;
+    }
+
+    /**
+     * set ExprNode
+     *
+     * @param Expr $exprNode exprNode
+     *
+     * @return void
+     */
+    public function setExprNode($exprNode)
+    {
+        $this->exprNode = $exprNode;
+    }
+
+    /**
+     * get ClassName
+     *
+     * @return string ClassName
+     */
+    public function getClassName()
+    {
+        return $this->className;
     }
 }
