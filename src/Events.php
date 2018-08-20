@@ -18,4 +18,11 @@ final class Events
      * @var string
      */
     const VISIT_NODE = 'rql.visit.node';
+
+    /**
+     * the rql.visit.post event is thrown after the parsing has been done
+     *
+     * @var string
+     */
+    const VISIT_POST = 'rql.visit.post';
 }

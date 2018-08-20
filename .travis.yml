@@ -3,23 +3,15 @@ language: php
 services: mongodb
 before_script:
   - free -m
-  - >
-      if [ $(phpenv version-name) = "5.6" ]; then
-          echo "extension = mongo.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-      fi
-  - >
-      if [ $(phpenv version-name) = "7.1" ] || [ $(phpenv version-name) = "7.2" ]; then
-          pecl channel-update pecl.php.net
-          sleep 5
-          printf "\n" | pecl install -f --ignore-errors mongodb
-          echo "extension = mongodb.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-      fi
+  - pecl channel-update pecl.php.net
+  - sleep 5
+  - printf "\n" | pecl install -f --ignore-errors mongodb
+  - echo "extension = mongodb.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - composer install --dev --no-interaction
   - wget https://scrutinizer-ci.com/ocular.phar
 php:
   - 7.2
   - 7.1
-  - 5.6
 script:
   - ./vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
   - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
