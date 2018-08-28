@@ -9,7 +9,6 @@ namespace Graviton\Rql\Visitor;
 
 use Doctrine\ODM\MongoDB\DocumentRepository;
 use Graviton\Rql\Event\VisitPostEvent;
-use Graviton\Rql\Node\SearchNode;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Doctrine\ODM\MongoDB\Query\Builder;
 use Doctrine\MongoDB\Query\Builder as MongoBuilder;
@@ -265,10 +264,16 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
             $event = $this->dispatcher
                 ->dispatch(
                     Events::VISIT_POST,
-                    new VisitPostEvent($query, $this->builder)
+                    new VisitPostEvent($query, $this->builder, $this->repository)
                 );
             $query = $event->getQuery();
             $builder = $event->getBuilder();
+
+            // override query builder with aggregation?
+            $aggregationBuilder = $event->getAggregationOverride();
+            if (!is_null($aggregationBuilder)) {
+                $builder = $aggregationBuilder;
+            }
         }
         return [$query, $builder];
     }
