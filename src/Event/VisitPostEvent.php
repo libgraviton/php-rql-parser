@@ -43,9 +43,10 @@ final class VisitPostEvent extends Event
     private $className;
 
     /**
-     * @param Query   $query     query
-     * @param Builder $builder   doctrine query builder
-     * @param string  $className class name
+     * @param Query              $query      query
+     * @param Builder            $builder    doctrine query builder
+     * @param DocumentRepository $repository repository
+     * @param string             $className  class name
      */
     public function __construct(Query $query, Builder $builder, DocumentRepository $repository, $className = null)
     {
@@ -110,7 +111,9 @@ final class VisitPostEvent extends Event
     }
 
     /**
-     * @param \Doctrine\MongoDB\Aggregation\Builder $aggregationOverride
+     * @param \Doctrine\MongoDB\Aggregation\Builder $aggregationOverride override
+     *
+     * @return void
      */
     public function setAggregationOverride($aggregationOverride)
     {
