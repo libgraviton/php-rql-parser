@@ -34,9 +34,9 @@
     },
     "scripts": {
         "check": [
-            "./vendor/bin/phpcs -p --standard=PSR1 --ignore='*.css' --ignore='*.js' src/ test/",
-            "./vendor/bin/phpcs -p --standard=PSR2 --ignore='*.css' --ignore='*.js' src/ test/",
-            "./vendor/bin/phpcs -p --standard=./vendor/libgraviton/codesniffer --ignore='*.css' --ignore='*.js' src/ test/"
+            "./vendor/bin/phpcs -p --standard=PSR1 --ignore='*.css' --ignore='*.js' src/",
+            "./vendor/bin/phpcs -p --standard=PSR2 --ignore='*.css' --ignore='*.js' src/",
+            "./vendor/bin/phpcs -p --standard=./vendor/libgraviton/codesniffer --ignore='*.css' --ignore='*.js' src/"
         ]
     },
     "minimum-stability": "stable",
