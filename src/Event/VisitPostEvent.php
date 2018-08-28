@@ -5,9 +5,9 @@
 
 namespace Graviton\Rql\Event;
 
+use Doctrine\ODM\MongoDB\DocumentRepository;
 use Symfony\Component\EventDispatcher\Event;
 use Doctrine\ODM\MongoDB\Query\Builder;
-use Xiag\Rql\Parser\AbstractNode;
 use Xiag\Rql\Parser\Query;
 
 /**
@@ -28,6 +28,16 @@ final class VisitPostEvent extends Event
     private $builder;
 
     /**
+     * @var DocumentRepository
+     */
+    private $repository;
+
+    /**
+     * @var \Doctrine\MongoDB\Aggregation\Builder
+     */
+    private $aggregationOverride = null;
+
+    /**
      * @var string
      */
     private $className;
@@ -37,10 +47,11 @@ final class VisitPostEvent extends Event
      * @param Builder $builder   doctrine query builder
      * @param string  $className class name
      */
-    public function __construct(Query $query, Builder $builder, $className = null)
+    public function __construct(Query $query, Builder $builder, DocumentRepository $repository, $className = null)
     {
         $this->query = $query;
         $this->builder = $builder;
+        $this->repository = $repository;
         $this->className = $className;
     }
 
@@ -80,6 +91,30 @@ final class VisitPostEvent extends Event
     public function setBuilder(Builder $builder)
     {
         $this->builder = $builder;
+    }
+
+    /**
+     * @return DocumentRepository
+     */
+    public function getRepository()
+    {
+        return $this->repository;
+    }
+
+    /**
+     * @return \Doctrine\MongoDB\Aggregation\Builder
+     */
+    public function getAggregationOverride()
+    {
+        return $this->aggregationOverride;
+    }
+
+    /**
+     * @param \Doctrine\MongoDB\Aggregation\Builder $aggregationOverride
+     */
+    public function setAggregationOverride($aggregationOverride)
+    {
+        $this->aggregationOverride = $aggregationOverride;
     }
 
     /**
