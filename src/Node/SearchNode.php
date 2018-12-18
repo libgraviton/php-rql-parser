@@ -65,20 +65,27 @@ class SearchNode extends AbstractQueryNode
      */
     public function addSearchTerm($searchTerm)
     {
-        $string = trim($searchTerm);
-        if ($string && !in_array($string, $this->searchTerms)) {
-            $this->searchTerms[] = $string;
-        }
+        $this->searchTerms[] = trim($searchTerm);
     }
 
     /**
      * Elements to be searched for
      *
-     * @return array
+     * @return array terms
      */
     public function getSearchTerms()
     {
-        return $this->searchTerms;
+        return array_unique($this->searchTerms);
+    }
+
+    /**
+     * gets the full search query (no uniqueness)
+     *
+     * @return string SearchQuery
+     */
+    public function getSearchQuery()
+    {
+        return implode(' ', $this->searchTerms);
     }
 
     /**
