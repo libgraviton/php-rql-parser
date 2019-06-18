@@ -22,7 +22,7 @@ class SearchTokenParserTest extends \PHPUnit\Framework\TestCase
      * Setup, clear search params
      * @return void
      */
-    public function setup()
+    public function setup() : void
     {
         SearchNode::getInstance()->resetSearchTerms();
     }

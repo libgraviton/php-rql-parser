@@ -234,14 +234,14 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
                 /** @var VisitNodeEvent $event */
                 $event = $this->dispatcher
                     ->dispatch(
-                        Events::VISIT_NODE,
                         new VisitNodeEvent(
                             $node,
                             $this->builder,
                             $this->context,
                             $expr,
                             $this->repository->getClassName()
-                        )
+                        ),
+                        Events::VISIT_NODE
                     );
                 $node = $event->getNode();
                 $builder = $event->getBuilder();
@@ -263,8 +263,8 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
             /** @var VisitPostEvent $event */
             $event = $this->dispatcher
                 ->dispatch(
-                    Events::VISIT_POST,
-                    new VisitPostEvent($query, $this->builder, $this->repository)
+                    new VisitPostEvent($query, $this->builder, $this->repository),
+                    Events::VISIT_POST
                 );
             $query = $event->getQuery();
             $builder = $event->getBuilder();

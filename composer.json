@@ -20,17 +20,17 @@
         "psr-4": { "Graviton\\Rql\\": "test/"}
     },
     "require-dev": {
-        "phpunit/phpunit": "*",
+        "phpunit/phpunit": "~8",
         "squizlabs/php_codesniffer": "~3",
         "doctrine/data-fixtures": "~1.0",
         "libgraviton/codesniffer": "~2",
-        "xiag/rql-command": "^1.0"
+        "xiag/rql-command": "^1.0",
+        "alcaeus/mongo-php-adapter": "*"
     },
     "require": {
         "doctrine/mongodb-odm": "*",
         "xiag/rql-parser": "^1.0.2",
-        "symfony/event-dispatcher": "^3.0 || ^4.0",
-        "alcaeus/mongo-php-adapter": "*"
+        "symfony/event-dispatcher": ">=4.3.0"
     },
     "scripts": {
         "check": [
