@@ -44,7 +44,7 @@ class MongoOdmTest extends \PHPUnit\Framework\TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp() : void
     {
         $config = new Configuration();
         $config->setHydratorDir('/tmp/hydrators');
