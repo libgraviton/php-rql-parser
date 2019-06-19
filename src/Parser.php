@@ -89,7 +89,6 @@ class Parser extends BaseParser
 
             // our own stuff --> only rql!
             ->addNodeParser(new SearchNodeParser($scalarParser))
-            ->addNodeParser(new DeselectNodeParser($fieldParser, $scalarParser))
             ->addNodeParser(new ElemMatchNodeParser($queryNodeParser))
 
             // FIQL
@@ -105,7 +104,8 @@ class Parser extends BaseParser
 
         return (new NodeParserChain())
             ->addNodeParser($queryNodeParser)
-            ->addNodeParser(new SelectNodeParser($fieldParser))
+            ->addNodeParser(new SelectNodeParser($scalarParser))
+            ->addNodeParser(new DeselectNodeParser($scalarParser))
             ->addNodeParser(new SortNodeParser($fieldParser))
             ->addNodeParser(new LimitNodeParser($integerParser));
     }

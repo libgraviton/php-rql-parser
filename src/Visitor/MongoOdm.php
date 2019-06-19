@@ -9,6 +9,7 @@ namespace Graviton\Rql\Visitor;
 
 use Doctrine\ODM\MongoDB\DocumentRepository;
 use Graviton\Rql\Event\VisitPostEvent;
+use Graviton\Rql\Node\DeselectNode;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Doctrine\ODM\MongoDB\Query\Builder;
 use Doctrine\MongoDB\Query\Builder as MongoBuilder;
@@ -99,6 +100,7 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
     private $internalMap = [
         'Xiag\Rql\Parser\Node\Query\ScalarOperator\LikeNode' => 'visitLike',
         'Graviton\Rql\Node\ElemMatchNode' => 'visitElemMatch',
+        'Graviton\Rql\Node\DeselectNode' => 'visitDeselect'
     ];
 
     /**
@@ -377,6 +379,7 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
         foreach ($node->getFields() as $name => $order) {
             $this->builder->sort($name, $order);
         }
+        return $this->builder;
     }
 
     /**
@@ -406,6 +409,23 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
         return $this
             ->getField($node->getField(), $expr)
             ->elemMatch($this->recurse($node->getQuery(), true));
+    }
+
+    /**
+     * Visit deselect() node
+     *
+     * @param DeselectNode $node node
+     * @param bool         $expr expr
+     *
+     * @return void
+     */
+    private function visitDeselect(DeselectNode $node, $expr = false)
+    {
+        $builder = $this->builder;
+        foreach ($node->getFields() as $field) {
+            $builder->exclude($field);
+        }
+        return $builder;
     }
 
     /**
