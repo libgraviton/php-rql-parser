@@ -88,10 +88,9 @@ class Parser extends BaseParser
             ->addNodeParser(new LikeNodeParser($fieldParser, $globParser))
 
             // our own stuff --> only rql!
-            ->addNodeParser(new SearchNodeParser($fieldParser, $scalarParser))
+            ->addNodeParser(new SearchNodeParser($scalarParser))
             ->addNodeParser(new DeselectNodeParser($fieldParser, $scalarParser))
             ->addNodeParser(new ElemMatchNodeParser($queryNodeParser))
-
 
             // FIQL
             ->addNodeParser(new \Xiag\Rql\Parser\NodeParser\Query\ComparisonOperator\Fiql\InNodeParser($fieldParser, $arrayParser))

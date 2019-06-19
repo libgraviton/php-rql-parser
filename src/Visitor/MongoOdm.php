@@ -19,6 +19,7 @@ use Graviton\Rql\Events;
 use Graviton\Rql\Event\VisitNodeEvent;
 use Graviton\Rql\Node\ElemMatchNode;
 use Xiag\Rql\Parser\AbstractNode;
+use Xiag\Rql\Parser\Glob;
 use Xiag\Rql\Parser\Node\AbstractQueryNode;
 use Xiag\Rql\Parser\Node\LimitNode;
 use Xiag\Rql\Parser\Node\Query\AbstractScalarOperatorNode;
@@ -387,8 +388,8 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
     private function visitLike(LikeNode $node, $expr = false)
     {
         $query = $node->getValue();
-        if ($query instanceof \Xiag\Rql\Parser\DataType\Glob) {
-            $query = new \MongoRegex($node->getValue()->toRegex());
+        if ($query instanceof Glob) {
+            $query = new \MongoRegex('/'.$node->getValue()->toRegex().'/');
         }
         return $this->getField($node->getField(), $expr)->equals($query);
     }

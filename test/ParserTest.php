@@ -54,12 +54,12 @@ class ParserTest extends \PHPUnit\Framework\TestCase
                 (new QueryBuilder())
                     ->addQuery(new Node\Query\ScalarOperator\EqNode('a', 1))
                     ->addQuery(
-                        new Node\Query\LogicOperator\OrNode(
+                        new Node\Query\LogicalOperator\OrNode(
                             [
                                 new Node\Query\ScalarOperator\EqNode('b', 2),
                                 new ElemMatchNode(
                                     'x',
-                                    new Node\Query\LogicOperator\OrNode(
+                                    new Node\Query\LogicalOperator\OrNode(
                                         [
                                             new Node\Query\ScalarOperator\EqNode('c', 3),
                                             new Node\Query\ScalarOperator\EqNode('d', 4),
@@ -77,12 +77,12 @@ class ParserTest extends \PHPUnit\Framework\TestCase
                 (new QueryBuilder())
                     ->addQuery(new Node\Query\ScalarOperator\EqNode('a', 1))
                     ->addQuery(
-                        new Node\Query\LogicOperator\OrNode(
+                        new Node\Query\LogicalOperator\OrNode(
                             [
                                 new Node\Query\ScalarOperator\EqNode('b', 2),
                                 new ElemMatchNode(
                                     'x',
-                                    new Node\Query\LogicOperator\OrNode(
+                                    new Node\Query\LogicalOperator\OrNode(
                                         [
                                             new Node\Query\ScalarOperator\EqNode('c', '3-r'),
                                             new Node\Query\ScalarOperator\EqNode('d', '4-b'),

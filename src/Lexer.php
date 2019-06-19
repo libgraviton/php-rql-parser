@@ -5,6 +5,7 @@
 
 namespace Graviton\Rql;
 
+use Graviton\Rql\SubLexer\ImplicitBooleanSubLexer;
 use Graviton\Rql\SubLexer\RelaxedStringSubLexer;
 use Xiag\Rql\Parser\Lexer as BaseLexer;
 use Xiag\Rql\Parser\SubLexer\ConstantSubLexer;
@@ -25,8 +26,6 @@ use Xiag\Rql\Parser\SubLexerChain;
  */
 class Lexer extends BaseLexer
 {
-    // Overriding this to include $ search by.
-    //const REGEX_VALUE       = '/(\w|\$|\-|\+|\*|\?|\:|\.|\%[0-9a-f]{2})+/Ai';
 
     public static function createSubLexer()
     {
@@ -43,9 +42,9 @@ class Lexer extends BaseLexer
 
             ->addSubLexer(new SortSubLexer())
 
-            // our own stuff!
+            // our own stuff
+            ->addSubLexer(new ImplicitBooleanSubLexer())
             ->addSubLexer(new RelaxedStringSubLexer());
-
     }
 
     /**
