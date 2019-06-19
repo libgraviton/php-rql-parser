@@ -423,11 +423,12 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      */
     private function visitDeselect(DeselectNode $node, $expr = false)
     {
-        $builder = $this->builder;
-        foreach ($node->getFields() as $field) {
-            $builder->exclude($field);
-        }
-        return $builder;
+        array_map(
+            function ($field) {
+                $this->builder->exclude($this->cleanupSingleFieldName($field));
+            },
+            $node->getFields()
+        );
     }
 
     /**
@@ -453,11 +454,21 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
     {
         array_map(
             function ($field) {
-                // rename '$ref' to 'ref', else we cannot select them..
-                $field = str_replace('$ref', 'ref', $field);
-                $this->builder->select($field);
+                $this->builder->select($this->cleanupSingleFieldName($field));
             },
             $node->getFields()
         );
+    }
+
+    /**
+     * cleans up things we need to change before send to mongo
+     *
+     * @param string $fieldName fieldname
+     *
+     * @return string fieldname
+     */
+    private function cleanupSingleFieldName($fieldName)
+    {
+        return str_replace('$ref', 'ref', $fieldName);
     }
 }
