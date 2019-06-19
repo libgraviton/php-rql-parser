@@ -1,11 +1,22 @@
 <?php
 /**
- * XIAG declined our PR to fix a needed search by values with $
+ * our lexer
  */
 
 namespace Graviton\Rql;
 
+use Graviton\Rql\SubLexer\RelaxedStringSubLexer;
 use Xiag\Rql\Parser\Lexer as BaseLexer;
+use Xiag\Rql\Parser\SubLexer\ConstantSubLexer;
+use Xiag\Rql\Parser\SubLexer\DatetimeSubLexer;
+use Xiag\Rql\Parser\SubLexer\FiqlOperatorSubLexer;
+use Xiag\Rql\Parser\SubLexer\GlobSubLexer;
+use Xiag\Rql\Parser\SubLexer\NumberSubLexer;
+use Xiag\Rql\Parser\SubLexer\PunctuationSubLexer;
+use Xiag\Rql\Parser\SubLexer\RqlOperatorSubLexer;
+use Xiag\Rql\Parser\SubLexer\SortSubLexer;
+use Xiag\Rql\Parser\SubLexer\TypeSubLexer;
+use Xiag\Rql\Parser\SubLexerChain;
 
 /**
  * @author   List of contributors <https://github.com/libgraviton/GravitonRqlParserBundle/graphs/contributors>
@@ -15,7 +26,27 @@ use Xiag\Rql\Parser\Lexer as BaseLexer;
 class Lexer extends BaseLexer
 {
     // Overriding this to include $ search by.
-    const REGEX_VALUE       = '/(\w|\$|\-|\+|\*|\?|\:|\.|\%[0-9a-f]{2})+/Ai';
+    //const REGEX_VALUE       = '/(\w|\$|\-|\+|\*|\?|\:|\.|\%[0-9a-f]{2})+/Ai';
+
+    public static function createSubLexer()
+    {
+        return (new SubLexerChain())
+            ->addSubLexer(new ConstantSubLexer())
+            ->addSubLexer(new PunctuationSubLexer())
+            ->addSubLexer(new FiqlOperatorSubLexer())
+            ->addSubLexer(new RqlOperatorSubLexer())
+            ->addSubLexer(new TypeSubLexer())
+
+            ->addSubLexer(new GlobSubLexer())
+            ->addSubLexer(new DatetimeSubLexer())
+            ->addSubLexer(new NumberSubLexer())
+
+            ->addSubLexer(new SortSubLexer())
+
+            // our own stuff!
+            ->addSubLexer(new RelaxedStringSubLexer());
+
+    }
 
     /**
      * Custom replace - to %2D for easier find by.
@@ -25,6 +56,8 @@ class Lexer extends BaseLexer
      */
     public function tokenize($code)
     {
+
+        /*
         // Replace for each string value between (), there can be many rql params.
         if (strpos($code, 'string:') !== false) {
             preg_match_all('/\bstring:(.*?)[\(\)&,|(\s)]/', $code.' ', $matches);
@@ -37,6 +70,7 @@ class Lexer extends BaseLexer
                 }
             }
         }
+        */
 
         return parent::tokenize($code);
     }
