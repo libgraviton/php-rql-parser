@@ -5,11 +5,11 @@
 
 namespace Graviton\Rql;
 
-use Graviton\Rql\NodeParser\DeselectNodeParser;
 use Graviton\Rql\NodeParser\ElemMatchNodeParser;
 use Graviton\Rql\NodeParser\SearchNodeParser;
 use Graviton\Rql\TokenParser\ElemMatchTokenParser;
 use Graviton\Rql\TokenParser\SearchTokenParser;
+use Xiag\Rql\Parser\NodeParser\DeselectNodeParser;
 use Xiag\Rql\Parser\NodeParser\LimitNodeParser;
 use Xiag\Rql\Parser\NodeParser\Query\ComparisonOperator\Rql\EqNodeParser;
 use Xiag\Rql\Parser\NodeParser\Query\ComparisonOperator\Rql\GeNodeParser;

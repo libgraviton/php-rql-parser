@@ -9,7 +9,6 @@ namespace Graviton\Rql\Visitor;
 
 use Doctrine\ODM\MongoDB\DocumentRepository;
 use Graviton\Rql\Event\VisitPostEvent;
-use Graviton\Rql\Node\DeselectNode;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Doctrine\ODM\MongoDB\Query\Builder;
 use Doctrine\MongoDB\Query\Builder as MongoBuilder;
@@ -22,6 +21,7 @@ use Graviton\Rql\Node\ElemMatchNode;
 use Xiag\Rql\Parser\AbstractNode;
 use Xiag\Rql\Parser\Glob;
 use Xiag\Rql\Parser\Node\AbstractQueryNode;
+use Xiag\Rql\Parser\Node\DeselectNode;
 use Xiag\Rql\Parser\Node\LimitNode;
 use Xiag\Rql\Parser\Node\Query\AbstractScalarOperatorNode;
 use Xiag\Rql\Parser\Node\Query\AbstractLogicalOperatorNode;
@@ -99,8 +99,7 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      */
     private $internalMap = [
         'Xiag\Rql\Parser\Node\Query\ScalarOperator\LikeNode' => 'visitLike',
-        'Graviton\Rql\Node\ElemMatchNode' => 'visitElemMatch',
-        'Graviton\Rql\Node\DeselectNode' => 'visitDeselect'
+        'Graviton\Rql\Node\ElemMatchNode' => 'visitElemMatch'
     ];
 
     /**
@@ -296,6 +295,9 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
         }
         if ($query->getSelect()) {
             $this->visitSelect($query->getSelect());
+        }
+        if ($query->getDeselect()) {
+            $this->visitDeselect($query->getDeselect());
         }
     }
 
