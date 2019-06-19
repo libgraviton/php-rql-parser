@@ -22,7 +22,7 @@ use Xiag\Rql\Parser\AbstractNode;
 use Xiag\Rql\Parser\Node\AbstractQueryNode;
 use Xiag\Rql\Parser\Node\LimitNode;
 use Xiag\Rql\Parser\Node\Query\AbstractScalarOperatorNode;
-use Xiag\Rql\Parser\Node\Query\AbstractLogicOperatorNode;
+use Xiag\Rql\Parser\Node\Query\AbstractLogicalOperatorNode;
 use Xiag\Rql\Parser\Node\Query\AbstractArrayOperatorNode;
 use Xiag\Rql\Parser\Node\Query\ScalarOperator\LikeNode;
 use Xiag\Rql\Parser\Node\SelectNode;
@@ -86,8 +86,8 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      * @var string<string>|bool
      */
     private $queryMap = [
-        'Xiag\Rql\Parser\Node\Query\LogicOperator\AndNode' => 'addAnd',
-        'Xiag\Rql\Parser\Node\Query\LogicOperator\OrNode' => 'addOr',
+        'Xiag\Rql\Parser\Node\Query\LogicalOperator\AndNode' => 'addAnd',
+        'Xiag\Rql\Parser\Node\Query\LogicalOperator\OrNode' => 'addOr',
     ];
 
     /**
@@ -208,7 +208,7 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
             $builder = $this->visitScalar($node, $expr);
         } elseif ($node instanceof AbstractArrayOperatorNode) {
             $builder = $this->visitArray($node, $expr);
-        } elseif ($node instanceof AbstractLogicOperatorNode) {
+        } elseif ($node instanceof AbstractLogicalOperatorNode) {
             $method = $this->queryMap[get_class($node)];
             $builder = $this->visitLogic($method, $node, $expr);
         } else {
@@ -344,12 +344,12 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      * add query (like and or or) to the querybuilder
      *
      * @param string|boolean            $addMethod name of method we will be calling or false if no method is needed
-     * @param AbstractLogicOperatorNode $node      AST representation of query operator
+     * @param AbstractLogicalOperatorNode $node      AST representation of query operator
      * @param bool                      $expr      should i wrap this in expr()
      *
      * @return Builder|Expr
      */
-    private function visitLogic($addMethod, AbstractLogicOperatorNode $node, $expr = false)
+    private function visitLogic($addMethod, AbstractLogicalOperatorNode $node, $expr = false)
     {
         $builder = $this->builder;
         if ($expr) {
