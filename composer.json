@@ -28,7 +28,7 @@
     },
     "require": {
         "doctrine/mongodb-odm": "*",
-        "xiag/rql-parser": "^1.0.2",
+        "xiag/rql-parser": "^2",
         "symfony/event-dispatcher": "^3.0 || ^4.0",
         "alcaeus/mongo-php-adapter": "*"
     },
