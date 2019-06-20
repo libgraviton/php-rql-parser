@@ -6,7 +6,7 @@
 namespace Graviton\Rql\Listener;
 
 use Graviton\Rql\Event\VisitNodeEvent;
-use Xiag\Rql\Parser\Node\Query\ScalarOperator\EqNode;
+use Graviton\RqlParser\Node\Query\ScalarOperator\EqNode;
 
 /**
  * @author  List of contributors <https://github.com/libgraviton/php-rql-parser/graphs/contributors>

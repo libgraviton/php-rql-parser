@@ -9,40 +9,40 @@ use Graviton\Rql\NodeParser\ElemMatchNodeParser;
 use Graviton\Rql\NodeParser\SearchNodeParser;
 use Graviton\Rql\TokenParser\ElemMatchTokenParser;
 use Graviton\Rql\TokenParser\SearchTokenParser;
-use Xiag\Rql\Parser\NodeParser\DeselectNodeParser;
-use Xiag\Rql\Parser\NodeParser\LimitNodeParser;
-use Xiag\Rql\Parser\NodeParser\Query\ComparisonOperator\Rql\EqNodeParser;
-use Xiag\Rql\Parser\NodeParser\Query\ComparisonOperator\Rql\GeNodeParser;
-use Xiag\Rql\Parser\NodeParser\Query\ComparisonOperator\Rql\GtNodeParser;
-use Xiag\Rql\Parser\NodeParser\Query\ComparisonOperator\Rql\InNodeParser;
-use Xiag\Rql\Parser\NodeParser\Query\ComparisonOperator\Rql\LeNodeParser;
-use Xiag\Rql\Parser\NodeParser\Query\ComparisonOperator\Rql\LikeNodeParser;
-use Xiag\Rql\Parser\NodeParser\Query\ComparisonOperator\Rql\LtNodeParser;
-use Xiag\Rql\Parser\NodeParser\Query\ComparisonOperator\Rql\NeNodeParser;
-use Xiag\Rql\Parser\NodeParser\Query\ComparisonOperator\Rql\OutNodeParser;
-use Xiag\Rql\Parser\NodeParser\Query\GroupNodeParser;
-use Xiag\Rql\Parser\NodeParser\Query\LogicalOperator\AndNodeParser;
-use Xiag\Rql\Parser\NodeParser\Query\LogicalOperator\NotNodeParser;
-use Xiag\Rql\Parser\NodeParser\Query\LogicalOperator\OrNodeParser;
-use Xiag\Rql\Parser\NodeParser\QueryNodeParser;
-use Xiag\Rql\Parser\NodeParser\SelectNodeParser;
-use Xiag\Rql\Parser\NodeParser\SortNodeParser;
-use Xiag\Rql\Parser\NodeParserChain;
-use Xiag\Rql\Parser\Parser as BaseParser;
-use Xiag\Rql\Parser\TokenParserInterface;
-use Xiag\Rql\Parser\TypeCaster;
-use Xiag\Rql\Parser\ExpressionParser;
-use Xiag\Rql\Parser\TokenParserGroup;
-use Xiag\Rql\Parser\TokenParser;
-use Xiag\Rql\Parser\TypeCaster\BooleanTypeCaster;
-use Xiag\Rql\Parser\TypeCaster\FloatTypeCaster;
-use Xiag\Rql\Parser\TypeCaster\IntegerTypeCaster;
-use Xiag\Rql\Parser\TypeCaster\StringTypeCaster;
-use Xiag\Rql\Parser\ValueParser\ArrayParser;
-use Xiag\Rql\Parser\ValueParser\FieldParser;
-use Xiag\Rql\Parser\ValueParser\GlobParser;
-use Xiag\Rql\Parser\ValueParser\IntegerParser;
-use Xiag\Rql\Parser\ValueParser\ScalarParser;
+use Graviton\RqlParser\NodeParser\DeselectNodeParser;
+use Graviton\RqlParser\NodeParser\LimitNodeParser;
+use Graviton\RqlParser\NodeParser\Query\ComparisonOperator\Rql\EqNodeParser;
+use Graviton\RqlParser\NodeParser\Query\ComparisonOperator\Rql\GeNodeParser;
+use Graviton\RqlParser\NodeParser\Query\ComparisonOperator\Rql\GtNodeParser;
+use Graviton\RqlParser\NodeParser\Query\ComparisonOperator\Rql\InNodeParser;
+use Graviton\RqlParser\NodeParser\Query\ComparisonOperator\Rql\LeNodeParser;
+use Graviton\RqlParser\NodeParser\Query\ComparisonOperator\Rql\LikeNodeParser;
+use Graviton\RqlParser\NodeParser\Query\ComparisonOperator\Rql\LtNodeParser;
+use Graviton\RqlParser\NodeParser\Query\ComparisonOperator\Rql\NeNodeParser;
+use Graviton\RqlParser\NodeParser\Query\ComparisonOperator\Rql\OutNodeParser;
+use Graviton\RqlParser\NodeParser\Query\GroupNodeParser;
+use Graviton\RqlParser\NodeParser\Query\LogicalOperator\AndNodeParser;
+use Graviton\RqlParser\NodeParser\Query\LogicalOperator\NotNodeParser;
+use Graviton\RqlParser\NodeParser\Query\LogicalOperator\OrNodeParser;
+use Graviton\RqlParser\NodeParser\QueryNodeParser;
+use Graviton\RqlParser\NodeParser\SelectNodeParser;
+use Graviton\RqlParser\NodeParser\SortNodeParser;
+use Graviton\RqlParser\NodeParserChain;
+use Graviton\RqlParser\Parser as BaseParser;
+use Graviton\RqlParser\TokenParserInterface;
+use Graviton\RqlParser\TypeCaster;
+use Graviton\RqlParser\ExpressionParser;
+use Graviton\RqlParser\TokenParserGroup;
+use Graviton\RqlParser\TokenParser;
+use Graviton\RqlParser\TypeCaster\BooleanTypeCaster;
+use Graviton\RqlParser\TypeCaster\FloatTypeCaster;
+use Graviton\RqlParser\TypeCaster\IntegerTypeCaster;
+use Graviton\RqlParser\TypeCaster\StringTypeCaster;
+use Graviton\RqlParser\ValueParser\ArrayParser;
+use Graviton\RqlParser\ValueParser\FieldParser;
+use Graviton\RqlParser\ValueParser\GlobParser;
+use Graviton\RqlParser\ValueParser\IntegerParser;
+use Graviton\RqlParser\ValueParser\ScalarParser;
 
 /**
  * RQL parser
@@ -92,15 +92,15 @@ class Parser extends BaseParser
             ->addNodeParser(new ElemMatchNodeParser($queryNodeParser))
 
             // FIQL
-            ->addNodeParser(new \Xiag\Rql\Parser\NodeParser\Query\ComparisonOperator\Fiql\InNodeParser($fieldParser, $arrayParser))
-            ->addNodeParser(new \Xiag\Rql\Parser\NodeParser\Query\ComparisonOperator\Fiql\OutNodeParser($fieldParser, $arrayParser))
-            ->addNodeParser(new \Xiag\Rql\Parser\NodeParser\Query\ComparisonOperator\Fiql\EqNodeParser($fieldParser, $scalarParser))
-            ->addNodeParser(new \Xiag\Rql\Parser\NodeParser\Query\ComparisonOperator\Fiql\NeNodeParser($fieldParser, $scalarParser))
-            ->addNodeParser(new \Xiag\Rql\Parser\NodeParser\Query\ComparisonOperator\Fiql\LtNodeParser($fieldParser, $scalarParser))
-            ->addNodeParser(new \Xiag\Rql\Parser\NodeParser\Query\ComparisonOperator\Fiql\GtNodeParser($fieldParser, $scalarParser))
-            ->addNodeParser(new \Xiag\Rql\Parser\NodeParser\Query\ComparisonOperator\Fiql\LeNodeParser($fieldParser, $scalarParser))
-            ->addNodeParser(new \Xiag\Rql\Parser\NodeParser\Query\ComparisonOperator\Fiql\GeNodeParser($fieldParser, $scalarParser))
-            ->addNodeParser(new \Xiag\Rql\Parser\NodeParser\Query\ComparisonOperator\Fiql\LikeNodeParser($fieldParser, $globParser));
+            ->addNodeParser(new \Graviton\RqlParser\NodeParser\Query\ComparisonOperator\Fiql\InNodeParser($fieldParser, $arrayParser))
+            ->addNodeParser(new \Graviton\RqlParser\NodeParser\Query\ComparisonOperator\Fiql\OutNodeParser($fieldParser, $arrayParser))
+            ->addNodeParser(new \Graviton\RqlParser\NodeParser\Query\ComparisonOperator\Fiql\EqNodeParser($fieldParser, $scalarParser))
+            ->addNodeParser(new \Graviton\RqlParser\NodeParser\Query\ComparisonOperator\Fiql\NeNodeParser($fieldParser, $scalarParser))
+            ->addNodeParser(new \Graviton\RqlParser\NodeParser\Query\ComparisonOperator\Fiql\LtNodeParser($fieldParser, $scalarParser))
+            ->addNodeParser(new \Graviton\RqlParser\NodeParser\Query\ComparisonOperator\Fiql\GtNodeParser($fieldParser, $scalarParser))
+            ->addNodeParser(new \Graviton\RqlParser\NodeParser\Query\ComparisonOperator\Fiql\LeNodeParser($fieldParser, $scalarParser))
+            ->addNodeParser(new \Graviton\RqlParser\NodeParser\Query\ComparisonOperator\Fiql\GeNodeParser($fieldParser, $scalarParser))
+            ->addNodeParser(new \Graviton\RqlParser\NodeParser\Query\ComparisonOperator\Fiql\LikeNodeParser($fieldParser, $globParser));
 
         return (new NodeParserChain())
             ->addNodeParser($queryNodeParser)

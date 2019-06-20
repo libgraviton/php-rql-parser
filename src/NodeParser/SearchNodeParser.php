@@ -2,10 +2,10 @@
 namespace Graviton\Rql\NodeParser;
 
 use Graviton\Rql\Node\SearchNode;
-use Xiag\Rql\Parser\Token;
-use Xiag\Rql\Parser\TokenStream;
-use Xiag\Rql\Parser\NodeParserInterface;
-use Xiag\Rql\Parser\SubParserInterface;
+use Graviton\RqlParser\Token;
+use Graviton\RqlParser\TokenStream;
+use Graviton\RqlParser\NodeParserInterface;
+use Graviton\RqlParser\SubParserInterface;
 
 class SearchNodeParser implements NodeParserInterface
 {

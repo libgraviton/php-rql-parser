@@ -6,15 +6,15 @@
 namespace Graviton\Rql\NodeParser;
 
 use Graviton\Rql\Node\ElemMatchNode;
-use Xiag\Rql\Parser\AbstractNode;
-use Xiag\Rql\Parser\Exception\SyntaxErrorException;
-use Xiag\Rql\Parser\Node\AbstractQueryNode;
-use Xiag\Rql\Parser\NodeParserInterface;
-use Xiag\Rql\Parser\SubParserInterface;
-use Xiag\Rql\Parser\Token;
-use Xiag\Rql\Parser\TokenParserInterface;
-use Xiag\Rql\Parser\TokenStream;
-use Xiag\Rql\Parser\AbstractTokenParser;
+use Graviton\RqlParser\AbstractNode;
+use Graviton\RqlParser\Exception\SyntaxErrorException;
+use Graviton\RqlParser\Node\AbstractQueryNode;
+use Graviton\RqlParser\NodeParserInterface;
+use Graviton\RqlParser\SubParserInterface;
+use Graviton\RqlParser\Token;
+use Graviton\RqlParser\TokenParserInterface;
+use Graviton\RqlParser\TokenStream;
+use Graviton\RqlParser\AbstractTokenParser;
 
 /**
  * elemMatch() token parser
@@ -70,7 +70,7 @@ class ElemMatchNodeParser implements NodeParserInterface
             throw new SyntaxErrorException(
                 sprintf(
                     '"elemMatch" operator expects parameter "query" to be instance of "%s", "%s" given',
-                    'Xiag\Rql\Parser\Node\AbstractQueryNode',
+                    'Graviton\RqlParser\Node\AbstractQueryNode',
                     get_class($query)
                 )
             );

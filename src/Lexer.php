@@ -7,17 +7,17 @@ namespace Graviton\Rql;
 
 use Graviton\Rql\SubLexer\ImplicitBooleanSubLexer;
 use Graviton\Rql\SubLexer\RelaxedStringSubLexer;
-use Xiag\Rql\Parser\Lexer as BaseLexer;
-use Xiag\Rql\Parser\SubLexer\ConstantSubLexer;
-use Xiag\Rql\Parser\SubLexer\DatetimeSubLexer;
-use Xiag\Rql\Parser\SubLexer\FiqlOperatorSubLexer;
-use Xiag\Rql\Parser\SubLexer\GlobSubLexer;
-use Xiag\Rql\Parser\SubLexer\NumberSubLexer;
-use Xiag\Rql\Parser\SubLexer\PunctuationSubLexer;
-use Xiag\Rql\Parser\SubLexer\RqlOperatorSubLexer;
-use Xiag\Rql\Parser\SubLexer\SortSubLexer;
-use Xiag\Rql\Parser\SubLexer\TypeSubLexer;
-use Xiag\Rql\Parser\SubLexerChain;
+use Graviton\RqlParser\Lexer as BaseLexer;
+use Graviton\RqlParser\SubLexer\ConstantSubLexer;
+use Graviton\RqlParser\SubLexer\DatetimeSubLexer;
+use Graviton\RqlParser\SubLexer\FiqlOperatorSubLexer;
+use Graviton\RqlParser\SubLexer\GlobSubLexer;
+use Graviton\RqlParser\SubLexer\NumberSubLexer;
+use Graviton\RqlParser\SubLexer\PunctuationSubLexer;
+use Graviton\RqlParser\SubLexer\RqlOperatorSubLexer;
+use Graviton\RqlParser\SubLexer\SortSubLexer;
+use Graviton\RqlParser\SubLexer\TypeSubLexer;
+use Graviton\RqlParser\SubLexerChain;
 
 /**
  * @author   List of contributors <https://github.com/libgraviton/GravitonRqlParserBundle/graphs/contributors>
@@ -51,7 +51,7 @@ class Lexer extends BaseLexer
      * Custom replace - to %2D for easier find by.
      *
      * @param string $code request uri params
-     * @return \Xiag\Rql\Parser\TokenStream
+     * @return \Graviton\RqlParser\TokenStream
      */
     public function tokenize($code)
     {

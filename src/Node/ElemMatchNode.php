@@ -5,9 +5,9 @@
 
 namespace Graviton\Rql\Node;
 
-use Xiag\Rql\Parser\Node\AbstractQueryNode;
-use Xiag\Rql\Parser\Node\Query\AbstractComparisonOperatorNode;
-use Xiag\Rql\Parser\RqlEncoder;
+use Graviton\RqlParser\Node\AbstractQueryNode;
+use Graviton\RqlParser\Node\Query\AbstractComparisonOperatorNode;
+use Graviton\RqlParser\RqlEncoder;
 
 /**
  * elemMatch() node

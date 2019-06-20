@@ -8,8 +8,8 @@ namespace Graviton\Rql\TokenParser;
 use Graviton\Rql\Lexer;
 use Graviton\Rql\Node\SearchNode;
 use Graviton\Rql\Parser as GravitonParser;
-use Xiag\Rql\Parser\Node\Query\LogicalOperator\AndNode;
-use Xiag\Rql\Parser\Node\SortNode;
+use Graviton\RqlParser\Node\Query\LogicalOperator\AndNode;
+use Graviton\RqlParser\Node\SortNode;
 
 /**
  * @author  List of contributors <https://github.com/libgraviton/php-rql-parser/graphs/contributors>

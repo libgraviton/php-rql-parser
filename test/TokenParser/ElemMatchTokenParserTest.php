@@ -6,8 +6,8 @@
 namespace Graviton\Rql\TokenParser;
 
 use Graviton\Rql\Node\ElemMatchNode;
-use Xiag\Rql\Parser\Node\Query\ScalarOperator\EqNode;
-use Xiag\Rql\Parser\Token;
+use Graviton\RqlParser\Node\Query\ScalarOperator\EqNode;
+use Graviton\RqlParser\Token;
 
 /**
  * @author  List of contributors <https://github.com/libgraviton/php-rql-parser/graphs/contributors>
@@ -26,11 +26,11 @@ class ElemMatchTokenParserTest extends \PHPUnit\Framework\TestCase
         $expectedResult = __LINE__;
 
         $queryTokenParser = $this
-            ->getMockBuilder('Xiag\Rql\Parser\TokenParserInterface')
+            ->getMockBuilder('Graviton\RqlParser\TokenParserInterface')
             ->getMock();
 
         $tokenStream = $this
-            ->getMockBuilder('Xiag\Rql\Parser\TokenStream')
+            ->getMockBuilder('Graviton\RqlParser\TokenStream')
             ->disableOriginalConstructor()
             ->getMock();
         $tokenStream
@@ -55,7 +55,7 @@ class ElemMatchTokenParserTest extends \PHPUnit\Framework\TestCase
         $expectedNode = new ElemMatchNode($field, $query);
 
         $tokenStream = $this
-            ->getMockBuilder('Xiag\Rql\Parser\TokenStream')
+            ->getMockBuilder('Graviton\RqlParser\TokenStream')
             ->disableOriginalConstructor()
             ->getMock();
         $tokenStream
@@ -85,7 +85,7 @@ class ElemMatchTokenParserTest extends \PHPUnit\Framework\TestCase
             ->with(Token::T_CLOSE_PARENTHESIS);
 
         $queryTokenParser = $this
-            ->getMockBuilder('Xiag\Rql\Parser\TokenParserInterface')
+            ->getMockBuilder('Graviton\RqlParser\TokenParserInterface')
             ->getMock();
         $queryTokenParser
             ->expects($this->once())

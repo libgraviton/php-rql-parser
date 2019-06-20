@@ -7,9 +7,9 @@ namespace Graviton\Rql;
 
 use Graviton\Rql\Node\ElemMatchNode;
 use Graviton\Rql\Lexer as GrvLexer;
-use Xiag\Rql\Parser\Node;
-use Xiag\Rql\Parser\Query;
-use Xiag\Rql\Parser\QueryBuilder;
+use Graviton\RqlParser\Node;
+use Graviton\RqlParser\Query;
+use Graviton\RqlParser\QueryBuilder;
 
 /**
  * @author  List of contributors <https://github.com/libgraviton/php-rql-parser/graphs/contributors>

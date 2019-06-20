@@ -1,8 +1,8 @@
 <?php
 namespace Graviton\Rql\SubLexer;
 
-use Xiag\Rql\Parser\Token;
-use Xiag\Rql\Parser\SubLexerInterface;
+use Graviton\RqlParser\Token;
+use Graviton\RqlParser\SubLexerInterface;
 
 class RelaxedStringSubLexer implements SubLexerInterface
 {

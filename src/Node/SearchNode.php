@@ -5,8 +5,8 @@
 
 namespace Graviton\Rql\Node;
 
-use Xiag\Rql\Parser\Node\AbstractQueryNode;
-use Xiag\Rql\Parser\RqlEncoder;
+use Graviton\RqlParser\Node\AbstractQueryNode;
+use Graviton\RqlParser\RqlEncoder;
 
 /**
  * @author  List of contributors <https://github.com/libgraviton/php-rql-parser/graphs/contributors>

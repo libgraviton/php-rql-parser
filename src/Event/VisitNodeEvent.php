@@ -8,7 +8,7 @@ namespace Graviton\Rql\Event;
 use Doctrine\MongoDB\Query\Expr;
 use Symfony\Component\EventDispatcher\Event;
 use Doctrine\ODM\MongoDB\Query\Builder;
-use Xiag\Rql\Parser\AbstractNode;
+use Graviton\RqlParser\AbstractNode;
 
 /**
  * @author  List of contributors <https://github.com/libgraviton/php-rql-parser/graphs/contributors>
