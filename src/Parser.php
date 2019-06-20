@@ -56,8 +56,6 @@ class Parser extends BaseParser
 
     public static function createDefaultNodeParser()
     {
-        $nodeParser = parent::createDefaultNodeParser();
-
         $scalarParser = (new ScalarParser())
             ->registerTypeCaster('string', new StringTypeCaster())
             ->registerTypeCaster('integer', new IntegerTypeCaster())
