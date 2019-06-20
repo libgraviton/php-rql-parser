@@ -7,6 +7,7 @@ namespace Graviton\Rql\Node;
 
 use Xiag\Rql\Parser\Node\AbstractQueryNode;
 use Xiag\Rql\Parser\Node\Query\AbstractComparisonOperatorNode;
+use Xiag\Rql\Parser\RqlEncoder;
 
 /**
  * elemMatch() node
@@ -63,5 +64,20 @@ class ElemMatchNode extends AbstractComparisonOperatorNode
     public function setQuery(AbstractQueryNode $query)
     {
         $this->query = $query;
+    }
+
+    /**
+     * turns this node to rql..
+     *
+     * @return string rql
+     */
+    public function toRql()
+    {
+        return sprintf(
+            '%s(%s,%s)',
+            $this->getNodeName(),
+            RqlEncoder::encodeFieldName($this->field),
+            $this->query->toRql()
+        );
     }
 }
