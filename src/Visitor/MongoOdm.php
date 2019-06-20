@@ -18,15 +18,17 @@ use Graviton\Rql\QueryBuilderAwareInterface;
 use Graviton\Rql\Events;
 use Graviton\Rql\Event\VisitNodeEvent;
 use Graviton\Rql\Node\ElemMatchNode;
-use Xiag\Rql\Parser\AbstractNode;
-use Xiag\Rql\Parser\Node\AbstractQueryNode;
-use Xiag\Rql\Parser\Node\LimitNode;
-use Xiag\Rql\Parser\Node\Query\AbstractScalarOperatorNode;
-use Xiag\Rql\Parser\Node\Query\AbstractLogicOperatorNode;
-use Xiag\Rql\Parser\Node\Query\AbstractArrayOperatorNode;
-use Xiag\Rql\Parser\Node\Query\ScalarOperator\LikeNode;
-use Xiag\Rql\Parser\Node\SelectNode;
-use Xiag\Rql\Parser\Query;
+use Graviton\RqlParser\AbstractNode;
+use Graviton\RqlParser\Glob;
+use Graviton\RqlParser\Node\AbstractQueryNode;
+use Graviton\RqlParser\Node\DeselectNode;
+use Graviton\RqlParser\Node\LimitNode;
+use Graviton\RqlParser\Node\Query\AbstractScalarOperatorNode;
+use Graviton\RqlParser\Node\Query\AbstractLogicalOperatorNode;
+use Graviton\RqlParser\Node\Query\AbstractArrayOperatorNode;
+use Graviton\RqlParser\Node\Query\ScalarOperator\LikeNode;
+use Graviton\RqlParser\Node\SelectNode;
+use Graviton\RqlParser\Query;
 
 /**
  * @author  List of contributors <https://github.com/libgraviton/php-rql-parser/graphs/contributors>
@@ -62,12 +64,12 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      * @var string<string>
      */
     private $scalarMap = [
-        'Xiag\Rql\Parser\Node\Query\ScalarOperator\EqNode' => 'equals',
-        'Xiag\Rql\Parser\Node\Query\ScalarOperator\NeNode' => 'notEqual',
-        'Xiag\Rql\Parser\Node\Query\ScalarOperator\LtNode' => 'lt',
-        'Xiag\Rql\Parser\Node\Query\ScalarOperator\GtNode' => 'gt',
-        'Xiag\Rql\Parser\Node\Query\ScalarOperator\LeNode' => 'lte',
-        'Xiag\Rql\Parser\Node\Query\ScalarOperator\GeNode' => 'gte',
+        'Graviton\RqlParser\Node\Query\ScalarOperator\EqNode' => 'equals',
+        'Graviton\RqlParser\Node\Query\ScalarOperator\NeNode' => 'notEqual',
+        'Graviton\RqlParser\Node\Query\ScalarOperator\LtNode' => 'lt',
+        'Graviton\RqlParser\Node\Query\ScalarOperator\GtNode' => 'gt',
+        'Graviton\RqlParser\Node\Query\ScalarOperator\LeNode' => 'lte',
+        'Graviton\RqlParser\Node\Query\ScalarOperator\GeNode' => 'gte',
     ];
 
     /**
@@ -76,8 +78,8 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      * @var string<string>
      */
     private $arrayMap = [
-        'Xiag\Rql\Parser\Node\Query\ArrayOperator\InNode' => 'in',
-        'Xiag\Rql\Parser\Node\Query\ArrayOperator\OutNode' => 'notIn',
+        'Graviton\RqlParser\Node\Query\ArrayOperator\InNode' => 'in',
+        'Graviton\RqlParser\Node\Query\ArrayOperator\OutNode' => 'notIn',
     ];
 
     /**
@@ -86,8 +88,8 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      * @var string<string>|bool
      */
     private $queryMap = [
-        'Xiag\Rql\Parser\Node\Query\LogicOperator\AndNode' => 'addAnd',
-        'Xiag\Rql\Parser\Node\Query\LogicOperator\OrNode' => 'addOr',
+        'Graviton\RqlParser\Node\Query\LogicalOperator\AndNode' => 'addAnd',
+        'Graviton\RqlParser\Node\Query\LogicalOperator\OrNode' => 'addOr',
     ];
 
     /**
@@ -96,8 +98,8 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      * @var array<string>
      */
     private $internalMap = [
-        'Xiag\Rql\Parser\Node\Query\ScalarOperator\LikeNode' => 'visitLike',
-        'Graviton\Rql\Node\ElemMatchNode' => 'visitElemMatch',
+        'Graviton\RqlParser\Node\Query\ScalarOperator\LikeNode' => 'visitLike',
+        'Graviton\Rql\Node\ElemMatchNode' => 'visitElemMatch'
     ];
 
     /**
@@ -208,7 +210,7 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
             $builder = $this->visitScalar($node, $expr);
         } elseif ($node instanceof AbstractArrayOperatorNode) {
             $builder = $this->visitArray($node, $expr);
-        } elseif ($node instanceof AbstractLogicOperatorNode) {
+        } elseif ($node instanceof AbstractLogicalOperatorNode) {
             $method = $this->queryMap[get_class($node)];
             $builder = $this->visitLogic($method, $node, $expr);
         } else {
@@ -294,6 +296,9 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
         if ($query->getSelect()) {
             $this->visitSelect($query->getSelect());
         }
+        if ($query->getDeselect()) {
+            $this->visitDeselect($query->getDeselect());
+        }
     }
 
     /**
@@ -344,12 +349,12 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      * add query (like and or or) to the querybuilder
      *
      * @param string|boolean            $addMethod name of method we will be calling or false if no method is needed
-     * @param AbstractLogicOperatorNode $node      AST representation of query operator
+     * @param AbstractLogicalOperatorNode $node      AST representation of query operator
      * @param bool                      $expr      should i wrap this in expr()
      *
      * @return Builder|Expr
      */
-    private function visitLogic($addMethod, AbstractLogicOperatorNode $node, $expr = false)
+    private function visitLogic($addMethod, AbstractLogicalOperatorNode $node, $expr = false)
     {
         $builder = $this->builder;
         if ($expr) {
@@ -367,15 +372,16 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
     /**
      * add a sort condition to querybuilder
      *
-     * @param \Xiag\Rql\Parser\Node\SortNode $node sort node
+     * @param \Graviton\RqlParser\Node\SortNode $node sort node
      *
      * @return void
      */
-    private function visitSort(\Xiag\Rql\Parser\Node\SortNode $node)
+    private function visitSort(\Graviton\RqlParser\Node\SortNode $node)
     {
         foreach ($node->getFields() as $name => $order) {
             $this->builder->sort($name, $order);
         }
+        return $this->builder;
     }
 
     /**
@@ -387,8 +393,8 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
     private function visitLike(LikeNode $node, $expr = false)
     {
         $query = $node->getValue();
-        if ($query instanceof \Xiag\Rql\Parser\DataType\Glob) {
-            $query = new \MongoRegex($node->getValue()->toRegex());
+        if ($query instanceof Glob) {
+            $query = new \MongoRegex('/'.$node->getValue()->toRegex().'/');
         }
         return $this->getField($node->getField(), $expr)->equals($query);
     }
@@ -405,6 +411,24 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
         return $this
             ->getField($node->getField(), $expr)
             ->elemMatch($this->recurse($node->getQuery(), true));
+    }
+
+    /**
+     * Visit deselect() node
+     *
+     * @param DeselectNode $node node
+     * @param bool         $expr expr
+     *
+     * @return void
+     */
+    private function visitDeselect(DeselectNode $node, $expr = false)
+    {
+        array_map(
+            function ($field) {
+                $this->builder->exclude($this->cleanupSingleFieldName($field));
+            },
+            $node->getFields()
+        );
     }
 
     /**
@@ -430,11 +454,21 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
     {
         array_map(
             function ($field) {
-                // rename '$ref' to 'ref', else we cannot select them..
-                $field = str_replace('$ref', 'ref', $field);
-                $this->builder->select($field);
+                $this->builder->select($this->cleanupSingleFieldName($field));
             },
             $node->getFields()
         );
+    }
+
+    /**
+     * cleans up things we need to change before send to mongo
+     *
+     * @param string $fieldName fieldname
+     *
+     * @return string fieldname
+     */
+    private function cleanupSingleFieldName($fieldName)
+    {
+        return str_replace('$ref', 'ref', $fieldName);
     }
 }

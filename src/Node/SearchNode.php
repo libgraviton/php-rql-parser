@@ -5,7 +5,8 @@
 
 namespace Graviton\Rql\Node;
 
-use Xiag\Rql\Parser\Node\AbstractQueryNode;
+use Graviton\RqlParser\Node\AbstractQueryNode;
+use Graviton\RqlParser\RqlEncoder;
 
 /**
  * @author  List of contributors <https://github.com/libgraviton/php-rql-parser/graphs/contributors>
@@ -117,5 +118,19 @@ class SearchNode extends AbstractQueryNode
     {
         $this->searchTerms = [];
         $this->visited = false;
+    }
+
+    /**
+     * turns this node to rql..
+     *
+     * @return string rql
+     */
+    public function toRql()
+    {
+        return sprintf(
+            '%s(%s)',
+            $this->getNodeName(),
+            RqlEncoder::encodeList($this->searchTerms)
+        );
     }
 }

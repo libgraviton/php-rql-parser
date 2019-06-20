@@ -3,12 +3,14 @@
  * ElemMatchTokenParser class file
  */
 
-namespace Graviton\Rql\TokenParser;
+namespace Graviton\Rql\NodeParser;
 
 use Graviton\Rql\Node\ElemMatchNode;
 use Graviton\RqlParser\AbstractNode;
 use Graviton\RqlParser\Exception\SyntaxErrorException;
 use Graviton\RqlParser\Node\AbstractQueryNode;
+use Graviton\RqlParser\NodeParserInterface;
+use Graviton\RqlParser\SubParserInterface;
 use Graviton\RqlParser\Token;
 use Graviton\RqlParser\TokenParserInterface;
 use Graviton\RqlParser\TokenStream;
@@ -21,7 +23,7 @@ use Graviton\RqlParser\AbstractTokenParser;
  * @license https://opensource.org/licenses/MIT MIT License
  * @link    http://swisscom.ch
  */
-class ElemMatchTokenParser extends AbstractTokenParser
+class ElemMatchNodeParser implements NodeParserInterface
 {
     /**
      * @var TokenParserInterface
@@ -33,7 +35,7 @@ class ElemMatchTokenParser extends AbstractTokenParser
      *
      * @param TokenParserInterface $queryTokenParser Query parser
      */
-    public function __construct(TokenParserInterface $queryTokenParser)
+    public function __construct(SubParserInterface $queryTokenParser)
     {
         $this->queryTokenParser = $queryTokenParser;
     }

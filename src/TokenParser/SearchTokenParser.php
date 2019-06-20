@@ -7,10 +7,10 @@
 namespace Graviton\Rql\TokenParser;
 
 use Graviton\Rql\Node\SearchNode;
-use Xiag\Rql\Parser\AbstractTokenParser;
-use Xiag\Rql\Parser\Exception\UnknownTokenException;
-use Xiag\Rql\Parser\Token;
-use Xiag\Rql\Parser\TokenStream;
+use Graviton\RqlParser\AbstractTokenParser;
+use Graviton\RqlParser\Exception\UnknownTokenException;
+use Graviton\RqlParser\Token;
+use Graviton\RqlParser\TokenStream;
 
 /**
  * Class SearchTokenParser

@@ -1,7 +1,7 @@
 {
     "name": "graviton/php-rql-parser",
     "homepage": "https://github.com/libgraviton/php-rql-parser",
-    "description": "doctrine-odm query building wrapper to xiag-ag/rql-parser",
+    "description": "doctrine-odm query building wrapper to graviton/rql-parser",
     "keywords": ["rest", "rql", "resource", "query", "language", "parser", "mongodb", "mongo"],
     "license": "MIT",
     "authors": [
@@ -19,25 +19,12 @@
     "autoload-dev": {
         "psr-4": { "Graviton\\Rql\\": "test/"}
     },
-    "require-dev": {
-        "phpunit/phpunit": "~8",
-        "squizlabs/php_codesniffer": "~3",
-        "doctrine/data-fixtures": "~1.0",
-        "libgraviton/codesniffer": "~2",
-        "xiag/rql-command": "^1.0",
-        "alcaeus/mongo-php-adapter": "*"
-    },
     "require": {
+        "php": ">=7.2.0",
         "doctrine/mongodb-odm": "*",
-        "xiag/rql-parser": "^1.0.2",
-        "symfony/event-dispatcher": ">=4.3.0"
-    },
-    "scripts": {
-        "check": [
-            "./vendor/bin/phpcs -p --standard=PSR1 --ignore='*.css' --ignore='*.js' src/",
-            "./vendor/bin/phpcs -p --standard=PSR2 --ignore='*.css' --ignore='*.js' src/",
-            "./vendor/bin/phpcs -p --standard=./vendor/libgraviton/codesniffer --ignore='*.css' --ignore='*.js' src/"
-        ]
+        "graviton/rql-parser": "~3",
+        "symfony/event-dispatcher": ">=4.3.0",
+        "alcaeus/mongo-php-adapter": "*"
     },
     "minimum-stability": "stable",
     "non-feature-branches": ["master", "develop", "support/*"]
