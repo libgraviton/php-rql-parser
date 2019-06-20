@@ -1,7 +1,7 @@
 {
     "name": "graviton/php-rql-parser",
     "homepage": "https://github.com/libgraviton/php-rql-parser",
-    "description": "doctrine-odm query building wrapper to xiag-ag/rql-parser",
+    "description": "doctrine-odm query building wrapper to graviton/rql-parser",
     "keywords": ["rest", "rql", "resource", "query", "language", "parser", "mongodb", "mongo"],
     "license": "MIT",
     "authors": [
