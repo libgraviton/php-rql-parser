@@ -38,13 +38,15 @@ class Lexer extends BaseLexer
 
             ->addSubLexer(new GlobSubLexer())
             ->addSubLexer(new DatetimeSubLexer())
+
+            // this is our own
+            ->addSubLexer(new RelaxedStringSubLexer())
+            // also our own
+            ->addSubLexer(new ImplicitBooleanSubLexer())
+
             ->addSubLexer(new NumberSubLexer())
 
-            ->addSubLexer(new SortSubLexer())
-
-            // our own stuff
-            ->addSubLexer(new ImplicitBooleanSubLexer())
-            ->addSubLexer(new RelaxedStringSubLexer());
+            ->addSubLexer(new SortSubLexer());
     }
 
     /**
@@ -55,22 +57,6 @@ class Lexer extends BaseLexer
      */
     public function tokenize($code)
     {
-
-        /*
-        // Replace for each string value between (), there can be many rql params.
-        if (strpos($code, 'string:') !== false) {
-            preg_match_all('/\bstring:(.*?)[\(\)&,|(\s)]/', $code.' ', $matches);
-            if (array_key_exists(1, $matches) && !empty($matches)) {
-                foreach ($matches[1] as $match) {
-                    if (strpos($match, '-') !== false) {
-                        $new = preg_replace('/-/', '%2D', $match);
-                        $code = preg_replace('/' . $match . '/', $new, $code, 1);
-                    }
-                }
-            }
-        }
-        */
-
         return parent::tokenize($code);
     }
 }
