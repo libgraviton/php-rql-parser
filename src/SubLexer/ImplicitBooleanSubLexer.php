@@ -17,7 +17,7 @@ class ImplicitBooleanSubLexer implements SubLexerInterface
         }
 
         $test5 = substr($code, $cursor, 5);
-        if ($test4 === 'false') {
+        if ($test5 === 'false') {
             return new Token(Token::T_FALSE, $test5, $cursor, $cursor + 5);
         }
 
