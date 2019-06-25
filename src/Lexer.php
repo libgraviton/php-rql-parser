@@ -40,13 +40,14 @@ class Lexer extends BaseLexer
             ->addSubLexer(new DatetimeSubLexer())
 
             // this is our own
-            ->addSubLexer(new RelaxedStringSubLexer())
-            // also our own
             ->addSubLexer(new ImplicitBooleanSubLexer())
 
-            ->addSubLexer(new NumberSubLexer())
+            // as we allow "-" in the middle of a string, this must come before our relaxed guy..
+            ->addSubLexer(new SortSubLexer())
 
-            ->addSubLexer(new SortSubLexer());
+            ->addSubLexer(new RelaxedStringSubLexer())
+
+            ->addSubLexer(new NumberSubLexer());
     }
 
     /**
