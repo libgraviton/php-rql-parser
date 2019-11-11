@@ -7,7 +7,7 @@
 
 namespace Graviton\Rql\Visitor;
 
-use Doctrine\ODM\MongoDB\DocumentRepository;
+use Doctrine\ODM\MongoDB\Repository\DocumentRepository;
 use Graviton\Rql\Event\VisitPostEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Doctrine\ODM\MongoDB\Query\Builder;
