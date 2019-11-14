@@ -10,9 +10,6 @@
             "homepage": "https://github.com/libgraviton/php-rql-parser/graphs/contributors"
         }
     ],
-    "config": {
-        "platform": {"ext-mongo": "1.6.14"}
-    },
     "autoload": {
         "psr-4": { "Graviton\\Rql\\": "src/"}
     },
@@ -20,11 +17,10 @@
         "psr-4": { "Graviton\\Rql\\": "test/"}
     },
     "require": {
-        "php": ">=7.2.0",
-        "doctrine/mongodb-odm": "*",
+        "php": ">=7.3.0",
+        "doctrine/mongodb-odm": ">=2.0.0",
         "graviton/rql-parser": "~3",
-        "symfony/event-dispatcher": ">=4.3.0",
-        "alcaeus/mongo-php-adapter": "*"
+        "symfony/event-dispatcher": ">=4.3.0"
     },
     "minimum-stability": "stable",
     "non-feature-branches": ["master", "develop", "support/*"]

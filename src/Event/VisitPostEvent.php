@@ -5,7 +5,7 @@
 
 namespace Graviton\Rql\Event;
 
-use Doctrine\ODM\MongoDB\DocumentRepository;
+use Doctrine\ODM\MongoDB\Repository\DocumentRepository;
 use Symfony\Contracts\EventDispatcher\Event;
 use Doctrine\ODM\MongoDB\Query\Builder;
 use Graviton\RqlParser\Query;

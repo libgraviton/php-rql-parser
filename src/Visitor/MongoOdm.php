@@ -7,8 +7,9 @@
 
 namespace Graviton\Rql\Visitor;
 
-use Doctrine\ODM\MongoDB\DocumentRepository;
+use Doctrine\ODM\MongoDB\Repository\DocumentRepository;
 use Graviton\Rql\Event\VisitPostEvent;
+use MongoDB\BSON\Regex;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Doctrine\ODM\MongoDB\Query\Builder;
 use Doctrine\MongoDB\Query\Builder as MongoBuilder;
@@ -394,7 +395,7 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
     {
         $query = $node->getValue();
         if ($query instanceof Glob) {
-            $query = new \MongoRegex('/'.$node->getValue()->toRegex().'/');
+            $query = new Regex($node->getValue()->toRegex());
         }
         return $this->getField($node->getField(), $expr)->equals($query);
     }
