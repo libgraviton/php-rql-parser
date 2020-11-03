@@ -5,6 +5,7 @@
 
 namespace Graviton\Rql;
 
+use Graviton\Rql\NodeParser\CommentNodeParser;
 use Graviton\Rql\NodeParser\ElemMatchNodeParser;
 use Graviton\Rql\NodeParser\SearchNodeParser;
 use Graviton\Rql\TokenParser\ElemMatchTokenParser;
@@ -87,6 +88,7 @@ class Parser extends BaseParser
 
             // our own stuff --> only rql!
             ->addNodeParser(new SearchNodeParser($scalarParser))
+            ->addNodeParser(new CommentNodeParser($scalarParser))
             ->addNodeParser(new ElemMatchNodeParser($queryNodeParser))
 
             // FIQL
