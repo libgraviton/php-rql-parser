@@ -9,6 +9,7 @@ namespace Graviton\Rql\Visitor;
 
 use Doctrine\ODM\MongoDB\Repository\DocumentRepository;
 use Graviton\Rql\Event\VisitPostEvent;
+use Graviton\Rql\Node\CommentNode;
 use MongoDB\BSON\Regex;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Doctrine\ODM\MongoDB\Query\Builder;
@@ -100,7 +101,8 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
      */
     private $internalMap = [
         'Graviton\RqlParser\Node\Query\ScalarOperator\LikeNode' => 'visitLike',
-        'Graviton\Rql\Node\ElemMatchNode' => 'visitElemMatch'
+        'Graviton\Rql\Node\ElemMatchNode' => 'visitElemMatch',
+        'Graviton\Rql\Node\CommentNode' => 'visitComment'
     ];
 
     /**
@@ -398,6 +400,19 @@ final class MongoOdm implements VisitorInterface, QueryBuilderAwareInterface
             $query = new Regex($node->getValue()->toRegex());
         }
         return $this->getField($node->getField(), $expr)->equals($query);
+    }
+
+    /**
+     * @param CommentNode $node node
+     * @param boolean     $expr should i wrap this in expr
+     *
+     * @return MongoBuilder||Expr
+     */
+    private function visitComment(CommentNode $node, $expr = false)
+    {
+        $builder = $this->builder->expr();
+        $builder->comment($node->getComment());
+        return $builder;
     }
 
     /**
