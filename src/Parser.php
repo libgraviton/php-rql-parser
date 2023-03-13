@@ -7,9 +7,8 @@ namespace Graviton\Rql;
 
 use Graviton\Rql\NodeParser\CommentNodeParser;
 use Graviton\Rql\NodeParser\ElemMatchNodeParser;
+use Graviton\Rql\NodeParser\ProjectNodeParser;
 use Graviton\Rql\NodeParser\SearchNodeParser;
-use Graviton\Rql\TokenParser\ElemMatchTokenParser;
-use Graviton\Rql\TokenParser\SearchTokenParser;
 use Graviton\RqlParser\NodeParser\DeselectNodeParser;
 use Graviton\RqlParser\NodeParser\LimitNodeParser;
 use Graviton\RqlParser\NodeParser\Query\ComparisonOperator\Rql\EqNodeParser;
@@ -31,7 +30,6 @@ use Graviton\RqlParser\NodeParser\SortNodeParser;
 use Graviton\RqlParser\NodeParserChain;
 use Graviton\RqlParser\Parser as BaseParser;
 use Graviton\RqlParser\TokenParserInterface;
-use Graviton\RqlParser\TypeCaster;
 use Graviton\RqlParser\ExpressionParser;
 use Graviton\RqlParser\TokenParserGroup;
 use Graviton\RqlParser\TokenParser;
@@ -90,6 +88,7 @@ class Parser extends BaseParser
             ->addNodeParser(new SearchNodeParser($scalarParser))
             ->addNodeParser(new CommentNodeParser($scalarParser))
             ->addNodeParser(new ElemMatchNodeParser($queryNodeParser))
+            ->addNodeParser(new ProjectNodeParser($arrayParser))
 
             // FIQL
             ->addNodeParser(new \Graviton\RqlParser\NodeParser\Query\ComparisonOperator\Fiql\InNodeParser($fieldParser, $arrayParser))

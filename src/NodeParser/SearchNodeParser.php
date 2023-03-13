@@ -27,8 +27,6 @@ class SearchNodeParser implements NodeParserInterface
      */
     public function parse(TokenStream $tokenStream)
     {
-        $fields = [];
-
         $tokenStream->expect(Token::T_OPERATOR, 'search');
         $tokenStream->expect(Token::T_OPEN_PARENTHESIS);
 
