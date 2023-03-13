@@ -19,7 +19,7 @@
     "require": {
         "php": ">=8.1.0",
         "doctrine/mongodb-odm": ">=2.0.0",
-        "graviton/rql-parser": "~3",
+        "graviton/rql-parser": "dev-feature/project",
         "symfony/event-dispatcher": ">=4.3.0"
     },
     "minimum-stability": "stable",

@@ -88,7 +88,7 @@ class Parser extends BaseParser
             ->addNodeParser(new SearchNodeParser($scalarParser))
             ->addNodeParser(new CommentNodeParser($scalarParser))
             ->addNodeParser(new ElemMatchNodeParser($queryNodeParser))
-            ->addNodeParser(new ProjectNodeParser($arrayParser))
+            ->addNodeParser(new ProjectNodeParser($fieldParser))
 
             // FIQL
             ->addNodeParser(new \Graviton\RqlParser\NodeParser\Query\ComparisonOperator\Fiql\InNodeParser($fieldParser, $arrayParser))
