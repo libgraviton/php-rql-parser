@@ -12,9 +12,7 @@ use Graviton\RqlParser\Node\AbstractQueryNode;
 use Graviton\RqlParser\NodeParserInterface;
 use Graviton\RqlParser\SubParserInterface;
 use Graviton\RqlParser\Token;
-use Graviton\RqlParser\TokenParserInterface;
 use Graviton\RqlParser\TokenStream;
-use Graviton\RqlParser\AbstractTokenParser;
 
 /**
  * elemMatch() token parser
